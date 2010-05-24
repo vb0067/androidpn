@@ -1,0 +1,9 @@
+ANDROIDPN-SERVER CHANGELOG
+==========================
+http://androidpn.sourceforge.net/
+
+Changes in version 0.0.1 (2010-04-30)
+-------------------------------------
+* basic network socket server using apache mina and spring framework
+* requires maven version 2.0.x  
+* initial alpha version
