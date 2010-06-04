@@ -24,7 +24,7 @@ import java.util.logging.StreamHandler;
 /** 
  * Class desciption here.
  *
- * @author Sehwan Noh (sehwan@java2go.net)
+ * @author Sehwan Noh (sehnoh@gmail.com)
  */
 public class ServerStarter {
 

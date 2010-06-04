@@ -27,7 +27,7 @@ import org.apache.vysper.xmpp.stanza.Stanza;
 /** 
  * Class desciption here.
  *
- * @author Sehwan Noh (sehwan@java2go.net)
+ * @author Sehwan Noh (sehnoh@gmail.com)
  */
 public class XpnIoHandler implements IoHandler {
 
