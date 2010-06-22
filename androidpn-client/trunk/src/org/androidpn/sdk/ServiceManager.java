@@ -58,10 +58,8 @@ public final class ServiceManager {
                 Context.MODE_PRIVATE);
 
         this.sdkProperties = loadSdkProperties();
-        this.xmppHost = sdkProperties.getProperty(KeyConstants.XMPP_HOST,
-                "localhost");
-        this.xmppPort = sdkProperties.getProperty(KeyConstants.XMPP_PORT,
-                "5222");
+        this.xmppHost = sdkProperties.getProperty("xmppHost", "localhost");
+        this.xmppPort = sdkProperties.getProperty("xmppPort", "5222");
         Log.i(LOGTAG, "xmppHost=" + xmppHost);
         Log.i(LOGTAG, "xmppPort=" + xmppPort);
 
@@ -71,9 +69,9 @@ public final class ServiceManager {
         Editor editor = sdkPreferences.edit();
         editor.putString(KeyConstants.ANDROIDPN_APP_KEY, appKey);
         editor.putString(KeyConstants.XMPP_HOST, xmppHost);
-        editor.putString(KeyConstants.XMPP_PORT, xmppPort);
+        editor.putInt(KeyConstants.XMPP_PORT, Integer.parseInt(xmppPort));
         editor.commit();
-        Log.i(LOGTAG, "sdkPreferences=" + sdkPreferences.toString());
+        // Log.i(LOGTAG, "sdkPreferences=" + sdkPreferences.toString());
     }
 
     public void startService() {
