@@ -24,7 +24,7 @@ import android.util.Log;
  */
 public class XLog {
 
-    private static String TAG = "AndroidpnSDK";
+    private static String TAG = "Androidpn SDK";
 
     public static void verbose(String msg) {
         Log.v(TAG, msg);

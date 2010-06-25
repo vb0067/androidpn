@@ -67,7 +67,7 @@ public class MainService extends Service {
         Log.d(getClass().getSimpleName(), "deviceId=" + deviceId);
 
         Editor editor = sdkPreferences.edit();
-        editor.putString(KeyConstants.DEVICE_ID, deviceId);
+        editor.putString(Constants.DEVICE_ID, deviceId);
         editor.commit();
 
         if (deviceId == null || deviceId.trim().length() == 0
@@ -78,7 +78,7 @@ public class MainService extends Service {
                 deviceId = (new StringBuilder("EMU")).append(
                         (new Random(System.currentTimeMillis())).nextLong())
                         .toString();
-                editor.putString(KeyConstants.EMULATOR_DEVICE_ID, deviceId);
+                editor.putString(Constants.EMULATOR_DEVICE_ID, deviceId);
                 editor.commit();
             }
         }

@@ -67,12 +67,12 @@ public class XmppManager {
                 ServiceManager.SDK_PREFERENCES, Context.MODE_PRIVATE);
         this.editor = sdkPreferences.edit();
 
-        this.xmppHost = sdkPreferences.getString(KeyConstants.XMPP_HOST,
+        this.xmppHost = sdkPreferences.getString(Constants.XMPP_HOST,
                 "localhost");
-        this.xmppPort = sdkPreferences.getInt(KeyConstants.XMPP_PORT, 5222);
-        this.username = sdkPreferences.getString(KeyConstants.XMPP_USERNAME,
+        this.xmppPort = sdkPreferences.getInt(Constants.XMPP_PORT, 5222);
+        this.username = sdkPreferences.getString(Constants.XMPP_USERNAME,
                 username);
-        this.password = sdkPreferences.getString(KeyConstants.XMPP_PASSWORD,
+        this.password = sdkPreferences.getString(Constants.XMPP_PASSWORD,
                 password);
     }
 
@@ -86,13 +86,13 @@ public class XmppManager {
     }
 
     private boolean isRegistered() {
-        return sdkPreferences.contains(KeyConstants.XMPP_USERNAME)
-                && sdkPreferences.contains(KeyConstants.XMPP_PASSWORD);
+        return sdkPreferences.contains(Constants.XMPP_USERNAME)
+                && sdkPreferences.contains(Constants.XMPP_PASSWORD);
     }
 
     private void removeRegistration() {
-        editor.remove(KeyConstants.XMPP_USERNAME);
-        editor.remove(KeyConstants.XMPP_PASSWORD);
+        editor.remove(Constants.XMPP_USERNAME);
+        editor.remove(Constants.XMPP_PASSWORD);
         editor.commit();
     }
 
@@ -220,9 +220,9 @@ public class XmppManager {
                             Log.d(LOGTAG, "username=" + username);
                             Log.d(LOGTAG, "password=" + password);
 
-                            editor.putString(KeyConstants.XMPP_USERNAME,
+                            editor.putString(Constants.XMPP_USERNAME,
                                     username);
-                            editor.putString(KeyConstants.XMPP_PASSWORD,
+                            editor.putString(Constants.XMPP_PASSWORD,
                                     password);
                             editor.commit();
 

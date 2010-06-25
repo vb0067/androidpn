@@ -20,9 +20,11 @@ package org.androidpn.sdk;
  * 
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
-public class KeyConstants {
+public class Constants {
 
     public static String SDK_PREFERENCES = "SdkPreferences";
+    
+    // KEYS
 
     public static String ANDROIDPN_APP_KEY = "ANDROIDPN_APP_KEY";
 
@@ -43,5 +45,8 @@ public class KeyConstants {
     public static String NOTIFICATION_ICON = "NOTIFICATION_ICON";
 
     public static String NOTIFICATION_SOUND = "NOTIFICATION_SOUND";
+    
+    // INTENTS
+    
 
 }

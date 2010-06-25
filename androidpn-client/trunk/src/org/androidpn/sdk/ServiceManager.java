@@ -67,9 +67,9 @@ public final class ServiceManager {
         Log.i(LOGTAG, "appKey=" + appKey);
 
         Editor editor = sdkPreferences.edit();
-        editor.putString(KeyConstants.ANDROIDPN_APP_KEY, appKey);
-        editor.putString(KeyConstants.XMPP_HOST, xmppHost);
-        editor.putInt(KeyConstants.XMPP_PORT, Integer.parseInt(xmppPort));
+        editor.putString(Constants.ANDROIDPN_APP_KEY, appKey);
+        editor.putString(Constants.XMPP_HOST, xmppHost);
+        editor.putInt(Constants.XMPP_PORT, Integer.parseInt(xmppPort));
         editor.commit();
         // Log.i(LOGTAG, "sdkPreferences=" + sdkPreferences.toString());
     }
@@ -105,7 +105,7 @@ public final class ServiceManager {
                             "Could not read the api key. No meta data found in the manifest file.");
                 }
                 appKey = applicationInfo.metaData
-                        .getString(KeyConstants.ANDROIDPN_APP_KEY);
+                        .getString(Constants.ANDROIDPN_APP_KEY);
 
             } catch (android.content.pm.PackageManager.NameNotFoundException ex) {
                 throw new RuntimeException(
@@ -147,13 +147,13 @@ public final class ServiceManager {
 
     public void setNotificationIcon(int iconId) {
         Editor editor = sdkPreferences.edit();
-        editor.putInt(KeyConstants.NOTIFICATION_ICON, iconId);
+        editor.putInt(Constants.NOTIFICATION_ICON, iconId);
         editor.commit();
     }
 
     public void setNotificationSound(String soundUri) {
         Editor editor = sdkPreferences.edit();
-        editor.putString(KeyConstants.NOTIFICATION_SOUND, soundUri);
+        editor.putString(Constants.NOTIFICATION_SOUND, soundUri);
         editor.commit();
     }
 
