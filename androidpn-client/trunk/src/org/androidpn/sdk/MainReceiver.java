@@ -18,7 +18,6 @@ package org.androidpn.sdk;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 /** 
  * Class desciption here.
@@ -30,9 +29,36 @@ public final class MainReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
+        XLog.info("MainReceiver.onReceive()...");
+
         String action = intent.getAction();
-        Log.e(getClass().getSimpleName(), "action=" + action);
-        System.out.println("action=" + action);
+        XLog.info("action=" + action);
+
+        //        Log.e(getClass().getSimpleName(), "action=" + action);
+        //        System.out.println("action=" + action);
+
+        if (action != null) {
+            if (action.equals("org.androidpn.sdk.SHOW_NOTIFICATION")) {
+                String id = intent.getStringExtra("NOTIFICATION_ID");
+                String appKey = intent.getStringExtra("NOTIFICATION_APP_KEY");
+                String from = intent.getStringExtra("NOTIFICATION_FROM");
+                String message = intent.getStringExtra("NOTIFICATION_MESSAGE");
+                String ticker = intent.getStringExtra("NOTIFICATION_TICKER");
+                String url = intent.getStringExtra("NOTIFICATION_URL");
+
+                XLog.debug("id=" + id);
+                XLog.debug("appKey=" + appKey);
+                XLog.debug("title=" + from);
+                XLog.debug("details=" + message);
+                XLog.debug("ticker=" + ticker);
+                XLog.debug("url=" + url);
+
+                Notifier notifier = new Notifier(context);
+                notifier.notify(id, appKey, from, message, ticker, url);
+                
+                XLog.info("notifier.notify()...done!");
+            }
+        }
 
     }
 

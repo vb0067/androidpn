@@ -22,8 +22,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.net.ConnectivityManager;
-import android.net.wifi.WifiManager;
 import android.os.IBinder;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -37,16 +35,16 @@ public class MainService extends Service {
 
     public static final String SERVICE_NAME = "org.androidpn.sdk.MainService";
 
-    private static final String LOGTAG = "MainService";
+    // private static final String LOGTAG = "MainService";
 
     private SharedPreferences sdkPreferences;
 
     private TelephonyManager telephonyManager;
 
-    private WifiManager wifiManager;
+    //    private WifiManager wifiManager;
+    //
+    //    private ConnectivityManager connectivityManager;
 
-    private ConnectivityManager connectivityManager;
-    
     private XmppManager xmppManager;
 
     private String deviceId;
@@ -62,8 +60,8 @@ public class MainService extends Service {
                 Context.MODE_PRIVATE);
 
         telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-        connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        //        wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        //        connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
         deviceId = telephonyManager.getDeviceId();
         Log.d(getClass().getSimpleName(), "deviceId=" + deviceId);
@@ -85,15 +83,16 @@ public class MainService extends Service {
             }
         }
 
+        // TODO
         xmppManager = new XmppManager(this);
         xmppManager.connect();
         xmppManager.register();
-
     }
 
     @Override
     public void onStart(Intent intent, int startId) {
         Log.d(getClass().getSimpleName(), "onStart()...");
+        // TODO
         xmppManager.login();
     }
 

@@ -76,8 +76,8 @@ public final class ServiceManager {
 
     public void startService() {
         // Intent intent = new Intent(MainService.SERVICE_NAME);
-        // Intent intent = MainService.getIntent();
-        // context.startService(intent);
+        //        Intent intent = MainService.getIntent();
+        //        context.startService(intent);
 
         Thread serviceThread = new Thread(new Runnable() {
             @Override
@@ -143,6 +143,18 @@ public final class ServiceManager {
                 }
         }
         return props;
+    }
+
+    public void setNotificationIcon(int iconId) {
+        Editor editor = sdkPreferences.edit();
+        editor.putInt(KeyConstants.NOTIFICATION_ICON, iconId);
+        editor.commit();
+    }
+
+    public void setNotificationSound(String soundUri) {
+        Editor editor = sdkPreferences.edit();
+        editor.putString(KeyConstants.NOTIFICATION_SOUND, soundUri);
+        editor.commit();
     }
 
 }

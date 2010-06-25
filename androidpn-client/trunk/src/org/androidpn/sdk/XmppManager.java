@@ -15,13 +15,19 @@
  */
 package org.androidpn.sdk;
 
+import java.util.UUID;
+
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.filter.AndFilter;
+import org.jivesoftware.smack.filter.PacketFilter;
+import org.jivesoftware.smack.filter.PacketIDFilter;
 import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Registration;
+import org.jivesoftware.smack.provider.ProviderManager;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -37,7 +43,7 @@ public class XmppManager {
 
     private static final String LOGTAG = "XmppManager";
 
-    // private Context context;
+    private Context context;
 
     private SharedPreferences sdkPreferences;
 
@@ -56,7 +62,7 @@ public class XmppManager {
     // private boolean running;
 
     public XmppManager(Context context) {
-        // this.context = context;
+        this.context = context;
         this.sdkPreferences = context.getSharedPreferences(
                 ServiceManager.SDK_PREFERENCES, Context.MODE_PRIVATE);
         this.editor = sdkPreferences.edit();
@@ -111,10 +117,16 @@ public class XmppManager {
                 // Connect to the server
                 connection.connect();
 
-                // ProviderManager.getInstance()
-                // .addIQProvider("registration",
-                // "xtify:iq:registration",
-                // new RegistrationProvider());
+                ProviderManager.getInstance()
+                        .addIQProvider("registration",
+                                "androidpn:iq:registration",
+                                new RegistrationProvider());
+                ProviderManager.getInstance()
+                        .addIQProvider("notification",
+                                "androidpn:iq:notification",
+                                new RegistrationProvider());
+                
+                connection.addPacketListener(new NotificationListener(this), null);
 
             } catch (XMPPException xe) {
                 Log.e(LOGTAG, "connect()..... failed.", xe);
@@ -135,6 +147,12 @@ public class XmppManager {
         if (isRegistered()) {
             if (!isAuthenticated()) {
                 try {
+
+                    //                    PacketFilter packetFilter = new AndFilter(new PacketIDFilter(
+                    //                            registration.getPacketID()));
+                    //
+                    //                    PacketListener packetListener = new PacketListener() {
+
                     Log.d(LOGTAG, "username=" + username);
                     Log.d(LOGTAG, "password=" + password);
 
@@ -170,14 +188,15 @@ public class XmppManager {
         if (!isRegistered()) {
 
             // final XmppManager xmppManager = XmppManager.this;
-            final String rUsername = UUIDGenerator.newRandomUUID();
-            final String rPassword = UUIDGenerator.newRandomUUID();
+            final String rUsername = newRandomUUID();
+            final String rPassword = newRandomUUID();
 
             Registration registration = new Registration();
             //            PacketFilter packetFilter = new AndFilter(new PacketIDFilter(
             //                    registration.getPacketID()), new PacketTypeFilter(
             //                    Message.class));
-            //            ;
+            PacketFilter packetFilter = new AndFilter(new PacketIDFilter(
+                    registration.getPacketID()));
 
             PacketListener packetListener = new PacketListener() {
 
@@ -214,8 +233,8 @@ public class XmppManager {
                 }
             };
 
-            //connection.addPacketListener(packetListener, packetFilter);
-            connection.addPacketListener(packetListener, null);
+            connection.addPacketListener(packetListener, packetFilter);
+
             registration.setType(IQ.Type.SET);
             //registration.setTo(xmppHost);
             //            Map<String, String> attributes = new HashMap<String, String>();
@@ -251,5 +270,14 @@ public class XmppManager {
     //    public static SharedPreferences getSdkPreferences(XmppManager xmppManager) {
     //        return xmppManager.sdkPreferences;
     //    }
+
+    public static Context getContext(XmppManager xmppManager) {
+        return xmppManager.context;
+    }
+
+    private String newRandomUUID() {
+        String uuidRaw = UUID.randomUUID().toString();
+        return uuidRaw.replaceAll("-", "");
+    }
 
 }

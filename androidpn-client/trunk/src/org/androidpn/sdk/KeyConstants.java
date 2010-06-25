@@ -22,22 +22,26 @@ package org.androidpn.sdk;
  */
 public class KeyConstants {
 
-	public static String SDK_PREFERENCES = "SdkPreferences";
+    public static String SDK_PREFERENCES = "SdkPreferences";
 
-	public static String ANDROIDPN_APP_KEY = "ANDROIDPN_APP_KEY";
+    public static String ANDROIDPN_APP_KEY = "ANDROIDPN_APP_KEY";
 
-	public static String XMPP_HOST = "XMPP_HOST";
+    public static String XMPP_HOST = "XMPP_HOST";
 
-	public static String XMPP_PORT = "XMPP_PORT";
+    public static String XMPP_PORT = "XMPP_PORT";
 
-	public static String XMPP_USERNAME = "XMPP_USERNAME";
+    public static String XMPP_USERNAME = "XMPP_USERNAME";
 
-	public static String XMPP_PASSWORD = "XMPP_PASSWORD";
+    public static String XMPP_PASSWORD = "XMPP_PASSWORD";
 
-	public static String USER_KEY = "USER_KEY";
+    public static String USER_KEY = "USER_KEY";
 
-	public static String DEVICE_ID = "DEVICE_ID";
+    public static String DEVICE_ID = "DEVICE_ID";
 
-	public static String EMULATOR_DEVICE_ID = "EMULATOR_DEVICE_ID";
+    public static String EMULATOR_DEVICE_ID = "EMULATOR_DEVICE_ID";
+
+    public static String NOTIFICATION_ICON = "NOTIFICATION_ICON";
+
+    public static String NOTIFICATION_SOUND = "NOTIFICATION_SOUND";
 
 }
