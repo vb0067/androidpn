@@ -1,0 +1,7 @@
+ANDROIDPN-CLIENT CHANGELOG
+==========================
+http://androidpn.sourceforge.net/
+
+Changes in version 0.0.1 (2010-04-30)
+-------------------------------------
+* Initial alpha version
