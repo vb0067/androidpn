@@ -2,7 +2,7 @@ ANDROIDPN-SERVER CHANGELOG
 ==========================
 http://androidpn.sourceforge.net/
 
-Changes in version 0.1.0 (2010-06-30)
+Changes in version 0.1.0 (2010-05-30)
 -------------------------------------
 * Added smack/smackx libraries
 * Added apache vysper xmpp libraries
