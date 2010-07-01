@@ -18,6 +18,7 @@ package org.androidpn.sdk;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 /** 
  * Class desciption here.
@@ -25,14 +26,17 @@ import android.content.Intent;
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
 public final class MainReceiver extends BroadcastReceiver {
+    
+    private static final String LOGTAG = MainReceiver.class.getName();
+
 
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        XLog.info("MainReceiver.onReceive()...");
+        Log.d(LOGTAG, "MainReceiver.onReceive()...");
 
         String action = intent.getAction();
-        XLog.info("action=" + action);
+        Log.d(LOGTAG, "action=" + action);
 
         //        Log.e(getClass().getSimpleName(), "action=" + action);
         //        System.out.println("action=" + action);
@@ -45,16 +49,16 @@ public final class MainReceiver extends BroadcastReceiver {
             String ticker = intent.getStringExtra("NOTIFICATION_TICKER");
             String url = intent.getStringExtra("NOTIFICATION_URL");
 
-            XLog.debug("id=" + id);
-            XLog.debug("appKey=" + appKey);
-            XLog.debug("title=" + from);
-            XLog.debug("details=" + message);
-            XLog.debug("ticker=" + ticker);
-            XLog.debug("url=" + url);
+            Log.d(LOGTAG, "id=" + id);
+            Log.d(LOGTAG, "appKey=" + appKey);
+            Log.d(LOGTAG, "title=" + from);
+            Log.d(LOGTAG, "details=" + message);
+            Log.d(LOGTAG, "ticker=" + ticker);
+            Log.d(LOGTAG, "url=" + url);
 
             Notifier notifier = new Notifier(context);
             notifier.notify(id, appKey, from, message, ticker, url);
-            XLog.info("notifier.notify()...done!");
+            Log.d(LOGTAG, "notifier.notify()...done!");
             
         }
         else if ("org.androidpn.sdk.NOTIFICATION_CLICKED".equals(action)) {
