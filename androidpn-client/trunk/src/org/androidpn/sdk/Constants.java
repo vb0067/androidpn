@@ -22,31 +22,36 @@ package org.androidpn.sdk;
  */
 public class Constants {
 
-    public static String SDK_PREFERENCES = "SdkPreferences";
-    
+    public static final String SDK_PREFERENCES = "SdkPreferences";
+
     // KEYS
 
-    public static String ANDROIDPN_APP_KEY = "ANDROIDPN_APP_KEY";
+    //    public static final String ANDROIDPN_APP_KEY = "ANDROIDPN_APP_KEY";
+    //
+    //    public static final String ANDROIDPN_HOST = "ANDROIDPN_HOST";
+    //
+    //    public static final String ANDROIDPN_PORT = "ANDROIDPN_PORT";
 
-    public static String XMPP_HOST = "XMPP_HOST";
+    public static final String APP_KEY = "APP_KEY";
 
-    public static String XMPP_PORT = "XMPP_PORT";
+    public static final String XMPP_HOST = "XMPP_HOST";
 
-    public static String XMPP_USERNAME = "XMPP_USERNAME";
+    public static final String XMPP_PORT = "XMPP_PORT";
 
-    public static String XMPP_PASSWORD = "XMPP_PASSWORD";
+    public static final String XMPP_USERNAME = "XMPP_USERNAME";
 
-    public static String USER_KEY = "USER_KEY";
+    public static final String XMPP_PASSWORD = "XMPP_PASSWORD";
 
-    public static String DEVICE_ID = "DEVICE_ID";
+    public static final String USER_KEY = "USER_KEY";
 
-    public static String EMULATOR_DEVICE_ID = "EMULATOR_DEVICE_ID";
+    public static final String DEVICE_ID = "DEVICE_ID";
 
-    public static String NOTIFICATION_ICON = "NOTIFICATION_ICON";
+    public static final String EMULATOR_DEVICE_ID = "EMULATOR_DEVICE_ID";
 
-    public static String NOTIFICATION_SOUND = "NOTIFICATION_SOUND";
-    
+    public static final String NOTIFICATION_ICON = "NOTIFICATION_ICON";
+
+    public static final String NOTIFICATION_SOUND = "NOTIFICATION_SOUND";
+
     // INTENTS
-    
 
 }
