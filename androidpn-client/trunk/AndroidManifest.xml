@@ -27,6 +27,8 @@
 				<data android:scheme="package" />
 			</intent-filter>
 		</receiver>
+		<meta-data android:name="ANDROIDPN_HOST" android:value="192.168.123.101" />
+		<meta-data android:name="ANDROIDPN_PORT" android:value="5222" />
 		<meta-data android:name="ANDROIDPN_APP_KEY" android:value="3a77e56573c54a229d66f5e969a62294" />
 	</application>
 	<uses-sdk android:minSdkVersion="7" />
