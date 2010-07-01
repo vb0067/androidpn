@@ -113,7 +113,7 @@ public class XmppManager {
         taskList = new ArrayList<Runnable>();
         mHandler = new Handler();
 
-        mRunnable = new XmppTask(this);
+        mRunnable = new TaskRunner(this);
     }
 
     private String newRandomUUID() {
@@ -512,6 +512,26 @@ public class XmppManager {
             }
 
         }
+    }
+
+    private class TaskRunner implements Runnable {
+
+        private final XmppManager xmppManager;
+
+        public TaskRunner(XmppManager xmppManager) {
+            this.xmppManager = xmppManager;
+        }
+
+        @Override
+        public void run() {
+            synchronized (XmppManager.getTaskList(xmppManager)) {
+                if (XmppManager.getFutureTask(xmppManager) != null) {
+                    XmppManager.getFutureTask(xmppManager).cancel(true);
+                }
+                XmppManager.runTask(xmppManager);
+            }
+        }
+
     }
 
 }
