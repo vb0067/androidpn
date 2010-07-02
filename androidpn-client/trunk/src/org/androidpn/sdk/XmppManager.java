@@ -95,7 +95,7 @@ public class XmppManager {
         this.taskTracker = taskTracker;
 
         sdkPreferences = context.getSharedPreferences(
-                ServiceManager.SDK_PREFERENCES, Context.MODE_PRIVATE);
+                Constants.SDK_PREFERENCES, Context.MODE_PRIVATE);
         editor = sdkPreferences.edit();
 
         xmppHost = sdkPreferences.getString(Constants.XMPP_HOST, "localhost");
@@ -358,7 +358,7 @@ public class XmppManager {
 
                 // Create the configuration for this new connection
                 ConnectionConfiguration config = new ConnectionConfiguration(
-                        xmppHost, xmppPort, "AndroidpnClient");
+                        xmppHost, xmppPort, "AndroidpnXmppClient");
                 // config.setCompressionEnabled(true);
                 // config.setSASLAuthenticationEnabled(true);
 
