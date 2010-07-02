@@ -28,7 +28,7 @@ import android.util.Log;
  */
 public class NotificationPacketListener implements PacketListener {
     
-    private static final String LOGTAG = XmppManager.class.getName();
+    private static final String LOGTAG = NotificationPacketListener.class.getName();
 
     private final XmppManager xmppManager;
 
@@ -48,21 +48,21 @@ public class NotificationPacketListener implements PacketListener {
             if (notification.getChildElementXML().contains(
                     "androidpn.iq.notification")) {
 
-                String id = notification.getId();
-                String appKey = notification.getAppKey();
-                String from = notification.getFrom();
-                String message = notification.getMessage();
-                String ticker = notification.getTicker();
-                String url = notification.getUrl();
+                String notificationId = notification.getId();
+                String notificationAppKey = notification.getAppKey();
+                String notificationFrom = notification.getFrom();
+                String notificationMessage = notification.getMessage();
+                String notificationTicker = notification.getTicker();
+                String notificationUrl = notification.getUrl();
 
                 Intent intent = new Intent(
                         "org.androidpn.sdk.SHOW_NOTIFICATION");
-                intent.putExtra("NOTIFICATION_ID", id);
-                intent.putExtra("NOTIFICATION_APP_KEY", appKey);
-                intent.putExtra("NOTIFICATION_FROM", from);
-                intent.putExtra("NOTIFICATION_MESSAGE", message);
-                intent.putExtra("NOTIFICATION_TICKER", ticker);
-                intent.putExtra("NOTIFICATION_URL", url);
+                intent.putExtra("NOTIFICATION_ID", notificationId);
+                intent.putExtra("NOTIFICATION_APP_KEY", notificationAppKey);
+                intent.putExtra("NOTIFICATION_FROM", notificationFrom);
+                intent.putExtra("NOTIFICATION_MESSAGE", notificationMessage);
+                intent.putExtra("NOTIFICATION_TICKER", notificationTicker);
+                intent.putExtra("NOTIFICATION_URL", notificationUrl);
 
                 XmppManager.getContext(xmppManager).sendBroadcast(intent);
             }
