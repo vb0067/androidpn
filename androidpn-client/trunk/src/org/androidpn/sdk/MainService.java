@@ -54,8 +54,7 @@ public class MainService extends Service {
 
     private ConnectivityManager connectivityManager;
 
-    private final PhoneStateListener phoneStateListener = new SdkPhoneStateListener(
-            this);
+    private final PhoneStateListener phoneStateListener;
 
     private BroadcastReceiver phoneStateReceiver;
 
@@ -73,13 +72,14 @@ public class MainService extends Service {
         executorService = Executors.newSingleThreadExecutor();
         taskSubmitter = new TaskSubmitter(this);
         taskTracker = new TaskTracker(this);
+        phoneStateListener = new SdkPhoneStateListener(this);
     }
 
     @Override
     public void onCreate() {
         Log.d(LOGTAG, "onCreate()...");
 
-        sdkPreferences = getSharedPreferences(ServiceManager.SDK_PREFERENCES,
+        sdkPreferences = getSharedPreferences(Constants.SDK_PREFERENCES,
                 Context.MODE_PRIVATE);
 
         telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
