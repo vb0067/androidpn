@@ -23,6 +23,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.util.Log;
+import android.widget.Toast;
 
 /** 
  * Class desciption here.
@@ -30,10 +31,6 @@ import android.util.Log;
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
 public final class ServiceManager {
-
-    // public static String APP_PREFERENCES = "AppPreferences";
-
-    public static final String SDK_PREFERENCES = "SdkPreferences";
 
     public static final String ANDROIDPN_HOST = "ANDROIDPN_HOST";
 
@@ -57,8 +54,8 @@ public final class ServiceManager {
 
     public ServiceManager(Context context) {
         this.context = context;
-        this.sdkPreferences = context.getSharedPreferences(SDK_PREFERENCES,
-                Context.MODE_PRIVATE);
+        this.sdkPreferences = context.getSharedPreferences(
+                Constants.SDK_PREFERENCES, Context.MODE_PRIVATE);
 
         //        this.sdkProperties = loadSdkProperties();
         //        this.xmppHost = sdkProperties.getProperty("xmppHost", "localhost");
@@ -73,7 +70,7 @@ public final class ServiceManager {
         Log.i(LOGTAG, "appKey=" + appKey);
 
         //        if (appKey == null) {
-        //            Log.e(LOGTAG, "Please set the androidpn app key.");
+        //            Log.e(LOGTAG, "Please set the androidpn app key in the manifest file.");
         //            //throw new RuntimeException();
         //        }
 
