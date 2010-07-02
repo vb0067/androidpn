@@ -26,6 +26,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.util.Log;
 
 /** 
  * Class desciption here.
@@ -33,6 +34,8 @@ import android.net.Uri;
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
 public class Notifier {
+
+    private static final String LOGTAG = Notifier.class.getName();
 
     private static final Random random = new Random(System.currentTimeMillis());
 
@@ -48,6 +51,8 @@ public class Notifier {
 
     public void notify(String notificationId, String appKey, String from,
             String message, String ticker, String url) {
+
+        Log.d(LOGTAG, "notify()...");
 
         //        final Notification notification = new Notification();
         //        notification.number++;
@@ -74,9 +79,9 @@ public class Notifier {
                 "org.androidpn.sdk.NOTIFICATION_CLICKED");
         positiveIntent.putExtra("NOTIFICATION_ID", notificationId);
         positiveIntent.putExtra("NOTIFICATION_APP_KEY", appKey);
+        positiveIntent.putExtra("NOTIFICATION_FROM", from);
+        positiveIntent.putExtra("NOTIFICATION_MESSAGE", message);
         positiveIntent.putExtra("NOTIFICATION_TICKER", ticker);
-        positiveIntent.putExtra("NOTIFICATION_TITLE", from);
-        positiveIntent.putExtra("NOTIFICATION_DETAILS", message);
         positiveIntent.putExtra("NOTIFICATION_URL", url);
 
         PendingIntent positivePendingIntent = PendingIntent.getBroadcast(
@@ -100,16 +105,16 @@ public class Notifier {
     }
 
     public static int getNotificationIcon(Context context) {
-        SharedPreferences sharedpreferences = context.getSharedPreferences(
+        SharedPreferences sdkPreferences = context.getSharedPreferences(
                 "SdkPreferences", 0);
-        return sharedpreferences.getInt("NOTIFICATION_ICON",
+        return sdkPreferences.getInt("NOTIFICATION_ICON",
                 R.drawable.notification);
     }
 
     public static Uri getNotificationSound(Context context) {
-        SharedPreferences sharedpreferences = context.getSharedPreferences(
+        SharedPreferences sdkPreferences = context.getSharedPreferences(
                 "SdkPreferences", 0);
-        String sound = sharedpreferences.getString("NOTIFICATION_SOUND", null);
+        String sound = sdkPreferences.getString("NOTIFICATION_SOUND", null);
         return (sound != null) ? Uri.parse(sound) : null;
     }
 
