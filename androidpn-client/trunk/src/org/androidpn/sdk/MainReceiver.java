@@ -15,10 +15,12 @@
  */
 package org.androidpn.sdk;
 
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.widget.Toast;
 
 /** 
  * Class desciption here.
@@ -26,9 +28,8 @@ import android.util.Log;
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
 public final class MainReceiver extends BroadcastReceiver {
-    
-    private static final String LOGTAG = MainReceiver.class.getName();
 
+    private static final String LOGTAG = MainReceiver.class.getName();
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -38,34 +39,64 @@ public final class MainReceiver extends BroadcastReceiver {
         String action = intent.getAction();
         Log.d(LOGTAG, "action=" + action);
 
-        //        Log.e(getClass().getSimpleName(), "action=" + action);
-        //        System.out.println("action=" + action);
-
         if ("org.androidpn.sdk.SHOW_NOTIFICATION".equals(action)) {
-            String id = intent.getStringExtra("NOTIFICATION_ID");
-            String appKey = intent.getStringExtra("NOTIFICATION_APP_KEY");
-            String from = intent.getStringExtra("NOTIFICATION_FROM");
-            String message = intent.getStringExtra("NOTIFICATION_MESSAGE");
-            String ticker = intent.getStringExtra("NOTIFICATION_TICKER");
-            String url = intent.getStringExtra("NOTIFICATION_URL");
+            
+            String notificationId = intent.getStringExtra("NOTIFICATION_ID");
+            String notificationAppKey = intent.getStringExtra("NOTIFICATION_APP_KEY");
+            String notificationFrom = intent.getStringExtra("NOTIFICATION_FROM");
+            String notificationMessage = intent.getStringExtra("NOTIFICATION_MESSAGE");
+            String notificationTicker = intent.getStringExtra("NOTIFICATION_TICKER");
+            String notificationUrl = intent.getStringExtra("NOTIFICATION_URL");
 
-            Log.d(LOGTAG, "id=" + id);
-            Log.d(LOGTAG, "appKey=" + appKey);
-            Log.d(LOGTAG, "title=" + from);
-            Log.d(LOGTAG, "details=" + message);
-            Log.d(LOGTAG, "ticker=" + ticker);
-            Log.d(LOGTAG, "url=" + url);
+            Log.d(LOGTAG, "notificationId=" + notificationId);
+            Log.d(LOGTAG, "notificationAppKey=" + notificationAppKey);
+            Log.d(LOGTAG, "notificationFrom=" + notificationFrom);
+            Log.d(LOGTAG, "notificationMessage=" + notificationMessage);
+            Log.d(LOGTAG, "notificationTicker=" + notificationTicker);
+            Log.d(LOGTAG, "notificationUrl=" + notificationUrl);
 
             Notifier notifier = new Notifier(context);
-            notifier.notify(id, appKey, from, message, ticker, url);
+            notifier.notify(notificationId, notificationAppKey, notificationFrom, notificationMessage, notificationTicker, notificationUrl);
             Log.d(LOGTAG, "notifier.notify()...done!");
-            
-        }
-        else if ("org.androidpn.sdk.NOTIFICATION_CLICKED".equals(action)) {
 
-        }
-        else if ("org.androidpn.sdk.NOTIFICATION_CLEARED".equals(action)) {
+        } else if ("org.androidpn.sdk.NOTIFICATION_CLICKED".equals(action)) {
 
+            String notificationId = intent.getStringExtra("NOTIFICATION_ID");
+            String notificationAppKey = intent.getStringExtra("NOTIFICATION_APP_KEY");
+            String notificationFrom = intent.getStringExtra("NOTIFICATION_FROM");
+            String notificationMessage = intent.getStringExtra("NOTIFICATION_MESSAGE");
+            String notificationTicker = intent.getStringExtra("NOTIFICATION_TICKER");
+            String notificationUrl = intent.getStringExtra("NOTIFICATION_URL");
+
+            Log.d(LOGTAG, "notificationId=" + notificationId);
+            Log.d(LOGTAG, "notificationAppKey=" + notificationAppKey);
+            Log.d(LOGTAG, "notificationFrom=" + notificationFrom);
+            Log.d(LOGTAG, "notificationMessage=" + notificationMessage);
+            Log.d(LOGTAG, "notificationTicker=" + notificationTicker);
+            Log.d(LOGTAG, "notificationUrl=" + notificationUrl);
+
+            Intent intent1 = new Intent();
+            intent1.setClassName(context.getPackageName(),
+                    NotificationDetailsActivity.class.getName());
+            intent1.putExtra("NOTIFICATION_ID", notificationId);
+            intent1.putExtra("NOTIFICATION_APP_KEY", notificationAppKey);
+            intent1.putExtra("NOTIFICATION_FROM", notificationFrom);
+            intent1.putExtra("NOTIFICATION_MESSAGE", notificationMessage);
+            intent1.putExtra("NOTIFICATION_TICKER", notificationTicker);
+            intent1.putExtra("NOTIFICATION_URL", notificationUrl);
+            intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // 0x10000000
+
+            try {
+                context.startActivity(intent1);
+            } catch (ActivityNotFoundException e) {
+                Toast toast = Toast.makeText(context,
+                        "No app found to handle this request",
+                        Toast.LENGTH_LONG);
+                toast.show();
+            }
+
+        } else if ("org.androidpn.sdk.NOTIFICATION_CLEARED".equals(action)) {
+            //
         }
 
     }
