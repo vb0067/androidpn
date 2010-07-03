@@ -15,13 +15,15 @@
  */
 package org.androidpn.sdk;
 
+import org.androidpn.demoapp.DemoAppActivity;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Display;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -41,10 +43,9 @@ public class NotificationDetailsActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        SharedPreferences sdkPref = this.getSharedPreferences(
-                Constants.SDK_PREFERENCES, Context.MODE_PRIVATE);
-
-        Log.e(LOGTAG, "========================");
+        //        SharedPreferences sdkPref = this.getSharedPreferences(
+        //                Constants.SDK_PREFERENCES, Context.MODE_PRIVATE);
+        //        Log.e(LOGTAG, "========================");
 
         Intent intent = getIntent();
         String notificationId = intent.getStringExtra("NOTIFICATION_ID");
@@ -71,38 +72,83 @@ public class NotificationDetailsActivity extends Activity {
         //        } else {
         //            rootView = null;
         //        }
-        
-        View rootView = createView(this);
+
+        View rootView = createView(notificationFrom, notificationMessage);
         setContentView(rootView);
     }
 
-    private View createView(Context context) {
+    private View createView(String title, String message) {
 
-        LinearLayout linearLayout = new LinearLayout(context);
-        // linearLayout.setBackgroundResource(0);
+        final Context context = NotificationDetailsActivity.this;
+
+        LinearLayout linearLayout = new LinearLayout(this);
+        // linearLayout.setBackgroundResource(0x106000b);
+        linearLayout.setBackgroundColor(0xffeeeeee);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
-
-        TextView text1 = new TextView(context);
-        text1.setTextSize(12F);
-        //textView.setTextColor();
-        text1.setText("TITLE---");
-        linearLayout.addView(text1);
-
+        linearLayout.setPadding(5, 5, 5, 5);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.FILL_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+                LinearLayout.LayoutParams.FILL_PARENT);
+        linearLayout.setLayoutParams(layoutParams);
 
-        layoutParams.setMargins(30, 20, 30, 0);
+        TextView textTitle = new TextView(this);
+        textTitle.setText(title);
+        textTitle.setTextSize(16);
+        textTitle.setTextColor(0xff000000);
+        textTitle.setGravity(Gravity.CENTER);
+
+        layoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.FILL_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(30, 30, 30, 0);
+        textTitle.setLayoutParams(layoutParams);
+        linearLayout.addView(textTitle);
+
+        TextView textDetails = new TextView(this);
+        textDetails.setText(message);
+        textDetails.setTextSize(12);
+        textDetails.setTextColor(0xff333333);
+        textDetails.setGravity(Gravity.CENTER);
+
+        layoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.FILL_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(30, 10, 30, 20);
+        textDetails.setLayoutParams(layoutParams);
+        linearLayout.addView(textDetails);
 
         Button closeButton = new Button(this);
         closeButton.setText("Close");
         closeButton.setWidth(100);
-        linearLayout.addView(closeButton, layoutParams);
+        //closeButton.setLayoutParams(layoutParams);
+        //linearLayout.addView(closeButton);
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                NotificationDetailsActivity.this.finish();
+            }
+        });
 
         Button viewButton = new Button(this);
         viewButton.setText("View");
         viewButton.setWidth(100);
-        linearLayout.addView(viewButton, layoutParams);
+        //viewButton.setLayoutParams(layoutParams);
+        //linearLayout.addView(viewButton);
+        viewButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                NotificationDetailsActivity.this.finish();
+                Intent intent = new Intent();
+                intent.setClassName(DemoAppActivity.class.getPackage()
+                        .getName(), DemoAppActivity.class.getName());
+                context.startActivity(intent);
+            }
+        });
+
+        LinearLayout innerLayout = new LinearLayout(context);
+        innerLayout.setGravity(Gravity.CENTER);
+        innerLayout.addView(closeButton);
+        innerLayout.addView(viewButton);
+
+        linearLayout.addView(innerLayout);
 
         return linearLayout;
     }

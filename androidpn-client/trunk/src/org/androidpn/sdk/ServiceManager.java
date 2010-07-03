@@ -23,7 +23,6 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.util.Log;
-import android.widget.Toast;
 
 /** 
  * Class desciption here.

@@ -75,19 +75,19 @@ public final class MainReceiver extends BroadcastReceiver {
             Log.d(LOGTAG, "notificationTicker=" + notificationTicker);
             Log.d(LOGTAG, "notificationUrl=" + notificationUrl);
 
-            Intent intent1 = new Intent();
-            intent1.setClassName(context.getPackageName(),
+            Intent detailsIntent = new Intent();
+            detailsIntent.setClassName(context.getPackageName(),
                     NotificationDetailsActivity.class.getName());
-            intent1.putExtra("NOTIFICATION_ID", notificationId);
-            intent1.putExtra("NOTIFICATION_APP_KEY", notificationAppKey);
-            intent1.putExtra("NOTIFICATION_FROM", notificationFrom);
-            intent1.putExtra("NOTIFICATION_MESSAGE", notificationMessage);
-            intent1.putExtra("NOTIFICATION_TICKER", notificationTicker);
-            intent1.putExtra("NOTIFICATION_URL", notificationUrl);
-            intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // 0x10000000
+            detailsIntent.putExtra("NOTIFICATION_ID", notificationId);
+            detailsIntent.putExtra("NOTIFICATION_APP_KEY", notificationAppKey);
+            detailsIntent.putExtra("NOTIFICATION_FROM", notificationFrom);
+            detailsIntent.putExtra("NOTIFICATION_MESSAGE", notificationMessage);
+            detailsIntent.putExtra("NOTIFICATION_TICKER", notificationTicker);
+            detailsIntent.putExtra("NOTIFICATION_URL", notificationUrl);
+            detailsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // 0x10000000
 
             try {
-                context.startActivity(intent1);
+                context.startActivity(detailsIntent);
             } catch (ActivityNotFoundException e) {
                 Toast toast = Toast.makeText(context,
                         "No app found to handle this request",
