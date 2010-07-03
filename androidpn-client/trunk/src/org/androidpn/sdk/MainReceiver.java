@@ -40,12 +40,16 @@ public final class MainReceiver extends BroadcastReceiver {
         Log.d(LOGTAG, "action=" + action);
 
         if ("org.androidpn.sdk.SHOW_NOTIFICATION".equals(action)) {
-            
+
             String notificationId = intent.getStringExtra("NOTIFICATION_ID");
-            String notificationAppKey = intent.getStringExtra("NOTIFICATION_APP_KEY");
-            String notificationFrom = intent.getStringExtra("NOTIFICATION_FROM");
-            String notificationMessage = intent.getStringExtra("NOTIFICATION_MESSAGE");
-            String notificationTicker = intent.getStringExtra("NOTIFICATION_TICKER");
+            String notificationAppKey = intent
+                    .getStringExtra("NOTIFICATION_APP_KEY");
+            String notificationFrom = intent
+                    .getStringExtra("NOTIFICATION_FROM");
+            String notificationMessage = intent
+                    .getStringExtra("NOTIFICATION_MESSAGE");
+            String notificationTicker = intent
+                    .getStringExtra("NOTIFICATION_TICKER");
             String notificationUrl = intent.getStringExtra("NOTIFICATION_URL");
 
             Log.d(LOGTAG, "notificationId=" + notificationId);
@@ -56,24 +60,30 @@ public final class MainReceiver extends BroadcastReceiver {
             Log.d(LOGTAG, "notificationUrl=" + notificationUrl);
 
             Notifier notifier = new Notifier(context);
-            notifier.notify(notificationId, notificationAppKey, notificationFrom, notificationMessage, notificationTicker, notificationUrl);
+            notifier.notify(notificationId, notificationAppKey,
+                    notificationFrom, notificationMessage, notificationTicker,
+                    notificationUrl);
             Log.d(LOGTAG, "notifier.notify()...done!");
 
         } else if ("org.androidpn.sdk.NOTIFICATION_CLICKED".equals(action)) {
 
             String notificationId = intent.getStringExtra("NOTIFICATION_ID");
-            String notificationAppKey = intent.getStringExtra("NOTIFICATION_APP_KEY");
-            String notificationFrom = intent.getStringExtra("NOTIFICATION_FROM");
-            String notificationMessage = intent.getStringExtra("NOTIFICATION_MESSAGE");
-            String notificationTicker = intent.getStringExtra("NOTIFICATION_TICKER");
+            String notificationAppKey = intent
+                    .getStringExtra("NOTIFICATION_APP_KEY");
+            String notificationFrom = intent
+                    .getStringExtra("NOTIFICATION_FROM");
+            String notificationMessage = intent
+                    .getStringExtra("NOTIFICATION_MESSAGE");
+            String notificationTicker = intent
+                    .getStringExtra("NOTIFICATION_TICKER");
             String notificationUrl = intent.getStringExtra("NOTIFICATION_URL");
 
-            Log.d(LOGTAG, "notificationId=" + notificationId);
-            Log.d(LOGTAG, "notificationAppKey=" + notificationAppKey);
-            Log.d(LOGTAG, "notificationFrom=" + notificationFrom);
-            Log.d(LOGTAG, "notificationMessage=" + notificationMessage);
-            Log.d(LOGTAG, "notificationTicker=" + notificationTicker);
-            Log.d(LOGTAG, "notificationUrl=" + notificationUrl);
+            //            Log.d(LOGTAG, "notificationId=" + notificationId);
+            //            Log.d(LOGTAG, "notificationAppKey=" + notificationAppKey);
+            //            Log.d(LOGTAG, "notificationFrom=" + notificationFrom);
+            //            Log.d(LOGTAG, "notificationMessage=" + notificationMessage);
+            //            Log.d(LOGTAG, "notificationTicker=" + notificationTicker);
+            //            Log.d(LOGTAG, "notificationUrl=" + notificationUrl);
 
             Intent detailsIntent = new Intent();
             detailsIntent.setClassName(context.getPackageName(),
