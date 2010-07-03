@@ -48,6 +48,10 @@ public class Constants {
 
     public static final String NOTIFICATION_SOUND = "NOTIFICATION_SOUND";
 
+    public static final String CALLBACK_ACTIVITY_PACKAGE_NAME = "CALLBACK_ACTIVITY_PACKAGE_NAME";
+
+    public static final String CALLBACK_ACTIVITY_CLASS_NAME = "CALLBACK_ACTIVITY_CLASS_NAME";
+
     // INTENTS
 
 }

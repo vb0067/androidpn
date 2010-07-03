@@ -15,6 +15,7 @@
  */
 package org.androidpn.sdk;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -51,10 +52,31 @@ public final class ServiceManager {
 
     private String xmppPort;
 
+    private String callbackActivityPackageName;
+
+    private String callbackActivityClassName;
+
+    //    public ServiceManager(Context context, Activity callbackActivity) {
+    //        this(context);
+    //        this.callbackActivityPackageName = callbackActivity.getPackageName();
+    //        this.callbackActivityClassName = callbackActivity.getClass().getName();
+    //    }
+    //
     public ServiceManager(Context context) {
         this.context = context;
         this.sdkPreferences = context.getSharedPreferences(
                 Constants.SDK_PREFERENCES, Context.MODE_PRIVATE);
+
+        if (context instanceof Activity) {
+            Log.i(LOGTAG, "Callback Activity...");
+            Activity callbackActivity = (Activity) context;
+            callbackActivityPackageName = callbackActivity.getPackageName();
+            callbackActivityClassName = callbackActivity.getClass().getName();
+        }
+
+        Log.i(LOGTAG, "callbackActivityPackageName="
+                + callbackActivityPackageName);
+        Log.i(LOGTAG, "callbackActivityClassName=" + callbackActivityClassName);
 
         //        this.sdkProperties = loadSdkProperties();
         //        this.xmppHost = sdkProperties.getProperty("xmppHost", "localhost");
@@ -74,6 +96,10 @@ public final class ServiceManager {
         //        }
 
         Editor editor = sdkPreferences.edit();
+        editor.putString(Constants.CALLBACK_ACTIVITY_PACKAGE_NAME,
+                callbackActivityPackageName);
+        editor.putString(Constants.CALLBACK_ACTIVITY_CLASS_NAME,
+                callbackActivityClassName);
         editor.putString(Constants.APP_KEY, appKey);
         editor.putString(Constants.XMPP_HOST, xmppHost);
         editor.putInt(Constants.XMPP_PORT, Integer.parseInt(xmppPort));

@@ -4,6 +4,8 @@ import org.androidpn.sdk.ServiceManager;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -20,8 +22,7 @@ public class DemoAppActivity extends Activity {
         //        //service.putExtra("update-rate", 5000);
         //        startService(service);
 
-        final Context context = this;
-
+        //        final Context context = this;
         //        Thread serviceThread = new Thread(new Runnable() {
         //            @Override
         //            public void run() {
@@ -31,11 +32,25 @@ public class DemoAppActivity extends Activity {
         //        });
         //        serviceThread.start();
 
-        serviceManager = new ServiceManager(context);
-        serviceManager.setNotificationIcon(R.drawable.notification);
+        serviceManager = new ServiceManager(this);
+        // serviceManager.setNotificationIcon(R.drawable.notification);
         serviceManager.startService();
 
-        Log.d(getClass().getSimpleName(), "onCreate()...");
+        Log.d("DemoAppActivity", "onCreate()...");
+
+        //        try {
+        //            PackageManager packageManager = context.getPackageManager();
+        //            ApplicationInfo applicationInfo = packageManager
+        //                    .getApplicationInfo(context.getPackageName(), 128);
+        //
+        //            Log.e("", applicationInfo.className);
+        //            Log.e("", applicationInfo.manageSpaceActivityName);
+        //
+        //        } catch (Exception e) {
+        //            e.printStackTrace();
+        //            Log.e("", e.getMessage(), e);
+        //        }
+
     }
 
 }

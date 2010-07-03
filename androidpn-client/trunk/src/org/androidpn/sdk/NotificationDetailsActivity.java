@@ -15,8 +15,6 @@
  */
 package org.androidpn.sdk;
 
-import org.androidpn.demoapp.DemoAppActivity;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -39,13 +37,20 @@ public class NotificationDetailsActivity extends Activity {
     private static final String LOGTAG = NotificationDetailsActivity.class
             .getName();
 
+    private String callbackActivityPackageName;
+
+    private String callbackActivityClassName;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //        SharedPreferences sdkPref = this.getSharedPreferences(
-        //                Constants.SDK_PREFERENCES, Context.MODE_PRIVATE);
-        //        Log.e(LOGTAG, "========================");
+        SharedPreferences sdkPreferences = this.getSharedPreferences(
+                Constants.SDK_PREFERENCES, Context.MODE_PRIVATE);
+        callbackActivityPackageName = sdkPreferences.getString(
+                Constants.CALLBACK_ACTIVITY_PACKAGE_NAME, "");
+        callbackActivityClassName = sdkPreferences.getString(
+                Constants.CALLBACK_ACTIVITY_CLASS_NAME, "");
 
         Intent intent = getIntent();
         String notificationId = intent.getStringExtra("NOTIFICATION_ID");
@@ -137,8 +142,10 @@ public class NotificationDetailsActivity extends Activity {
             public void onClick(View view) {
                 NotificationDetailsActivity.this.finish();
                 Intent intent = new Intent();
-                intent.setClassName(DemoAppActivity.class.getPackage()
-                        .getName(), DemoAppActivity.class.getName());
+                //                intent.setClassName(DemoAppActivity.class.getPackage()
+                //                        .getName(), DemoAppActivity.class.getName());
+                intent.setClassName(callbackActivityPackageName,
+                        callbackActivityClassName);
                 context.startActivity(intent);
             }
         });
