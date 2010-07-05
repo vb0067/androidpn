@@ -2,7 +2,7 @@ ANDROIDPN-CLIENT CHANGELOG
 ==========================
 http://androidpn.sourceforge.net/
 
-Changes in version 0.1.2 (2010-07-??)
+Changes in version 0.1.2 (2010-07-02)
 -------------------------------------
 * Added NotificationDetailsActivity
 * Updated MainReceiver
