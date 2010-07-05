@@ -56,12 +56,6 @@ public final class ServiceManager {
 
     private String callbackActivityClassName;
 
-    //    public ServiceManager(Context context, Activity callbackActivity) {
-    //        this(context);
-    //        this.callbackActivityPackageName = callbackActivity.getPackageName();
-    //        this.callbackActivityClassName = callbackActivity.getClass().getName();
-    //    }
-    //
     public ServiceManager(Context context) {
         this.context = context;
         this.sdkPreferences = context.getSharedPreferences(
