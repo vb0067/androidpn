@@ -53,4 +53,19 @@
 
 	<target name="build" depends="clean, assembly" />
 
+	<target name="start" description="">
+		<unzip dest="target">
+			<fileset dir=".">
+				<include name="target/${project.name}-${project.version}-bin.zip" />
+			</fileset>
+		</unzip>
+		<java fork="true" jar="target/${project.name}-${project.version}/lib/starter.jar">
+			<classpath>
+				<pathelement path="target/${project.name}-${project.version}/conf" />
+			</classpath>
+			<jvmarg value="-Dbase.dir=target/${project.name}-${project.version}" />
+			<jvmarg value="-server" />
+		</java>
+	</target>
+
 </project>
