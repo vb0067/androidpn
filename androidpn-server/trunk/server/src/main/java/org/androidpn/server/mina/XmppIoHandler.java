@@ -20,8 +20,11 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.mina.core.service.IoHandler;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
+import org.apache.vysper.mina.MinaBackedSessionContext;
 import org.apache.vysper.xml.fragment.XMLText;
+import org.apache.vysper.xmpp.protocol.SessionStateHolder;
 import org.apache.vysper.xmpp.server.ServerRuntimeContext;
+import org.apache.vysper.xmpp.server.SessionContext;
 import org.apache.vysper.xmpp.stanza.Stanza;
 
 /** 
@@ -29,16 +32,28 @@ import org.apache.vysper.xmpp.stanza.Stanza;
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
-public class XpnIoHandler implements IoHandler {
+public class XmppIoHandler implements IoHandler {
+
+    public static final String ATTRIBUTE_ANDROIDPN_SESSION = "androidpnSession";
+
+    public static final String ATTRIBUTE_ANDROIDPN_SESSIONSTATEHOLDER = "androidpnSessionStateHolder";
 
     private Log log = LogFactory.getLog(getClass());
 
+    private ServerRuntimeContext serverRuntimeContext;
+
     public void setServerRuntimeContext(
             ServerRuntimeContext serverRuntimeContext) {
+        this.serverRuntimeContext = serverRuntimeContext;
     }
 
     public void sessionCreated(IoSession session) throws Exception {
         log.debug("sessionCreated()...");
+        SessionStateHolder stateHolder = new SessionStateHolder();
+        SessionContext sessionContext = new MinaBackedSessionContext(
+                serverRuntimeContext, stateHolder, session);
+        session.setAttribute(ATTRIBUTE_ANDROIDPN_SESSION, sessionContext);
+        session.setAttribute(ATTRIBUTE_ANDROIDPN_SESSIONSTATEHOLDER, stateHolder);
     }
 
     public void sessionOpened(IoSession session) throws Exception {
@@ -82,9 +97,23 @@ public class XpnIoHandler implements IoHandler {
 
         log.debug(">>>>>>>>>>>>>> " + stanza.toString());
         log.debug("PROCESSING STANZA...");
+
+        SessionContext sessionContext = extractSessionContext(session);
+        SessionStateHolder stateHolder = (SessionStateHolder) session
+                .getAttribute(ATTRIBUTE_ANDROIDPN_SESSIONSTATEHOLDER);
+
+        serverRuntimeContext.getStanzaProcessor().processStanza(
+                serverRuntimeContext, sessionContext, stanza, stateHolder);
+
     }
 
     public void messageSent(IoSession session, Object message) throws Exception {
         log.debug("messageSent()...");
     }
+
+    private SessionContext extractSessionContext(IoSession ioSession) {
+        return (SessionContext) ioSession
+                .getAttribute(ATTRIBUTE_ANDROIDPN_SESSION);
+    }
+
 }

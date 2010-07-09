@@ -67,7 +67,7 @@
 		</property>
 	</bean>
 
-	<bean id="xmppHandler" class="org.androidpn.server.mina.XpnIoHandler" />
+	<bean id="xmppHandler" class="org.androidpn.server.mina.XmppIoHandler" />
 
 	<bean id="filterChainBuilder"
 		class="org.apache.mina.core.filterchain.DefaultIoFilterChainBuilder">

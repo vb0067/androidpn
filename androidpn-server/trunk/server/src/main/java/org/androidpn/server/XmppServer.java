@@ -25,11 +25,11 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
-public class XpnServer {
+public class XmppServer {
 
-    private static Log log = LogFactory.getLog(XpnServer.class);
+    private static Log log = LogFactory.getLog(XmppServer.class);
 
-    private static XpnServer instance;
+    private static XmppServer instance;
 
     private ApplicationContext context;
 
@@ -37,11 +37,11 @@ public class XpnServer {
         return context.getBean(beanName);
     }
 
-    public static XpnServer getInstance() {
+    public static XmppServer getInstance() {
         return instance;
     }
 
-    public XpnServer() {
+    public XmppServer() {
         if (instance != null) {
             throw new IllegalStateException("A server is already running");
         }
@@ -52,7 +52,7 @@ public class XpnServer {
     public void start() {
         try {
             context = new ClassPathXmlApplicationContext("spring-config.xml");
-            log.info("XpnServer started.");
+            log.info("XmppServer started.");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -62,7 +62,7 @@ public class XpnServer {
 
     //    public static void main(String[] args) {
     //        context = new ClassPathXmlApplicationContext("applicationContext.xml");
-    //        log.info("XpnServer started.");
+    //        log.info("XmppServer started.");
     //    }
 
 }
