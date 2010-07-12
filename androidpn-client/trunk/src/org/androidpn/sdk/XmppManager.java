@@ -411,12 +411,12 @@ public class XmppManager {
                 final String newPassword = newRandomUUID();
 
                 Registration registration = new Registration();
-                // TODO
-                //            PacketFilter packetFilter = new AndFilter(new PacketIDFilter(
-                //                    registration.getPacketID()), new PacketTypeFilter(
-                //                    Message.class));
+
                 PacketFilter packetFilter = new AndFilter(new PacketIDFilter(
-                        registration.getPacketID()));
+                        registration.getPacketID()), new PacketTypeFilter(
+                        IQ.class));
+                //                PacketFilter packetFilter = new AndFilter(new PacketIDFilter(
+                //                        registration.getPacketID()));
 
                 PacketListener packetListener = new PacketListener() {
 
