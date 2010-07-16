@@ -15,6 +15,7 @@
  */
 package org.androidpn.server;
 
+import org.androidpn.server.util.Config;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
@@ -33,9 +34,7 @@ public class XmppServer {
 
     private ApplicationContext context;
 
-    public Object getBean(String beanName) {
-        return context.getBean(beanName);
-    }
+    private String serverName;
 
     public static XmppServer getInstance() {
         return instance;
@@ -51,13 +50,23 @@ public class XmppServer {
 
     public void start() {
         try {
+            serverName = Config.getString("xmpp.domain", "127.0.0.1")
+                    .toLowerCase();
             context = new ClassPathXmlApplicationContext("spring-config.xml");
-            log.info("XmppServer started.");
+            log.info("XmppServer started: " + serverName);
 
         } catch (Exception e) {
             e.printStackTrace();
             // shutdownServer();
         }
+    }
+
+    public Object getBean(String beanName) {
+        return context.getBean(beanName);
+    }
+
+    public String getServerName() {
+        return serverName;
     }
 
     //    public static void main(String[] args) {
