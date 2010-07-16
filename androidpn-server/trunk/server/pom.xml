@@ -98,6 +98,16 @@
 			<version>2.9.1</version>
 		</dependency>
 		<dependency>
+			<groupId>dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+		<dependency>
+			<groupId>xpp3</groupId>
+			<artifactId>xpp3</artifactId>
+			<version>1.1.4c</version>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.mina</groupId>
 			<artifactId>mina-core</artifactId>
 			<version>2.0.0-RC1</version>
@@ -185,21 +195,14 @@
 			<artifactId>nekopull</artifactId>
 			<version>0.2.4</version>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.vysper</groupId>
-			<artifactId>vysper-core</artifactId>
-			<version>0.5</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>jackrabbit-core</artifactId>
-					<groupId>org.apache.jackrabbit</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>jcr</artifactId>
-					<groupId>javax.jcr</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+		<!--
+			<dependency> <groupId>org.apache.vysper</groupId>
+			<artifactId>vysper-core</artifactId> <version>0.5</version>
+			<exclusions> <exclusion> <artifactId>jackrabbit-core</artifactId>
+			<groupId>org.apache.jackrabbit</groupId> </exclusion> <exclusion>
+			<artifactId>jcr</artifactId> <groupId>javax.jcr</groupId>
+			</exclusion> </exclusions> </dependency>
+		-->
 		<dependency>
 			<groupId>org.apache.vysper</groupId>
 			<artifactId>nbxml</artifactId>
@@ -210,16 +213,14 @@
 			<artifactId>spec-compliance</artifactId>
 			<version>0.5</version>
 		</dependency>
-		<dependency>
+		<!--
+			<dependency> <groupId>org.apache.vysper.extensions</groupId>
+			<artifactId>xep0045-muc</artifactId> <version>0.5</version>
+			</dependency> <dependency>
 			<groupId>org.apache.vysper.extensions</groupId>
-			<artifactId>xep0045-muc</artifactId>
-			<version>0.5</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.vysper.extensions</groupId>
-			<artifactId>xep0060-pubsub</artifactId>
-			<version>0.5</version>
-		</dependency>
+			<artifactId>xep0060-pubsub</artifactId> <version>0.5</version>
+			</dependency>
+		-->
 		<dependency>
 			<groupId>org.hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>
@@ -242,6 +243,11 @@
 			<version>2.4.6</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>1.4.1</version>
+		</dependency>		
 	</dependencies>
 
 	<reporting>
@@ -307,7 +313,7 @@
 					<components>
 						<component>
 							<name>hbm2ddl</name>
-							<implementation>configuration</implementation>
+							<implementation>annotationconfiguration</implementation>
 						</component>
 					</components>
 					<componentProperties>
@@ -362,29 +368,36 @@
 	</build>
 
 	<profiles>
-		<!--
-			<profile> <id>hsqldb</id> <properties>
-			<dbunit.operation.type>CLEAN_INSERT</dbunit.operation.type>
-			<dbunit.dataTypeFactoryName>org.dbunit.ext.hsqldb.HsqldbDataTypeFactory</dbunit.dataTypeFactoryName>
-			<hibernate.dialect>org.hibernate.dialect.HSQLDialect</hibernate.dialect>
-			<jdbc.groupId>org.hsqldb</jdbc.groupId>
-			<jdbc.artifactId>hsqldb</jdbc.artifactId>
-			<jdbc.version>1.8.0.10</jdbc.version>
-			<jdbc.driverClassName>org.hsqldb.jdbcDriver</jdbc.driverClassName>
-			<jdbc.url><![CDATA[jdbc:hsqldb:file:db/androidpn]]></jdbc.url>
-			<jdbc.username>sa</jdbc.username> <jdbc.password></jdbc.password>
-			</properties> </profile> <profile> <id>mysql</id> <properties>
-			<dbunit.operation.type>CLEAN_INSERT</dbunit.operation.type>
-			<dbunit.dataTypeFactoryName>org.dbunit.ext.mysql.MySqlDataTypeFactory</dbunit.dataTypeFactoryName>
-			<hibernate.dialect>org.hibernate.dialect.MySQLInnoDBDialect</hibernate.dialect>
-			<jdbc.groupId>mysql</jdbc.groupId>
-			<jdbc.artifactId>mysql-connector-java</jdbc.artifactId>
-			<jdbc.version>5.1.6</jdbc.version>
-			<jdbc.driverClassName>com.mysql.jdbc.Driver</jdbc.driverClassName>
-			<jdbc.url><![CDATA[jdbc:mysql://localhost/androidpn?createDatabaseIfNotExist=true&amp;useUnicode=true&amp;characterEncoding=utf-8&amp;sessionVariables=FOREIGN_KEY_CHECKS=0]]></jdbc.url>
-			<jdbc.username>root</jdbc.username>
-			<jdbc.password>root</jdbc.password> </properties> </profile>
-		-->
+		<profile>
+			<id>hsqldb</id>
+			<properties>
+				<dbunit.operation.type>CLEAN_INSERT</dbunit.operation.type>
+				<dbunit.dataTypeFactoryName>org.dbunit.ext.hsqldb.HsqldbDataTypeFactory</dbunit.dataTypeFactoryName>
+				<hibernate.dialect>org.hibernate.dialect.HSQLDialect</hibernate.dialect>
+				<jdbc.groupId>org.hsqldb</jdbc.groupId>
+				<jdbc.artifactId>hsqldb</jdbc.artifactId>
+				<jdbc.version>1.8.0.10</jdbc.version>
+				<jdbc.driverClassName>org.hsqldb.jdbcDriver</jdbc.driverClassName>
+				<jdbc.url><![CDATA[jdbc:hsqldb:file:db/androidpn]]></jdbc.url>
+				<jdbc.username>sa</jdbc.username>
+				<jdbc.password></jdbc.password>
+			</properties>
+		</profile>
+		<profile>
+			<id>mysql</id>
+			<properties>
+				<dbunit.operation.type>CLEAN_INSERT</dbunit.operation.type>
+				<dbunit.dataTypeFactoryName>org.dbunit.ext.mysql.MySqlDataTypeFactory</dbunit.dataTypeFactoryName>
+				<hibernate.dialect>org.hibernate.dialect.MySQLInnoDBDialect</hibernate.dialect>
+				<jdbc.groupId>mysql</jdbc.groupId>
+				<jdbc.artifactId>mysql-connector-java</jdbc.artifactId>
+				<jdbc.version>5.1.6</jdbc.version>
+				<jdbc.driverClassName>com.mysql.jdbc.Driver</jdbc.driverClassName>
+				<jdbc.url><![CDATA[jdbc:mysql://localhost/androidpn?createDatabaseIfNotExist=true&amp;useUnicode=true&amp;characterEncoding=utf-8&amp;sessionVariables=FOREIGN_KEY_CHECKS=0]]></jdbc.url>
+				<jdbc.username>androidpn</jdbc.username>
+				<jdbc.password>androidpn</jdbc.password>
+			</properties>
+		</profile>
 	</profiles>
 
 	<properties>
