@@ -11,9 +11,6 @@
 
 package org.jivesoftware.util;
 
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.AddressException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -1018,28 +1015,5 @@ public class StringUtils {
         
         return str.substring(0, maxWidth) + "...";
     }
-
-    /**
-     * Returns true if the string passed in is a valid Email address.
-     *
-     * @param address Email address to test for validity.
-     * @return true if the string passed in is a valid email address.
-     */
-    public static boolean isValidEmailAddress(String address) {
-        if (address == null) {
-            return false;
-        }
-
-        if (!address.contains("@")) {
-            return false;
-        }
-
-        try {
-            InternetAddress.parse(address);
-            return true;
-        }
-        catch (AddressException e) {
-            return false;
-        }
-    }
+   
 }
