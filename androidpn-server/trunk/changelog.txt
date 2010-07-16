@@ -2,9 +2,18 @@ ANDROIDPN-SERVER CHANGELOG
 ==========================
 http://androidpn.sourceforge.net/
 
-Changes in version 0.1.2 (2010-06-30)
+Changes in version 0.1.2 (2010-07-16)
 -------------------------------------
-* Updated Mina IO Handler
+* Added Configuration utility classes
+* Added User DAO, Service, Domain Object
+* Added Mina IoBufferWriter
+* Added Mina XmppCodecFactory, XmppDecoder, XmppEncoder
+* Updated Mina IO handler
+
+
+Changes in version 0.1.1 (2010-06-30)
+-------------------------------------
+* Updated Mina IO handler
 
 Changes in version 0.1.0 (2010-05-30)
 -------------------------------------
