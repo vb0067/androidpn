@@ -15,105 +15,134 @@
  */
 package org.androidpn.server.mina;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.androidpn.server.XmppServer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.mina.core.service.IoHandler;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
-import org.apache.vysper.mina.MinaBackedSessionContext;
-import org.apache.vysper.xml.fragment.XMLText;
-import org.apache.vysper.xmpp.protocol.SessionStateHolder;
-import org.apache.vysper.xmpp.server.ServerRuntimeContext;
-import org.apache.vysper.xmpp.server.SessionContext;
-import org.apache.vysper.xmpp.stanza.Stanza;
+import org.dom4j.io.XMPPPacketReader;
+import org.jivesoftware.openfire.net.MXParser;
+import org.jivesoftware.openfire.nio.XMLLightweightParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
 
-/** 
+/**
  * Class desciption here.
- *
+ * 
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
 public class XmppIoHandler implements IoHandler {
 
-    public static final String ATTRIBUTE_ANDROIDPN_SESSION = "androidpnSession";
+	private static final Log log = LogFactory.getLog(XmppIoHandler.class);
 
-    public static final String ATTRIBUTE_ANDROIDPN_SESSIONSTATEHOLDER = "androidpnSessionStateHolder";
+	public static final String CHARSET = "UTF-8";
 
-    private Log log = LogFactory.getLog(getClass());
+	public static final String XML_PARSER = "XML-PARSER";
 
-    private ServerRuntimeContext serverRuntimeContext;
+	// private static final String CONNECTION = "CONNECTION";
+	//
+	// private static final String STANZA_HANDLER = "STANZA_HANDLER";
 
-    public void setServerRuntimeContext(
-            ServerRuntimeContext serverRuntimeContext) {
-        this.serverRuntimeContext = serverRuntimeContext;
-    }
+	protected String serverName;
 
-    public void sessionCreated(IoSession session) throws Exception {
-        log.debug("sessionCreated()...");
-        SessionStateHolder stateHolder = new SessionStateHolder();
-        SessionContext sessionContext = new MinaBackedSessionContext(
-                serverRuntimeContext, stateHolder, session);
-        session.setAttribute(ATTRIBUTE_ANDROIDPN_SESSION, sessionContext);
-        session.setAttribute(ATTRIBUTE_ANDROIDPN_SESSIONSTATEHOLDER, stateHolder);
-    }
+	private static Map<Integer, XMPPPacketReader> parsers = new ConcurrentHashMap<Integer, XMPPPacketReader>();
 
-    public void sessionOpened(IoSession session) throws Exception {
-        log.debug("sessionOpened()...");
-    }
+	/**
+	 * Reuse the same factory for all the connections.
+	 */
+	private static XmlPullParserFactory factory = null;
 
-    public void sessionClosed(IoSession session) throws Exception {
-        log.debug("sessionClosed()...");
-    }
+	static {
+		try {
+			factory = XmlPullParserFactory.newInstance(
+					MXParser.class.getName(), null);
+			factory.setNamespaceAware(true);
+		} catch (XmlPullParserException e) {
+			log.error("Error creating a parser factory", e);
+		}
+	}
 
-    public void sessionIdle(IoSession session, IdleStatus status)
-            throws Exception {
-        log.debug("sessionIdle()...");
-    }
+	protected XmppIoHandler() {
+		// serverName = Config.getString("xmpp.domain",
+		// "127.0.0.1").toLowerCase();
+		serverName = XmppServer.getInstance().getServerName();
+	}
 
-    public void exceptionCaught(IoSession session, Throwable cause)
-            throws Exception {
-        log.debug("sessionCaught()...");
-    }
+	protected XmppIoHandler(String serverName) {
+		this.serverName = serverName;
+	}
 
-    public void messageReceived(IoSession session, Object message)
-            throws Exception {
-        log.debug("messageReceived()...");
+	public void sessionCreated(IoSession session) throws Exception {
+		log.debug("sessionCreated()...");
+	}
 
-        log.debug(session.getRemoteAddress());
-        log.debug("message=" + message);
+	public void sessionOpened(IoSession session) throws Exception {
+		log.debug("sessionOpened()...");
+		// Create a new XML parser for the new connection. The parser will be
+		// used by the XMPPDecoder filter.
+		XMLLightweightParser parser = new XMLLightweightParser(CHARSET);
+		session.setAttribute(XML_PARSER, parser);
+		// // Create a new Connection for the new session
+		// Connection connection = new Connection(session);
+		// session.setAttribute(CONNECTION, connection);
+		// session.setAttribute(STANZA_HANDLER, new ClientStanzaHandler(
+		// serverName, connection));
+	}
 
-        if (!(message instanceof Stanza)) {
-            if (message instanceof XMLText) {
-                String text = ((XMLText) message).getText();
-                // tolerate reasonable amount of whitespaces for stanza separation
-                if (text.length() < 40 && text.trim().length() == 0)
-                    return;
-            }
+	public void sessionClosed(IoSession session) throws Exception {
+		log.debug("sessionClosed()...");
+	}
 
-            log.debug("NO STANZA...");
-            return;
-        }
+	public void sessionIdle(IoSession session, IdleStatus status)
+			throws Exception {
+		log.debug("sessionIdle()...");
+	}
 
-        Stanza stanza = (Stanza) message;
+	public void exceptionCaught(IoSession session, Throwable cause)
+			throws Exception {
+		log.debug("sessionCaught()...");
+	}
 
-        log.debug(">>>>>>>>>>>>>> " + stanza.toString());
-        log.debug("PROCESSING STANZA...");
+	public void messageReceived(IoSession session, Object message)
+			throws Exception {
+		log.debug("messageReceived()...");
 
-        SessionContext sessionContext = extractSessionContext(session);
-        SessionStateHolder stateHolder = (SessionStateHolder) session
-                .getAttribute(ATTRIBUTE_ANDROIDPN_SESSIONSTATEHOLDER);
+		if (log.isDebugEnabled()) {
+			log.debug("remoteAddress=" + session.getRemoteAddress());
+			log.debug("message=" + message.toString());
+		}
 
-        serverRuntimeContext.getStanzaProcessor().processStanza(
-                serverRuntimeContext, sessionContext, stanza, stateHolder);
+		// // Get the stanza handler for this session
+		// StanzaHandler handler = (StanzaHandler) session
+		// .getAttribute(STANZA_HANDLER);
 
-    }
+		int hashCode = Thread.currentThread().hashCode();
+		XMPPPacketReader parser = parsers.get(hashCode);
+		if (parser == null) {
+			parser = new XMPPPacketReader();
+			parser.setXPPFactory(factory);
+			parsers.put(hashCode, parser);
+		}
 
-    public void messageSent(IoSession session, Object message) throws Exception {
-        log.debug("messageSent()...");
-    }
+		// // Let the stanza handler process the received stanza
+		// try {
+		// handler.process((String) message, parser);
+		// } catch (Exception e) {
+		// log.error(
+		// "Closing connection due to error while processing message: "
+		// + message, e);
+		// Connection connection = (Connection) session
+		// .getAttribute(CONNECTION);
+		// connection.close();
+		// }
+	}
 
-    private SessionContext extractSessionContext(IoSession ioSession) {
-        return (SessionContext) ioSession
-                .getAttribute(ATTRIBUTE_ANDROIDPN_SESSION);
-    }
+	public void messageSent(IoSession session, Object message) throws Exception {
+		log.debug("messageSent()...");
+	}
 
 }
