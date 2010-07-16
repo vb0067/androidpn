@@ -10,7 +10,6 @@ Changes in version 0.1.2 (2010-07-16)
 * Added Mina XmppCodecFactory, XmppDecoder, XmppEncoder
 * Updated Mina IO handler
 
-
 Changes in version 0.1.1 (2010-06-30)
 -------------------------------------
 * Updated Mina IO handler
