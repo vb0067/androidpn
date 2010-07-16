@@ -20,6 +20,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -38,6 +40,9 @@ public class User extends BaseObject implements Serializable {
     private static final long serialVersionUID = 4733464888738356502L;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
     @Column(name = "username", nullable = false, length = 64, unique = true)
     private String username;
 
@@ -52,6 +57,21 @@ public class User extends BaseObject implements Serializable {
 
     @Column(name = "update_time")
     private Date updateTime;
+
+    public User() {
+    }
+
+    public User(final String username) {
+        this.username = username;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getUsername() {
         return username;
