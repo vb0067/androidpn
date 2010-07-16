@@ -52,6 +52,22 @@
 		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
+	
+	<!-- =============================================================== -->
+	<!-- Data Access Objects                                             -->
+	<!-- =============================================================== -->
+
+	<bean id="userDao" class="org.androidpn.server.dao.hibernate.UserDaoHibernate">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>	
+	
+	<!-- =============================================================== -->
+	<!-- Services                                                        -->
+	<!-- =============================================================== -->
+
+	<bean id="userService" class="org.androidpn.server.service.impl.UserServiceImpl">
+		<property name="userDao" ref="userDao" />
+	</bean>	
 
 	<!-- =============================================================== -->
 	<!-- MINA                                                            -->
@@ -79,7 +95,8 @@
 				<entry key="codec">
 					<bean class="org.apache.mina.filter.codec.ProtocolCodecFilter">
 						<constructor-arg>
-							<bean class="org.apache.vysper.mina.codec.XMPPProtocolCodecFactory" />
+							<bean class="org.androidpn.server.mina.codec.XmppCodecFactory" />
+							<!--<bean class="org.jivesoftware.openfire.nio.XMPPCodecFactory" />-->
 						</constructor-arg>
 					</bean>
 				</entry>
