@@ -37,7 +37,6 @@ public class XmppEncoder implements ProtocolEncoder {
 
     public void dispose(IoSession session) throws Exception {
         log.debug("dispose()...");
-        // nothing to dispose
     }
 
 }
