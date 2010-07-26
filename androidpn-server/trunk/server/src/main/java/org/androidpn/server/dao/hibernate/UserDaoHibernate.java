@@ -52,7 +52,7 @@ public class UserDaoHibernate extends GenericDaoHibernate<User, Long> implements
 
     @SuppressWarnings("unchecked")
     public User getUserByUsername(String username) throws UserNotFoundException {
-        List users = getHibernateTemplate().find("from User where email=?",
+        List users = getHibernateTemplate().find("from User where username=?",
                 username);
         if (users == null || users.isEmpty()) {
             throw new UserNotFoundException("User '" + username + "' not found");
