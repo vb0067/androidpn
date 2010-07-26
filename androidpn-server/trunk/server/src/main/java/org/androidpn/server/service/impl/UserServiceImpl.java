@@ -71,9 +71,9 @@ public class UserServiceImpl implements UserService {
         return (User) userDao.getUserByUsername(username);
     }
 
-    public void removeUser(String userId) {
+    public void removeUser(Long userId) {
         log.debug("removing user: " + userId);
-        userDao.remove(new Long(userId));
+        userDao.remove(userId);
     }
 
 }

@@ -34,6 +34,6 @@ public interface UserService {
 
     public User getUserByUsername(String username) throws UserNotFoundException;
 
-    public void removeUser(String userId);
+    public void removeUser(Long userId);
 
 }
