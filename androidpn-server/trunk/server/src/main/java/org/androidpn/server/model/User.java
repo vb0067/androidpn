@@ -49,8 +49,8 @@ public class User extends BaseObject implements Serializable {
     @Column(name = "password", length = 64)
     private String password;
 
-    @Column(name = "encrypted_password", length = 255)
-    private String encryptedPassword;
+    //    @Column(name = "encrypted_password", length = 255)
+    //    private String encryptedPassword;
 
     @Column(name = "email", length = 64)
     private String email;
@@ -61,8 +61,8 @@ public class User extends BaseObject implements Serializable {
     @Column(name = "create_time", updatable = false)
     private Date createTime;
 
-    @Column(name = "update_time")
-    private Date updateTime;
+    //    @Column(name = "update_time")
+    //    private Date updateTime;
 
     public User() {
     }
@@ -95,13 +95,13 @@ public class User extends BaseObject implements Serializable {
         this.password = password;
     }
 
-    public String getEncryptedPassword() {
-        return encryptedPassword;
-    }
-
-    public void setEncryptedPassword(String encryptedPassword) {
-        this.encryptedPassword = encryptedPassword;
-    }
+    //    public String getEncryptedPassword() {
+    //        return encryptedPassword;
+    //    }
+    //
+    //    public void setEncryptedPassword(String encryptedPassword) {
+    //        this.encryptedPassword = encryptedPassword;
+    //    }
 
     public String getEmail() {
         return email;
@@ -127,13 +127,13 @@ public class User extends BaseObject implements Serializable {
         this.createTime = createTime;
     }
 
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
+    //    public Date getUpdateTime() {
+    //        return updateTime;
+    //    }
+    //
+    //    public void setUpdateTime(Date updateTime) {
+    //        this.updateTime = updateTime;
+    //    }
 
     @Override
     public boolean equals(Object o) {
