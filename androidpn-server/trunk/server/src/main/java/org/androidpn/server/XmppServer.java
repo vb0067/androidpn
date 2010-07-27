@@ -15,9 +15,16 @@
  */
 package org.androidpn.server;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import javax.net.ssl.SSLContext;
+
 import org.androidpn.server.util.Config;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jivesoftware.util.TaskEngine;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -36,6 +43,12 @@ public class XmppServer {
 
     private String serverName;
 
+    private String serverHomeDir;
+
+    private boolean shuttingDown;
+
+    private SSLContext sslContext;
+
     public static XmppServer getInstance() {
         return instance;
     }
@@ -50,6 +63,7 @@ public class XmppServer {
 
     public void start() {
         try {
+            locateServer();
             serverName = Config.getString("xmpp.domain", "127.0.0.1")
                     .toLowerCase();
             context = new ClassPathXmlApplicationContext("spring-config.xml");
@@ -57,8 +71,15 @@ public class XmppServer {
 
         } catch (Exception e) {
             e.printStackTrace();
-            // shutdownServer();
+            shutdownServer();
         }
+    }
+
+    public void stop() {
+        shutdownServer();
+        Thread shutdownThread = new ShutdownThread();
+        shutdownThread.setDaemon(true);
+        shutdownThread.start();
     }
 
     public Object getBean(String beanName) {
@@ -69,9 +90,90 @@ public class XmppServer {
         return serverName;
     }
 
+    public SSLContext getSslContext() {
+        return sslContext;
+    }
+
     //    public static void main(String[] args) {
     //        context = new ClassPathXmlApplicationContext("applicationContext.xml");
     //        log.info("XmppServer started.");
     //    }
+
+    //    private File verifyHome(String homeGuess) throws FileNotFoundException {
+    //        File serverHome = new File(homeGuess);
+    //        File configDir = new File(serverHome, "conf");
+    //        if (!configDir.exists()) {
+    //            throw new FileNotFoundException();
+    //        } else {
+    //            try {
+    //                return new File(serverHome.getCanonicalPath());
+    //            } catch (Exception ex) {
+    //                throw new FileNotFoundException();
+    //            }
+    //        }
+    //    }
+
+    private void locateServer() throws FileNotFoundException {
+        String baseDir = System.getProperty("base.dir", "..");
+
+        if (serverHomeDir == null) {
+            try {
+                // serverHome = verifyHome(baseDir).getCanonicalFile();
+                File confDir = new File(baseDir, "conf");
+                if (confDir.exists()) {
+                    serverHomeDir = confDir.getParentFile().getCanonicalPath();
+                }
+            } catch (FileNotFoundException fe) {
+                // Ignore.
+            } catch (IOException ie) {
+                // Ignore.
+            }
+        }
+
+        //        if (serverHome == null) {
+        //            try {
+        //                serverHome = verifyHome("..").getCanonicalFile();
+        //            } catch (FileNotFoundException fe) {
+        //                // Ignore.
+        //            } catch (IOException ie) {
+        //                // Ignore.
+        //            }
+        //        }
+
+        if (serverHomeDir == null) {
+            System.err.println("Could not locate home");
+            throw new FileNotFoundException();
+        } else {
+            Config.setProperty("server.home.dir", serverHomeDir);
+            log.debug("server.home.dir=" + serverHomeDir);
+        }
+    }
+
+    //    public String getHomeDirectory() {
+    //        return serverHomeDir;
+    //    }
+
+    public boolean isShuttingDown() {
+        return shuttingDown;
+    }
+
+    private void shutdownServer() {
+        shuttingDown = true;
+        // Shutdown the task engine.
+        TaskEngine.getInstance().shutdown();
+        // hack to allow safe stopping
+        log.info("XmppServer stopped: " + serverName);
+    }
+
+    private class ShutdownThread extends Thread {
+        public void run() {
+            try {
+                Thread.sleep(5000);
+                System.exit(0);
+            } catch (InterruptedException e) {
+                // Ignore.
+            }
+        }
+    }
 
 }
