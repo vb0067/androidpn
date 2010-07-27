@@ -52,22 +52,37 @@
 		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
-	
+
 	<!-- =============================================================== -->
 	<!-- Data Access Objects                                             -->
 	<!-- =============================================================== -->
 
 	<bean id="userDao" class="org.androidpn.server.dao.hibernate.UserDaoHibernate">
 		<property name="sessionFactory" ref="sessionFactory" />
-	</bean>	
-	
+	</bean>
+
 	<!-- =============================================================== -->
 	<!-- Services                                                        -->
 	<!-- =============================================================== -->
 
 	<bean id="userService" class="org.androidpn.server.service.impl.UserServiceImpl">
 		<property name="userDao" ref="userDao" />
-	</bean>	
+	</bean>
+
+	<!-- =============================================================== -->
+	<!-- SSL                                                             -->
+	<!-- =============================================================== -->
+
+	<!--
+	<bean id="tlsContextFactory"
+		class="org.androidpn.server.ssl2.ResourceBasedTLSContextFactory">
+		<constructor-arg value="classpath:bogus_mina_tls.cert" />
+		<property name="password" value="boguspw" />
+		<property name="trustManagerFactory">
+			<bean class="org.androidpn.server.ssl2.BogusTrustManagerFactory" />
+		</property>
+	</bean>
+	-->
 
 	<!-- =============================================================== -->
 	<!-- MINA                                                            -->
@@ -83,7 +98,7 @@
 		</property>
 	</bean>
 
-	<bean id="xmppHandler" class="org.androidpn.server.mina.XmppIoHandler" />
+	<bean id="xmppHandler" class="org.androidpn.server.xmpp.net.XmppIoHandler" />
 
 	<bean id="filterChainBuilder"
 		class="org.apache.mina.core.filterchain.DefaultIoFilterChainBuilder">
@@ -95,8 +110,7 @@
 				<entry key="codec">
 					<bean class="org.apache.mina.filter.codec.ProtocolCodecFilter">
 						<constructor-arg>
-							<bean class="org.androidpn.server.mina.codec.XmppCodecFactory" />
-							<!--<bean class="org.jivesoftware.openfire.nio.XMPPCodecFactory" />-->
+							<bean class="org.androidpn.server.xmpp.codec.XmppCodecFactory" />
 						</constructor-arg>
 					</bean>
 				</entry>
