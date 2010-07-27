@@ -42,6 +42,10 @@
 		<level value="INFO" />
 	</logger>
 
+	<logger name="org.hibernate">
+		<level value="INFO" />
+	</logger>
+
 	<logger name="org.dbunit">
 		<level value="INFO" />
 	</logger>
