@@ -24,7 +24,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.androidpn.server.XmppServer;
 import org.androidpn.server.xmpp.auth.AuthToken;
 import org.androidpn.server.xmpp.net.Connection;
-import org.androidpn.server.xmpp.net.ConnectionCloseListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xmpp.packet.JID;
@@ -48,8 +47,6 @@ public class SessionManager {
     private Map<String, ClientSession> clientSessions = new ConcurrentHashMap<String, ClientSession>();
 
     private final AtomicInteger connectionsCounter = new AtomicInteger(0);
-
-    private ClientSessionListener clientSessionListener = new ClientSessionListener();
 
     private SessionManager() {
         serverName = XmppServer.getInstance().getServerName();
@@ -76,9 +73,6 @@ public class SessionManager {
         }
         ClientSession session = new ClientSession(serverName, conn, streamId);
         conn.init(session);
-
-        // Register to receive close notification on this session
-        conn.registerCloseListener(clientSessionListener, session);
 
         // Add to pre-authenticated sessions
         preAuthSessions.put(session.getAddress().getResource(), session);
@@ -170,28 +164,4 @@ public class SessionManager {
         return false;
     }
 
-    private class ClientSessionListener implements ConnectionCloseListener {
-
-        public void onConnectionClose(Object handback) {
-            try {
-                ClientSession session = (ClientSession) handback;
-                try {
-                    if ((session.getPresence().isAvailable() || !session
-                            .wasAvailable())) {
-                        // Send an unavailable presence to the user's subscribers
-                        Presence presence = new Presence();
-                        presence.setType(Presence.Type.unavailable);
-                        presence.setFrom(session.getAddress());
-                        // router.route(presence);
-                    }
-                } finally {
-                    // Remove the session
-                    removeSession(session);
-                }
-            } catch (Exception e) {
-                // Can't do anything about this problem...
-                log.error("Could not close socket", e);
-            }
-        }
-    }
 }
