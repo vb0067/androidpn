@@ -49,9 +49,6 @@ public class User extends BaseObject implements Serializable {
     @Column(name = "password", length = 64)
     private String password;
 
-    //    @Column(name = "encrypted_password", length = 255)
-    //    private String encryptedPassword;
-
     @Column(name = "email", length = 64)
     private String email;
 
@@ -94,14 +91,6 @@ public class User extends BaseObject implements Serializable {
     public void setPassword(String password) {
         this.password = password;
     }
-
-    //    public String getEncryptedPassword() {
-    //        return encryptedPassword;
-    //    }
-    //
-    //    public void setEncryptedPassword(String encryptedPassword) {
-    //        this.encryptedPassword = encryptedPassword;
-    //    }
 
     public String getEmail() {
         return email;
