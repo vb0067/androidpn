@@ -29,7 +29,6 @@ import org.androidpn.server.util.Config;
 import org.androidpn.server.xmpp.UnauthorizedException;
 import org.androidpn.server.xmpp.session.ClientSession;
 import org.androidpn.server.xmpp.session.Session;
-import org.androidpn.server.xmpp.session.SessionManager;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.QName;
@@ -48,8 +47,6 @@ public class IQRegisterHandler extends IQHandler {
 
     private IQHandlerInfo info;
 
-    private SessionManager sessionManager;
-
     private UserService userService;
 
     private Element probeResult;
@@ -58,8 +55,6 @@ public class IQRegisterHandler extends IQHandler {
 
     public IQRegisterHandler() {
         info = new IQHandlerInfo("query", "jabber:iq:register");
-
-        sessionManager = SessionManager.getInstance();
         userService = ServiceManager.getUserService();
 
         probeResult = DocumentHelper.createElement(QName.get("query",

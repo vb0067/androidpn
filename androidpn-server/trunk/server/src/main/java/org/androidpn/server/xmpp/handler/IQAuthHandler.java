@@ -25,7 +25,6 @@ import org.androidpn.server.xmpp.auth.AuthManager;
 import org.androidpn.server.xmpp.auth.AuthToken;
 import org.androidpn.server.xmpp.session.ClientSession;
 import org.androidpn.server.xmpp.session.Session;
-import org.androidpn.server.xmpp.session.SessionManager;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.QName;
@@ -42,14 +41,11 @@ public class IQAuthHandler extends IQHandler {
 
     private IQHandlerInfo info;
 
-    private SessionManager sessionManager;
-
     private Element probeResponse;
 
     public IQAuthHandler() {
         info = new IQHandlerInfo("query", "jabber:iq:auth");
 
-        sessionManager = SessionManager.getInstance();
         probeResponse = DocumentHelper.createElement(QName.get("query",
                 "jabber:iq:auth"));
         probeResponse.addElement("username");
@@ -75,7 +71,7 @@ public class IQAuthHandler extends IQHandler {
             reply.setError(PacketError.Condition.internal_server_error);
             return reply;
         }
-        
+
         IQ reply = null;
         //        boolean resourceBound = false;
         try {
@@ -128,7 +124,7 @@ public class IQAuthHandler extends IQHandler {
         //            SessionEventDispatcher.dispatchEvent(session,
         //                    SessionEventDispatcher.EventType.resource_bound);
         //        }
-        
+
         return null;
     }
 
