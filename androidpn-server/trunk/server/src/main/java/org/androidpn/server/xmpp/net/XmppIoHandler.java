@@ -93,16 +93,24 @@ public class XmppIoHandler implements IoHandler {
 
     public void sessionClosed(IoSession session) throws Exception {
         log.debug("sessionClosed()...");
+        Connection connection = (Connection) session.getAttribute(CONNECTION);
+        connection.close();
     }
 
     public void sessionIdle(IoSession session, IdleStatus status)
             throws Exception {
         log.debug("sessionIdle()...");
+        Connection connection = (Connection) session.getAttribute(CONNECTION);
+        if (log.isDebugEnabled()) {
+            log.debug("Closing connection that has been idle: " + connection);
+        }
+        connection.close();
     }
 
     public void exceptionCaught(IoSession session, Throwable cause)
             throws Exception {
-        log.debug("sessionCaught()...");
+        log.debug("exceptionCaught()...");
+        log.error(cause);
     }
 
     public void messageReceived(IoSession session, Object message)

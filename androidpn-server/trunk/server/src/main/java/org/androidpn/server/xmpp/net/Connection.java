@@ -50,6 +50,8 @@ public class Connection {
 
     private Session session;
 
+    private ConnectionCloseListener closeListener;
+
     private int majorVersion = 1;
 
     private int minorVersion = 0;
@@ -111,6 +113,7 @@ public class Connection {
     }
 
     public void close() {
+        boolean closedSuccessfully = false;
         synchronized (this) {
             if (!isClosed()) {
                 try {
@@ -123,6 +126,38 @@ public class Connection {
                 }
                 ioSession.close(false);
                 closed = true;
+                closedSuccessfully = true;
+            }
+        }
+        if (closedSuccessfully) {
+            notifyCloseListeners();
+        }
+    }
+
+    public void registerCloseListener(ConnectionCloseListener listener,
+            Object ignore) {
+        if (closeListener != null) {
+            throw new IllegalStateException("Close listener already configured");
+        }
+        if (isClosed()) {
+            listener.onConnectionClose(session);
+        } else {
+            closeListener = listener;
+        }
+    }
+
+    public void removeCloseListener(ConnectionCloseListener listener) {
+        if (closeListener == listener) {
+            closeListener = null;
+        }
+    }
+
+    private void notifyCloseListeners() {
+        if (closeListener != null) {
+            try {
+                closeListener.onConnectionClose(session);
+            } catch (Exception e) {
+                log.error("Error notifying listener: " + closeListener, e);
             }
         }
     }
@@ -144,7 +179,6 @@ public class Connection {
 
     public void deliver(Packet packet) {
         log.debug("SENT: " + packet.toXML());
-
         if (!isClosed()) {
             IoBuffer buffer = IoBuffer.allocate(4096);
             buffer.setAutoExpand(true);
@@ -172,12 +206,12 @@ public class Connection {
     }
 
     public void deliverRawText(String text) {
-        log.debug("SENT: " + text);
         // Deliver the packet in asynchronous mode
         deliverRawText(text, true);
     }
 
     private void deliverRawText(String text, boolean asynchronous) {
+        log.debug("SENT: " + text);
         if (!isClosed()) {
             IoBuffer buffer = IoBuffer.allocate(text.length());
             buffer.setAutoExpand(true);
