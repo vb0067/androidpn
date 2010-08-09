@@ -21,6 +21,7 @@ import java.io.IOException;
 
 import javax.net.ssl.SSLContext;
 
+import org.androidpn.server.container.AdminConsole;
 import org.androidpn.server.util.Config;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,7 +36,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  */
 public class XmppServer {
 
-    private static Log log = LogFactory.getLog(XmppServer.class);
+    private static final Log log = LogFactory.getLog(XmppServer.class);
 
     private static XmppServer instance;
 
@@ -67,6 +68,15 @@ public class XmppServer {
             serverName = Config.getString("xmpp.domain", "127.0.0.1")
                     .toLowerCase();
             context = new ClassPathXmlApplicationContext("spring-config.xml");
+            log.info("Spring Configuration loaded.");
+
+            AdminConsole adminConsole = new AdminConsole(serverHomeDir);
+            adminConsole.startup();
+            log.info("Admin console listening at: "
+                    + (adminConsole.isHttpStarted() ? "\n\thttp://"
+                            + adminConsole.getAdminHost() + ":"
+                            + adminConsole.getAdminPort() : ""));
+
             log.info("XmppServer started: " + serverName);
 
         } catch (Exception e) {
@@ -149,7 +159,7 @@ public class XmppServer {
         }
     }
 
-    //    public String getHomeDirectory() {
+    //    public String getServerHomeDirectory() {
     //        return serverHomeDir;
     //    }
 
