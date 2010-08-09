@@ -72,11 +72,11 @@ public class XmppServer {
 
             AdminConsole adminConsole = new AdminConsole(serverHomeDir);
             adminConsole.startup();
-            log.info("Admin console listening at: "
-                    + (adminConsole.isHttpStarted() ? "\n\thttp://"
-                            + adminConsole.getAdminHost() + ":"
-                            + adminConsole.getAdminPort() : ""));
-
+            if (adminConsole.isHttpStarted()) {
+                log.info("Admin console listening at: http://"
+                        + adminConsole.getAdminHost() + ":"
+                        + adminConsole.getAdminPort());
+            }
             log.info("XmppServer started: " + serverName);
 
         } catch (Exception e) {
