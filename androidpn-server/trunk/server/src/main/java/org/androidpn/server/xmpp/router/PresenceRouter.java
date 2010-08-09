@@ -15,6 +15,15 @@
  */
 package org.androidpn.server.xmpp.router;
 
+import org.androidpn.server.XmppServer;
+import org.androidpn.server.xmpp.handler.PresenceUpdateHandler;
+import org.androidpn.server.xmpp.session.ClientSession;
+import org.androidpn.server.xmpp.session.Session;
+import org.androidpn.server.xmpp.session.SessionManager;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.xmpp.packet.JID;
+import org.xmpp.packet.PacketError;
 import org.xmpp.packet.Presence;
 
 /** 
@@ -24,11 +33,65 @@ import org.xmpp.packet.Presence;
  */
 public class PresenceRouter {
 
+    private final Log log = LogFactory.getLog(getClass());
+
+    private SessionManager sessionManager;
+
+    private String serverName;
+
+    private PresenceUpdateHandler presenceUpdateHandler;
+
     public PresenceRouter() {
+        sessionManager = SessionManager.getInstance();
+        serverName = XmppServer.getInstance().getServerName();
+        presenceUpdateHandler = new PresenceUpdateHandler();
     }
 
     public void route(Presence packet) {
-        // throw new RuntimeException("Please implement this!!");
+        if (packet == null) {
+            throw new NullPointerException();
+        }
+        ClientSession session = sessionManager.getSession(packet.getFrom());
+
+        if (session == null || session.getStatus() != Session.STATUS_CONNECTED) {
+            handle(packet);
+        } else {
+            packet.setTo(session.getAddress());
+            packet.setFrom((JID) null);
+            packet.setError(PacketError.Condition.not_authorized);
+            session.process(packet);
+        }
+    }
+
+    private void handle(Presence packet) {
+        // JID recipientJID = packet.getTo();
+        // JID senderJID = packet.getFrom();
+        try {
+            Presence.Type type = packet.getType();
+            // Presence updates (null is 'available')
+            if (type == null || Presence.Type.unavailable == type) {
+                // check for local server target
+                //                if (recipientJID == null
+                //                        || recipientJID.getDomain() == null
+                //                        || "".equals(recipientJID.getDomain())
+                //                        || (recipientJID.getNode() == null && recipientJID
+                //                                .getResource() == null)
+                //                        && serverName.equals(recipientJID.getDomain())) {
+                presenceUpdateHandler.process(packet);
+                //                } else {
+                //                    log.warn("");
+                //                }
+            } else {
+                log.warn("Unknown presence type");
+            }
+
+        } catch (Exception e) {
+            log.error("Could not route packet", e);
+            Session session = sessionManager.getSession(packet.getFrom());
+            if (session != null) {
+                session.close();
+            }
+        }
     }
 
 }
