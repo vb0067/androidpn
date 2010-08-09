@@ -2,12 +2,24 @@ ANDROIDPN-SERVER CHANGELOG
 ==========================
 http://androidpn.sourceforge.net/
 
-Changes in version 0.2.0 (2010-07-27)
+Changes in version 0.3.0 (2010-08-09)
+-------------------------------------
+* Added Admin Console Container
+* Added Spring MVC Configuration
+* Added Web Controllers and Views
+* Added NotificationManager
+* Added PresenceManager, PresenceRouter
+* Added ConnectionCloseListener
+* Updated Connection, StatnzaHandler
+* Updated ClientSession, SessionManager
+
+Changes in version 0.3.0 (2010-07-27)
 -------------------------------------
 * Added ServiceManager
 * Added IQAuthHandler, IQRegisterHandler
 * Added PacketDeliverer
-* Updated Connection, StanzaHandler, ClientStanzaHandler 
+* Updated Connection, ConnectionCloseListener 
+* Updated StanzaHandler, ClientStanzaHandler 
 * Updated Session, ClientSession, SessionManager
 * Updated IQRouter, IQHanlder
 * Updated AuthManager 

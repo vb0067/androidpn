@@ -23,8 +23,9 @@
 			<includes>
 				<include>*.xml</include>
 				<include>*.properties</include>
+				<include>*.cert</include>
 			</includes>
-		</fileSet>		
+		</fileSet>
 		<fileSet>
 			<directory>server/target</directory>
 			<outputDirectory>lib</outputDirectory>
@@ -38,6 +39,14 @@
 			<includes>
 				<include>*.jar</include>
 			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>console/target/console</directory>
+			<outputDirectory>console</outputDirectory>
+			<excludes>
+				<exclude>**/*.jar</exclude>
+				<!--<exclude>**/*.jsp</exclude>-->
+			</excludes>
 		</fileSet>
 		<fileSet>
 			<directory>server/src/main/bin</directory>
@@ -58,13 +67,9 @@
 			</includes>
 		</fileSet>
 		<!--
-		<fileSet>
-			<directory>server/src/main/logs</directory>
-			<outputDirectory>logs</outputDirectory>
-			<includes>
-				<include>*.log</include>
-			</includes>
-		</fileSet>
+			<fileSet> <directory>server/src/main/logs</directory>
+			<outputDirectory>logs</outputDirectory> <includes>
+			<include>*.log</include> </includes> </fileSet>
 		-->
 	</fileSets>
 	<dependencySets>
@@ -72,9 +77,11 @@
 			<outputDirectory>lib</outputDirectory>
 			<unpack>false</unpack>
 			<scope>runtime</scope>
+			<!--
 			<excludes>
 				<exclude>junit:junit</exclude>
 			</excludes>
+			-->
 		</dependencySet>
 	</dependencySets>
 </assembly>
