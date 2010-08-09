@@ -69,15 +69,11 @@ public class PresenceUpdateHandler {
                     }
                 }
 
-                //                presenceManager.userAvailable(presence);
-
             } else if (Presence.Type.unavailable == type) {
 
                 if (session != null) {
                     session.setPresence(presence);
                 }
-
-                //                presenceManager.userUnavailable(presence);
 
             } else {
                 presence = presence.createCopy();
