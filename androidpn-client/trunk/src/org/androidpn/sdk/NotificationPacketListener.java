@@ -73,10 +73,8 @@ public class NotificationPacketListener implements PacketListener {
 
                 XmppManager.getContext(xmppManager).sendBroadcast(intent);
             }
-
         }
 
-        //        // TODO remove this later
         //        Intent intent = new Intent("org.androidpn.sdk.SHOW_NOTIFICATION");
         //        intent.putExtra("NOTIFICATION_ID", "12345");
         //        intent.putExtra("NOTIFICATION_API_KEY", "1234567890");
