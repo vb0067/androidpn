@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
         return userDao.get(new Long(userId));
     }
 
-    public List<User> getUsers(User user) {
+    public List<User> getUsers() {
         return userDao.getUsers();
     }
 

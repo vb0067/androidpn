@@ -24,6 +24,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
@@ -55,11 +56,14 @@ public class User extends BaseObject implements Serializable {
     @Column(name = "name", length = 64)
     private String name;
 
-    @Column(name = "create_time", updatable = false)
-    private Date createTime;
+    @Column(name = "created_date", updatable = false)
+    private Date createdDate = new Date();
 
-    //    @Column(name = "update_time")
-    //    private Date updateTime;
+    //    @Column(name = "updated_date")
+    //    private Date updatedDate;
+
+    @Transient
+    private boolean online;
 
     public User() {
     }
@@ -108,21 +112,29 @@ public class User extends BaseObject implements Serializable {
         this.name = name;
     }
 
-    public Date getCreateTime() {
-        return createTime;
+    public Date getCreatedDate() {
+        return createdDate;
     }
 
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
     }
 
-    //    public Date getUpdateTime() {
-    //        return updateTime;
+    //    public Date getUpdatedDate() {
+    //        return updatedDate;
     //    }
     //
-    //    public void setUpdateTime(Date updateTime) {
-    //        this.updateTime = updateTime;
+    //    public void setUpdatedDate(Date updatedDate) {
+    //        this.updatedDate = updatedDate;
     //    }
+
+    public boolean isOnline() {
+        return online;
+    }
+
+    public void setOnline(boolean online) {
+        this.online = online;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -135,7 +147,7 @@ public class User extends BaseObject implements Serializable {
                 : obj.username != null) {
             return false;
         }
-        if (!(createTime.getTime() == obj.createTime.getTime())) {
+        if (!(createdDate.getTime() == obj.createdDate.getTime())) {
             return false;
         }
         return true;
@@ -145,7 +157,8 @@ public class User extends BaseObject implements Serializable {
     public int hashCode() {
         int result = 0;
         result = 29 * result + (username != null ? username.hashCode() : 0);
-        result = 29 * result + (createTime != null ? createTime.hashCode() : 0);
+        result = 29 * result
+                + (createdDate != null ? createdDate.hashCode() : 0);
         return result;
     }
 

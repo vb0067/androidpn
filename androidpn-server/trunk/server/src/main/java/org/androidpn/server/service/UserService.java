@@ -28,7 +28,7 @@ public interface UserService {
 
     public User getUser(String userId);
 
-    public List<User> getUsers(User user);
+    public List<User> getUsers();
 
     public User saveUser(User user) throws UserExistsException;
 

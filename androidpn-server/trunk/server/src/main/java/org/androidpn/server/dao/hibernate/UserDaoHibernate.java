@@ -36,7 +36,7 @@ public class UserDaoHibernate extends GenericDaoHibernate<User, Long> implements
     @SuppressWarnings("unchecked")
     public List<User> getUsers() {
         return getHibernateTemplate().find(
-                "from User u order by upper(u.lastName), upper(u.firstName)");
+                "from User u order by u.createdDate desc");
     }
 
     public User saveUser(User user) {
