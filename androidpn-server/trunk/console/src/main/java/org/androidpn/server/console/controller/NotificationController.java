@@ -69,14 +69,14 @@ public class NotificationController extends MultiActionController {
         //        logger.debug("ticker=" + ticker);
         //        logger.debug("url=" + url);
 
-        String appKey = Config.getString("appKey", "");
-        logger.debug("appKey=" + appKey);
+        String apiKey = Config.getString("apiKey", "");
+        logger.debug("apiKey=" + apiKey);
 
         if (broadcast.equalsIgnoreCase("Y")) {
-            notificationManager.sendBroadcast(appKey, title, message, ticker,
+            notificationManager.sendBroadcast(apiKey, title, message, ticker,
                     url);
         } else {
-            notificationManager.sendNotifcationToUser(appKey, username, title,
+            notificationManager.sendNotifcationToUser(apiKey, username, title,
                     message, ticker, url);
         }
 

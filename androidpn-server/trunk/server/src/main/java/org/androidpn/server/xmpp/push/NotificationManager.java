@@ -39,7 +39,7 @@ public class NotificationManager {
         sessionManager = SessionManager.getInstance();
     }
 
-    private IQ createNotificationIQ(String appKey, String title,
+    private IQ createNotificationIQ(String apiKey, String title,
             String message, String ticker, String url) {
         // TODO
         String id = String.valueOf(System.currentTimeMillis());
@@ -47,7 +47,7 @@ public class NotificationManager {
         Element notification = DocumentHelper.createElement(QName.get(
                 "notification", "androidpn:iq:notification"));
         notification.addElement("id").setText(id);
-        notification.addElement("appKey").setText(appKey);
+        notification.addElement("apiKey").setText(apiKey);
         notification.addElement("title").setText(title);
         notification.addElement("message").setText(message);
         notification.addElement("ticker").setText(ticker);
@@ -60,10 +60,10 @@ public class NotificationManager {
         return iq;
     }
 
-    public void sendBroadcast(String appKey, String title, String message,
+    public void sendBroadcast(String apiKey, String title, String message,
             String ticker, String url) {
         log.debug("sendBroadcast()...");
-        IQ notificationIQ = createNotificationIQ(appKey, title, message,
+        IQ notificationIQ = createNotificationIQ(apiKey, title, message,
                 ticker, url);
         for (ClientSession session : sessionManager.getSessions()) {
             if (session.getPresence().isAvailable()) {
@@ -73,10 +73,10 @@ public class NotificationManager {
         }
     }
 
-    public void sendNotifcationToUser(String appKey, String username,
+    public void sendNotifcationToUser(String apiKey, String username,
             String title, String message, String ticker, String url) {
         log.debug("sendNotifcationToUser()...");
-        IQ notificationIQ = createNotificationIQ(appKey, title, message,
+        IQ notificationIQ = createNotificationIQ(apiKey, title, message,
                 ticker, url);
         ClientSession session = sessionManager.getSession(username);
         if (session != null) {
