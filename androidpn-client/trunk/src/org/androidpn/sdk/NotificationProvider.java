@@ -32,15 +32,15 @@ public class NotificationProvider implements IQProvider {
     @Override
     public IQ parseIQ(XmlPullParser parser) throws Exception {
 
-        XmppNotification notification = new XmppNotification();
+        NotificationIQ notification = new NotificationIQ();
         for (boolean done = false; !done;) {
             int eventType = parser.next();
             if (eventType == 2) {
                 if ("id".equals(parser.getName())) {
                     notification.setId(parser.nextText());
                 }
-                if ("appKey".equals(parser.getName())) {
-                    notification.setAppKey(parser.nextText());
+                if ("apiKey".equals(parser.getName())) {
+                    notification.setApiKey(parser.nextText());
                 }
                 if ("title".equals(parser.getName())) {
                     notification.setTitle(parser.nextText());

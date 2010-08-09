@@ -54,8 +54,8 @@ public class NotificationDetailsActivity extends Activity {
 
         Intent intent = getIntent();
         String notificationId = intent.getStringExtra("NOTIFICATION_ID");
-        String notificationAppKey = intent
-                .getStringExtra("NOTIFICATION_APP_KEY");
+        String notificationApiKey = intent
+                .getStringExtra("NOTIFICATION_API_KEY");
         String notificationTitle = intent.getStringExtra("NOTIFICATION_TITLE");
         String notificationMessage = intent
                 .getStringExtra("NOTIFICATION_MESSAGE");
@@ -64,7 +64,7 @@ public class NotificationDetailsActivity extends Activity {
         String notificationUrl = intent.getStringExtra("NOTIFICATION_URL");
 
         Log.d(LOGTAG, "notificationId=" + notificationId);
-        Log.d(LOGTAG, "notificationAppKey=" + notificationAppKey);
+        Log.d(LOGTAG, "notificationApiKey=" + notificationApiKey);
         Log.d(LOGTAG, "notificationTitle=" + notificationTitle);
         Log.d(LOGTAG, "notificationMessage=" + notificationMessage);
         Log.d(LOGTAG, "notificationTicker=" + notificationTicker);

@@ -42,8 +42,8 @@ public final class MainReceiver extends BroadcastReceiver {
         if ("org.androidpn.sdk.SHOW_NOTIFICATION".equals(action)) {
 
             String notificationId = intent.getStringExtra("NOTIFICATION_ID");
-            String notificationAppKey = intent
-                    .getStringExtra("NOTIFICATION_APP_KEY");
+            String notificationApiKey = intent
+                    .getStringExtra("NOTIFICATION_API_KEY");
             String notificationTitle = intent
                     .getStringExtra("NOTIFICATION_TITLE");
             String notificationMessage = intent
@@ -53,14 +53,14 @@ public final class MainReceiver extends BroadcastReceiver {
             String notificationUrl = intent.getStringExtra("NOTIFICATION_URL");
 
             Log.d(LOGTAG, "notificationId=" + notificationId);
-            Log.d(LOGTAG, "notificationAppKey=" + notificationAppKey);
+            Log.d(LOGTAG, "notificationApiKey=" + notificationApiKey);
             Log.d(LOGTAG, "notificationTitle=" + notificationTitle);
             Log.d(LOGTAG, "notificationMessage=" + notificationMessage);
             Log.d(LOGTAG, "notificationTicker=" + notificationTicker);
             Log.d(LOGTAG, "notificationUrl=" + notificationUrl);
 
             Notifier notifier = new Notifier(context);
-            notifier.notify(notificationId, notificationAppKey,
+            notifier.notify(notificationId, notificationApiKey,
                     notificationTitle, notificationMessage, notificationTicker,
                     notificationUrl);
             Log.d(LOGTAG, "notifier.notify()...done!");
@@ -68,8 +68,8 @@ public final class MainReceiver extends BroadcastReceiver {
         } else if ("org.androidpn.sdk.NOTIFICATION_CLICKED".equals(action)) {
 
             String notificationId = intent.getStringExtra("NOTIFICATION_ID");
-            String notificationAppKey = intent
-                    .getStringExtra("NOTIFICATION_APP_KEY");
+            String notificationApiKey = intent
+                    .getStringExtra("NOTIFICATION_API_KEY");
             String notificationTitle = intent
                     .getStringExtra("NOTIFICATION_TITLE");
             String notificationMessage = intent
@@ -79,7 +79,7 @@ public final class MainReceiver extends BroadcastReceiver {
             String notificationUrl = intent.getStringExtra("NOTIFICATION_URL");
 
             //            Log.d(LOGTAG, "notificationId=" + notificationId);
-            //            Log.d(LOGTAG, "notificationAppKey=" + notificationAppKey);
+            //            Log.d(LOGTAG, "notificationApiKey=" + notificationApiKey);
             //            Log.d(LOGTAG, "notificationTitle=" + notificationTitle);
             //            Log.d(LOGTAG, "notificationMessage=" + notificationMessage);
             //            Log.d(LOGTAG, "notificationTicker=" + notificationTicker);
@@ -89,7 +89,7 @@ public final class MainReceiver extends BroadcastReceiver {
             detailsIntent.setClassName(context.getPackageName(),
                     NotificationDetailsActivity.class.getName());
             detailsIntent.putExtra("NOTIFICATION_ID", notificationId);
-            detailsIntent.putExtra("NOTIFICATION_APP_KEY", notificationAppKey);
+            detailsIntent.putExtra("NOTIFICATION_API_KEY", notificationApiKey);
             detailsIntent.putExtra("NOTIFICATION_TITLE", notificationTitle);
             detailsIntent.putExtra("NOTIFICATION_MESSAGE", notificationMessage);
             detailsIntent.putExtra("NOTIFICATION_TICKER", notificationTicker);

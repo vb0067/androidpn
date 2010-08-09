@@ -43,20 +43,20 @@ public class NotificationPacketListener implements PacketListener {
         Log.e(LOGTAG, "NotificationPacketListener.processPacket()...");
         Log.e(LOGTAG, "packet.toXML()=" + packet.toXML());
 
-        if (packet instanceof XmppNotification) {
-            XmppNotification notification = (XmppNotification) packet;
+        if (packet instanceof NotificationIQ) {
+            NotificationIQ notification = (NotificationIQ) packet;
 
             if (notification.getChildElementXML().contains(
                     "androidpn:iq:notification")) {
                 String notificationId = notification.getId();
-                String notificationAppKey = notification.getAppKey();
+                String notificationApiKey = notification.getApiKey();
                 String notificationTitle = notification.getTitle();
                 String notificationMessage = notification.getMessage();
                 String notificationTicker = notification.getTicker();
                 String notificationUrl = notification.getUrl();
 
                 //                Log.d(LOGTAG, "notificationId=" + notificationId);
-                //                Log.d(LOGTAG, "notificationAppKey=" + notificationAppKey);
+                //                Log.d(LOGTAG, "notificationApiKey=" + notificationApiKey);
                 //                Log.d(LOGTAG, "notificationTitle=" + notificationTitle);
                 //                Log.d(LOGTAG, "notificationMessage=" + notificationMessage);
                 //                Log.d(LOGTAG, "notificationTicker=" + notificationTicker);
@@ -65,7 +65,7 @@ public class NotificationPacketListener implements PacketListener {
                 Intent intent = new Intent(
                         "org.androidpn.sdk.SHOW_NOTIFICATION");
                 intent.putExtra("NOTIFICATION_ID", notificationId);
-                intent.putExtra("NOTIFICATION_APP_KEY", notificationAppKey);
+                intent.putExtra("NOTIFICATION_API_KEY", notificationApiKey);
                 intent.putExtra("NOTIFICATION_TITLE", notificationTitle);
                 intent.putExtra("NOTIFICATION_MESSAGE", notificationMessage);
                 intent.putExtra("NOTIFICATION_TICKER", notificationTicker);
@@ -79,7 +79,7 @@ public class NotificationPacketListener implements PacketListener {
         //        // TODO remove this later
         //        Intent intent = new Intent("org.androidpn.sdk.SHOW_NOTIFICATION");
         //        intent.putExtra("NOTIFICATION_ID", "12345");
-        //        intent.putExtra("NOTIFICATION_APP_KEY", "1234567890");
+        //        intent.putExtra("NOTIFICATION_API_KEY", "1234567890");
         //        intent.putExtra("NOTIFICATION_TITLE", "Demo App");
         //        intent.putExtra("NOTIFICATION_MESSAGE", "This is a test message.");
         //        intent.putExtra("NOTIFICATION_TICKER", "This is a test message.");

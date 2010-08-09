@@ -336,7 +336,7 @@ public class XmppManager {
 
     //    public void registerNotificationPacketListener() {
     //        // pcaket filter
-    //        PacketFilter packetFilter = new PacketTypeFilter(XmppNotification.class);
+    //        PacketFilter packetFilter = new PacketTypeFilter(NotificationIQ.class);
     //        // packet listener
     //        connection.addPacketListener(packetListener, packetFilter);
     //    }
@@ -524,7 +524,7 @@ public class XmppManager {
 
                     // packet filter
                     PacketFilter packetFilter = new PacketTypeFilter(
-                            XmppNotification.class);
+                            NotificationIQ.class);
 
                     // packet listener
                     // connection.addPacketListener(packetListener, packetFilter);

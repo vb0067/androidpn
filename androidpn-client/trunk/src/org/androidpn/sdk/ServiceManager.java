@@ -36,7 +36,7 @@ public final class ServiceManager {
 
     public static final String ANDROIDPN_PORT = "ANDROIDPN_PORT";
 
-    public static final String ANDROIDPN_APP_KEY = "ANDROIDPN_APP_KEY";
+    public static final String ANDROIDPN_API_KEY = "ANDROIDPN_API_KEY";
 
     private static final String LOGTAG = ServiceManager.class.getName();
 
@@ -46,7 +46,7 @@ public final class ServiceManager {
 
     //    private Properties sdkProperties;
 
-    private String appKey;
+    private String apiKey;
 
     private String xmppHost;
 
@@ -80,11 +80,11 @@ public final class ServiceManager {
         Log.i(LOGTAG, "xmppHost=" + xmppHost);
         Log.i(LOGTAG, "xmppPort=" + xmppPort);
 
-        //        this.appKey = getAppKey(context);
-        appKey = getMetaDataValue(ANDROIDPN_APP_KEY);
-        Log.i(LOGTAG, "appKey=" + appKey);
+        //        this.apiKey = getApiKey(context);
+        apiKey = getMetaDataValue(ANDROIDPN_API_KEY);
+        Log.i(LOGTAG, "apiKey=" + apiKey);
 
-        //        if (appKey == null) {
+        //        if (apiKey == null) {
         //            Log.e(LOGTAG, "Please set the androidpn app key in the manifest file.");
         //            //throw new RuntimeException();
         //        }
@@ -94,7 +94,7 @@ public final class ServiceManager {
                 callbackActivityPackageName);
         editor.putString(Constants.CALLBACK_ACTIVITY_CLASS_NAME,
                 callbackActivityClassName);
-        editor.putString(Constants.APP_KEY, appKey);
+        editor.putString(Constants.API_KEY, apiKey);
         editor.putString(Constants.XMPP_HOST, xmppHost);
         editor.putInt(Constants.XMPP_PORT, Integer.parseInt(xmppPort));
         editor.commit();
@@ -147,8 +147,8 @@ public final class ServiceManager {
         return value.toString();
     }
 
-    //    private String getAppKey(Context context) {
-    //        if (appKey == null) {
+    //    private String getApiKey(Context context) {
+    //        if (apiKey == null) {
     //            try {
     //                PackageManager packageManager = context.getPackageManager();
     //                ApplicationInfo applicationInfo = packageManager
@@ -157,19 +157,19 @@ public final class ServiceManager {
     //                    throw new RuntimeException(
     //                            "Could not read the api key. No meta data found in the manifest file.");
     //                }
-    //                appKey = applicationInfo.metaData
-    //                        .getString(Constants.ANDROIDPN_APP_KEY);
+    //                apiKey = applicationInfo.metaData
+    //                        .getString(Constants.ANDROIDPN_API_KEY);
     //
     //            } catch (NameNotFoundException ex) {
     //                throw new RuntimeException(
     //                        "Could not read the api key. No name found in the manifest file.");
     //            }
     //        }
-    //        if (appKey == null) {
+    //        if (apiKey == null) {
     //            throw new RuntimeException(
     //                    "Could not read the api key because of an unknown error.");
     //        } else {
-    //            return appKey;
+    //            return apiKey;
     //        }
     //    }
 

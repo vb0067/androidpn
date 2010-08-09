@@ -31,7 +31,7 @@ public class RegistrationProvider implements IQProvider {
 
     @Override
     public IQ parseIQ(XmlPullParser parser) throws Exception {
-        XmppRegistration registration = new XmppRegistration();
+        RegistrationIQ registration = new RegistrationIQ();
         for (boolean done = false; !done;) {
             int eventType = parser.next();
             if (eventType == 2) {

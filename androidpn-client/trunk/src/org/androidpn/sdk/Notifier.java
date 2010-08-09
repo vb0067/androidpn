@@ -49,7 +49,7 @@ public class Notifier {
                 .getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
-    public void notify(String notificationId, String appKey, String title,
+    public void notify(String notificationId, String apiKey, String title,
             String message, String ticker, String url) {
 
         Log.d(LOGTAG, "notify()...");
@@ -78,7 +78,7 @@ public class Notifier {
         Intent positiveIntent = new Intent(
                 "org.androidpn.sdk.NOTIFICATION_CLICKED");
         positiveIntent.putExtra("NOTIFICATION_ID", notificationId);
-        positiveIntent.putExtra("NOTIFICATION_APP_KEY", appKey);
+        positiveIntent.putExtra("NOTIFICATION_API_KEY", apiKey);
         positiveIntent.putExtra("NOTIFICATION_TITLE", title);
         positiveIntent.putExtra("NOTIFICATION_MESSAGE", message);
         positiveIntent.putExtra("NOTIFICATION_TICKER", ticker);
@@ -90,7 +90,7 @@ public class Notifier {
         Intent negativeIntent = new Intent(
                 "org.androidpn.sdk.NOTIFICATION_CLEARED");
         negativeIntent.putExtra("NOTIFICATION_ID", notificationId);
-        negativeIntent.putExtra("NOTIFICATION_APP_KEY", appKey);
+        negativeIntent.putExtra("NOTIFICATION_API_KEY", apiKey);
 
         PendingIntent negativePendingIntent = PendingIntent.getBroadcast(
                 context, 0, negativeIntent, 0);
