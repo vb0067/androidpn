@@ -28,7 +28,7 @@ public class XmppNotification extends IQ {
 
     private String appKey;
 
-    private String from;
+    private String title;
 
     private String message;
 
@@ -67,12 +67,12 @@ public class XmppNotification extends IQ {
         this.appKey = appKey;
     }
 
-    public String getFrom() {
-        return from;
+    public String getTitle() {
+        return title;
     }
 
-    public void setFrom(String from) {
-        this.from = from;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getMessage() {

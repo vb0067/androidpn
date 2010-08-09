@@ -19,14 +19,15 @@ import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.IQProvider;
 import org.xmlpull.v1.XmlPullParser;
 
-import android.util.Log;
-
 /** 
  * Class desciption here.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
 public class NotificationProvider implements IQProvider {
+
+    public NotificationProvider() {
+    }
 
     @Override
     public IQ parseIQ(XmlPullParser parser) throws Exception {
@@ -35,12 +36,23 @@ public class NotificationProvider implements IQProvider {
         for (boolean done = false; !done;) {
             int eventType = parser.next();
             if (eventType == 2) {
-                if ("messageContent".equals(parser.getName())) {
-                    String notificationData = parser.nextText();
-
-                    Log.d("TODO", "Parsing notification data......"
-                            + notificationData);
-
+                if ("id".equals(parser.getName())) {
+                    notification.setId(parser.nextText());
+                }
+                if ("appKey".equals(parser.getName())) {
+                    notification.setAppKey(parser.nextText());
+                }
+                if ("title".equals(parser.getName())) {
+                    notification.setTitle(parser.nextText());
+                }
+                if ("message".equals(parser.getName())) {
+                    notification.setMessage(parser.nextText());
+                }
+                if ("ticker".equals(parser.getName())) {
+                    notification.setTicker(parser.nextText());
+                }
+                if ("url".equals(parser.getName())) {
+                    notification.setUrl(parser.nextText());
                 }
             } else if (eventType == 3
                     && "notification".equals(parser.getName())) {
@@ -49,7 +61,6 @@ public class NotificationProvider implements IQProvider {
         }
 
         return notification;
-
     }
 
 }

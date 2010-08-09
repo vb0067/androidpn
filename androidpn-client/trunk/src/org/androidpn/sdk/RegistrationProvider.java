@@ -20,11 +20,14 @@ import org.jivesoftware.smack.provider.IQProvider;
 import org.xmlpull.v1.XmlPullParser;
 
 /** 
- * Class desciption here.
+ * Class desciption h
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
 public class RegistrationProvider implements IQProvider {
+
+    public RegistrationProvider() {
+    }
 
     @Override
     public IQ parseIQ(XmlPullParser parser) throws Exception {

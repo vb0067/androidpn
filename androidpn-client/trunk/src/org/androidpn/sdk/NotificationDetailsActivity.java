@@ -56,7 +56,7 @@ public class NotificationDetailsActivity extends Activity {
         String notificationId = intent.getStringExtra("NOTIFICATION_ID");
         String notificationAppKey = intent
                 .getStringExtra("NOTIFICATION_APP_KEY");
-        String notificationFrom = intent.getStringExtra("NOTIFICATION_FROM");
+        String notificationTitle = intent.getStringExtra("NOTIFICATION_TITLE");
         String notificationMessage = intent
                 .getStringExtra("NOTIFICATION_MESSAGE");
         String notificationTicker = intent
@@ -65,7 +65,7 @@ public class NotificationDetailsActivity extends Activity {
 
         Log.d(LOGTAG, "notificationId=" + notificationId);
         Log.d(LOGTAG, "notificationAppKey=" + notificationAppKey);
-        Log.d(LOGTAG, "notificationFrom=" + notificationFrom);
+        Log.d(LOGTAG, "notificationTitle=" + notificationTitle);
         Log.d(LOGTAG, "notificationMessage=" + notificationMessage);
         Log.d(LOGTAG, "notificationTicker=" + notificationTicker);
         Log.d(LOGTAG, "notificationUrl=" + notificationUrl);
@@ -78,7 +78,7 @@ public class NotificationDetailsActivity extends Activity {
         //            rootView = null;
         //        }
 
-        View rootView = createView(notificationFrom, notificationMessage);
+        View rootView = createView(notificationTitle, notificationMessage);
         setContentView(rootView);
     }
 

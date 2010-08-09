@@ -49,7 +49,7 @@ public class Notifier {
                 .getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
-    public void notify(String notificationId, String appKey, String from,
+    public void notify(String notificationId, String appKey, String title,
             String message, String ticker, String url) {
 
         Log.d(LOGTAG, "notify()...");
@@ -79,7 +79,7 @@ public class Notifier {
                 "org.androidpn.sdk.NOTIFICATION_CLICKED");
         positiveIntent.putExtra("NOTIFICATION_ID", notificationId);
         positiveIntent.putExtra("NOTIFICATION_APP_KEY", appKey);
-        positiveIntent.putExtra("NOTIFICATION_FROM", from);
+        positiveIntent.putExtra("NOTIFICATION_TITLE", title);
         positiveIntent.putExtra("NOTIFICATION_MESSAGE", message);
         positiveIntent.putExtra("NOTIFICATION_TICKER", ticker);
         positiveIntent.putExtra("NOTIFICATION_URL", url);
@@ -97,7 +97,7 @@ public class Notifier {
 
         notification.tickerText = ticker;
         notification.when = System.currentTimeMillis();
-        notification.setLatestEventInfo(context, from, message,
+        notification.setLatestEventInfo(context, title, message,
                 positivePendingIntent);
         notification.deleteIntent = negativePendingIntent;
         notificationManager.notify(random.nextInt(), notification);

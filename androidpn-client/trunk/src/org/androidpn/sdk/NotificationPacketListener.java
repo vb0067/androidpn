@@ -27,8 +27,9 @@ import android.util.Log;
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
 public class NotificationPacketListener implements PacketListener {
-    
-    private static final String LOGTAG = NotificationPacketListener.class.getName();
+
+    private static final String LOGTAG = NotificationPacketListener.class
+            .getName();
 
     private final XmppManager xmppManager;
 
@@ -39,27 +40,33 @@ public class NotificationPacketListener implements PacketListener {
     @Override
     public void processPacket(Packet packet) {
 
-        Log.d(LOGTAG, "NotificationPacketListener.processPacket()...");
-        Log.d(LOGTAG, "packet.toXML()=" + packet.toXML());
+        Log.e(LOGTAG, "NotificationPacketListener.processPacket()...");
+        Log.e(LOGTAG, "packet.toXML()=" + packet.toXML());
 
         if (packet instanceof XmppNotification) {
             XmppNotification notification = (XmppNotification) packet;
 
             if (notification.getChildElementXML().contains(
-                    "androidpn.iq.notification")) {
-
+                    "androidpn:iq:notification")) {
                 String notificationId = notification.getId();
                 String notificationAppKey = notification.getAppKey();
-                String notificationFrom = notification.getFrom();
+                String notificationTitle = notification.getTitle();
                 String notificationMessage = notification.getMessage();
                 String notificationTicker = notification.getTicker();
                 String notificationUrl = notification.getUrl();
+
+                //                Log.d(LOGTAG, "notificationId=" + notificationId);
+                //                Log.d(LOGTAG, "notificationAppKey=" + notificationAppKey);
+                //                Log.d(LOGTAG, "notificationTitle=" + notificationTitle);
+                //                Log.d(LOGTAG, "notificationMessage=" + notificationMessage);
+                //                Log.d(LOGTAG, "notificationTicker=" + notificationTicker);
+                //                Log.d(LOGTAG, "notificationUrl=" + notificationUrl);
 
                 Intent intent = new Intent(
                         "org.androidpn.sdk.SHOW_NOTIFICATION");
                 intent.putExtra("NOTIFICATION_ID", notificationId);
                 intent.putExtra("NOTIFICATION_APP_KEY", notificationAppKey);
-                intent.putExtra("NOTIFICATION_FROM", notificationFrom);
+                intent.putExtra("NOTIFICATION_TITLE", notificationTitle);
                 intent.putExtra("NOTIFICATION_MESSAGE", notificationMessage);
                 intent.putExtra("NOTIFICATION_TICKER", notificationTicker);
                 intent.putExtra("NOTIFICATION_URL", notificationUrl);
@@ -69,16 +76,16 @@ public class NotificationPacketListener implements PacketListener {
 
         }
 
-        // TODO remove this later
-        Intent intent = new Intent("org.androidpn.sdk.SHOW_NOTIFICATION");
-        intent.putExtra("NOTIFICATION_ID", "12345");
-        intent.putExtra("NOTIFICATION_APP_KEY", "1234567890");
-        intent.putExtra("NOTIFICATION_FROM", "Demo App");
-        intent.putExtra("NOTIFICATION_MESSAGE", "This is a test message.");
-        intent.putExtra("NOTIFICATION_TICKER", "This is a test message.");
-        intent.putExtra("NOTIFICATION_URL", "");
-
-        XmppManager.getContext(xmppManager).sendBroadcast(intent);
+        //        // TODO remove this later
+        //        Intent intent = new Intent("org.androidpn.sdk.SHOW_NOTIFICATION");
+        //        intent.putExtra("NOTIFICATION_ID", "12345");
+        //        intent.putExtra("NOTIFICATION_APP_KEY", "1234567890");
+        //        intent.putExtra("NOTIFICATION_TITLE", "Demo App");
+        //        intent.putExtra("NOTIFICATION_MESSAGE", "This is a test message.");
+        //        intent.putExtra("NOTIFICATION_TICKER", "This is a test message.");
+        //        intent.putExtra("NOTIFICATION_URL", "");
+        //
+        //        XmppManager.getContext(xmppManager).sendBroadcast(intent);
 
     }
 

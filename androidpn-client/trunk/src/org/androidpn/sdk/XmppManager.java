@@ -25,6 +25,7 @@ import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.ConnectionConfiguration.SecurityMode;
 import org.jivesoftware.smack.filter.AndFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.filter.PacketIDFilter;
@@ -357,12 +358,13 @@ public class XmppManager {
             if (!XmppManager.isConnected(xmppManager)) {
 
                 // Create the configuration for this new connection
-                ConnectionConfiguration config = new ConnectionConfiguration(
-                        xmppHost, xmppPort, "AndroidpnXmppClient");
-                // config.setCompressionEnabled(true);
-                // config.setSASLAuthenticationEnabled(true);
+                ConnectionConfiguration connConfig = new ConnectionConfiguration(
+                        xmppHost, xmppPort);
+                connConfig.setSecurityMode(SecurityMode.disabled);
+                connConfig.setSASLAuthenticationEnabled(false);
+                connConfig.setCompressionEnabled(false);
 
-                XMPPConnection connection = new XMPPConnection(config);
+                XMPPConnection connection = new XMPPConnection(connConfig);
                 XmppManager.setXMPPConnection(xmppManager, connection);
 
                 try {
@@ -376,7 +378,7 @@ public class XmppManager {
                             new RegistrationProvider());
                     ProviderManager.getInstance().addIQProvider("notification",
                             "androidpn:iq:notification",
-                            new RegistrationProvider());
+                            new NotificationProvider());
 
                 } catch (XMPPException e) {
                     Log.e(LOGTAG, "XMPP connection failed", e);
@@ -422,8 +424,10 @@ public class XmppManager {
 
                     public void processPacket(Packet packet) {
 
-                        Log.d("PacketListener", "processPacket().....");
-                        Log.e("PacketListener", "packet=" + packet.toXML());
+                        Log.d("RegisterTask.PacketListener",
+                                "processPacket().....");
+                        Log.d("RegisterTask.PacketListener", "packet="
+                                + packet.toXML());
 
                         if (packet instanceof IQ) {
                             IQ response = (IQ) packet;
@@ -508,7 +512,7 @@ public class XmppManager {
                     XmppManager.getXMPPConnection(xmppManager).login(
                             XmppManager.getUsername(xmppManager),
                             XmppManager.getPassword(xmppManager),
-                            "AndroidpnXmppClient");
+                            "AndroidpnClient");
 
                     Log.d(LOGTAG, "Loggedn in successfully");
 
