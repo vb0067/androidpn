@@ -22,8 +22,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.androidpn.server.XmppServer;
-import org.androidpn.server.xmpp.auth.AuthToken;
 import org.androidpn.server.xmpp.net.Connection;
+import org.androidpn.server.xmpp.net.ConnectionCloseListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xmpp.packet.JID;
@@ -47,6 +47,8 @@ public class SessionManager {
     private Map<String, ClientSession> clientSessions = new ConcurrentHashMap<String, ClientSession>();
 
     private final AtomicInteger connectionsCounter = new AtomicInteger(0);
+
+    private ClientSessionListener clientSessionListener = new ClientSessionListener();
 
     private SessionManager() {
         serverName = XmppServer.getInstance().getServerName();
@@ -73,13 +75,12 @@ public class SessionManager {
         }
         ClientSession session = new ClientSession(serverName, conn, streamId);
         conn.init(session);
-
+        // Register to receive close notification on this session
+        conn.registerCloseListener(clientSessionListener, session);
         // Add to pre-authenticated sessions
         preAuthSessions.put(session.getAddress().getResource(), session);
-
         // Increment the counter of user sessions
         connectionsCounter.incrementAndGet();
-
         return session;
     }
 
@@ -90,7 +91,13 @@ public class SessionManager {
         clientSessions.put(session.getAddress().toString(), session);
     }
 
+    public ClientSession getSession(String username) {
+        // return getSession(new JID(username, serverName, null, true));
+        return getSession(new JID(username, serverName, "AndroidpnClient", true));
+    }
+
     public ClientSession getSession(JID from) {
+
         if (from == null || serverName == null
                 || !serverName.equals(from.getDomain())) {
             return null;
@@ -116,23 +123,15 @@ public class SessionManager {
     }
 
     public boolean removeSession(ClientSession session) {
-        // Do nothing if session is null or if the server is shutting down.
-        // Note: When the server is shutting down the serverName will be null.
         if (session == null || serverName == null) {
             return false;
         }
 
-        AuthToken authToken = session.getAuthToken();
-        // Consider session anonymous (for this matter) if we are closing
-        // a session that never authenticated
-        boolean anonymous = authToken == null || authToken.isAnonymous();
-        return removeSession(session, session.getAddress(), anonymous, false);
+        return removeSession(session, session.getAddress(), false);
     }
 
     public boolean removeSession(ClientSession session, JID fullJID,
-            boolean anonymous, boolean forceUnavailable) {
-        // Do nothing if server is shutting down. Note: When the server
-        // is shutting down the serverName will be null.
+            boolean forceUnavailable) {
         if (serverName == null) {
             return false;
         }
@@ -141,8 +140,7 @@ public class SessionManager {
             session = getSession(fullJID);
         }
 
-        // Remove route to the removed session (anonymous or not)
-        boolean removed = clientSessions.remove(fullJID) != null;
+        boolean removed = clientSessions.remove(fullJID.toString()) != null;
 
         // Remove the session from the pre-Authenticated sessions list (if present)
         boolean preauthRemoved = preAuthSessions.remove(fullJID.getResource()) != null;
@@ -164,4 +162,28 @@ public class SessionManager {
         return false;
     }
 
+    private class ClientSessionListener implements ConnectionCloseListener {
+
+        public void onConnectionClose(Object handback) {
+            try {
+                ClientSession session = (ClientSession) handback;
+                try {
+                    if ((session.getPresence().isAvailable() || !session
+                            .wasAvailable())) {
+                        // Send an unavailable presence to the user's subscribers
+                        Presence presence = new Presence();
+                        presence.setType(Presence.Type.unavailable);
+                        presence.setFrom(session.getAddress());
+                        // router.route(presence);
+                    }
+                } finally {
+                    removeSession(session);
+                }
+            } catch (Exception e) {
+                // Can't do anything about this problem...
+                log.error("Could not close socket", e);
+            }
+        }
+    }
+    
 }

@@ -18,8 +18,6 @@ package org.androidpn.server.xmpp.session;
 import org.androidpn.server.service.UserNotFoundException;
 import org.androidpn.server.xmpp.auth.AuthToken;
 import org.androidpn.server.xmpp.net.Connection;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmpp.packet.JID;
@@ -32,7 +30,7 @@ import org.xmpp.packet.Presence;
  */
 public class ClientSession extends Session {
 
-    private static final Log log = LogFactory.getLog(Session.class);
+    //    private static final Log log = LogFactory.getLog(Session.class);
 
     private static final String ETHERX_NAMESPACE = "http://etherx.jabber.org/streams";
 
@@ -45,10 +43,6 @@ public class ClientSession extends Session {
     private Presence presence = null;
 
     private int conflictCount = 0;
-
-    //    private String activeList;
-    //
-    //    private String defaultList;
 
     public ClientSession(String serverName, Connection connection,
             String streamID) {
@@ -104,8 +98,6 @@ public class ClientSession extends Session {
         // XMPP 1.0 so we need to announce stream features.
         sb = new StringBuilder(490);
         sb.append("<stream:features>");
-        //        // Include available SASL Mechanisms
-        //        sb.append(SASLAuthentication.getSASLMechanisms(session));
         // Include Stream features
         String specificFeatures = session.getAvailableStreamFeatures();
         if (specificFeatures != null) {
@@ -160,10 +152,20 @@ public class ClientSession extends Session {
         return presence;
     }
 
+    public void setPresence(Presence presence) {
+        Presence oldPresence = this.presence;
+        this.presence = presence;
+        if (oldPresence.isAvailable() && !this.presence.isAvailable()) {
+            setInitialized(false);
+        } else if (!oldPresence.isAvailable() && this.presence.isAvailable()) {
+            wasAvailable = true;
+        }
+    }
+
     public String getAvailableStreamFeatures() {
         StringBuilder sb = new StringBuilder(200);
         if (getAuthToken() == null) {
-            // Advertise that the server supports Non-SASL Authentication
+            // Non-SASL Authentication
             sb.append("<auth xmlns=\"http://jabber.org/features/iq-auth\"/>");
             sb
                     .append("<register xmlns=\"http://jabber.org/features/iq-register\"/>");
