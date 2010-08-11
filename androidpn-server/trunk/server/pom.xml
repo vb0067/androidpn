@@ -337,7 +337,7 @@
 		<jdbc.artifactId>hsqldb</jdbc.artifactId>
 		<jdbc.version>1.8.0.10</jdbc.version>
 		<jdbc.driverClassName>org.hsqldb.jdbcDriver</jdbc.driverClassName>
-		<jdbc.url><![CDATA[jdbc:hsqldb:${java.io.tmpdir}/androidpn;shutdown=true]]></jdbc.url>
+		<jdbc.url><![CDATA[jdbc:hsqldb:db/androidpn;shutdown=true]]></jdbc.url>
 		<jdbc.username>sa</jdbc.username>
 		<jdbc.password></jdbc.password>
 	</properties>
