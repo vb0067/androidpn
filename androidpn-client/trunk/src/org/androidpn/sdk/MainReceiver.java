@@ -52,12 +52,12 @@ public final class MainReceiver extends BroadcastReceiver {
                     .getStringExtra("NOTIFICATION_TICKER");
             String notificationUrl = intent.getStringExtra("NOTIFICATION_URL");
 
-            Log.d(LOGTAG, "notificationId=" + notificationId);
-            Log.d(LOGTAG, "notificationApiKey=" + notificationApiKey);
-            Log.d(LOGTAG, "notificationTitle=" + notificationTitle);
-            Log.d(LOGTAG, "notificationMessage=" + notificationMessage);
-            Log.d(LOGTAG, "notificationTicker=" + notificationTicker);
-            Log.d(LOGTAG, "notificationUrl=" + notificationUrl);
+//            Log.w(LOGTAG, "notificationId=" + notificationId);
+//            Log.w(LOGTAG, "notificationApiKey=" + notificationApiKey);
+//            Log.w(LOGTAG, "notificationTitle=" + notificationTitle);
+//            Log.w(LOGTAG, "notificationMessage=" + notificationMessage);
+//            Log.w(LOGTAG, "notificationTicker=" + notificationTicker);
+//            Log.w(LOGTAG, "notificationUrl=" + notificationUrl);
 
             Notifier notifier = new Notifier(context);
             notifier.notify(notificationId, notificationApiKey,
@@ -78,12 +78,12 @@ public final class MainReceiver extends BroadcastReceiver {
                     .getStringExtra("NOTIFICATION_TICKER");
             String notificationUrl = intent.getStringExtra("NOTIFICATION_URL");
 
-            //            Log.d(LOGTAG, "notificationId=" + notificationId);
-            //            Log.d(LOGTAG, "notificationApiKey=" + notificationApiKey);
-            //            Log.d(LOGTAG, "notificationTitle=" + notificationTitle);
-            //            Log.d(LOGTAG, "notificationMessage=" + notificationMessage);
-            //            Log.d(LOGTAG, "notificationTicker=" + notificationTicker);
-            //            Log.d(LOGTAG, "notificationUrl=" + notificationUrl);
+//            Log.e(LOGTAG, "notificationId=" + notificationId);
+//            Log.e(LOGTAG, "notificationApiKey=" + notificationApiKey);
+//            Log.e(LOGTAG, "notificationTitle=" + notificationTitle);
+//            Log.e(LOGTAG, "notificationMessage=" + notificationMessage);
+//            Log.e(LOGTAG, "notificationTicker=" + notificationTicker);
+//            Log.e(LOGTAG, "notificationUrl=" + notificationUrl);
 
             Intent detailsIntent = new Intent();
             detailsIntent.setClassName(context.getPackageName(),
@@ -97,7 +97,7 @@ public final class MainReceiver extends BroadcastReceiver {
             detailsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // 0x10000000
 
             try {
-                context.startActivity(detailsIntent);
+                context.startActivity(detailsIntent);                
             } catch (ActivityNotFoundException e) {
                 Toast toast = Toast.makeText(context,
                         "No app found to handle this request",

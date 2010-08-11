@@ -15,23 +15,16 @@
  */
 package org.androidpn.sdk;
 
-import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.RejectedExecutionException;
 
 import android.app.Service;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.os.IBinder;
-import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
@@ -46,7 +39,7 @@ public class MainService extends Service {
 
     private static final String LOGTAG = MainService.class.getName();
 
-    private SharedPreferences sdkPreferences;
+    //    private SharedPreferences sdkPreferences;
 
     private TelephonyManager telephonyManager;
 
@@ -54,9 +47,9 @@ public class MainService extends Service {
 
     private ConnectivityManager connectivityManager;
 
-    private final PhoneStateListener phoneStateListener;
-
-    private BroadcastReceiver phoneStateReceiver;
+    //    private final PhoneStateListener phoneStateListener;
+    //
+    //    private BroadcastReceiver phoneStateReceiver;
 
     private ExecutorService executorService;
 
@@ -66,46 +59,46 @@ public class MainService extends Service {
 
     private XmppManager xmppManager;
 
-    private String deviceId;
+    //    private String deviceId;
 
     public MainService() {
         executorService = Executors.newSingleThreadExecutor();
         taskSubmitter = new TaskSubmitter(this);
         taskTracker = new TaskTracker(this);
-        phoneStateListener = new SdkPhoneStateListener(this);
+        //        phoneStateListener = new SdkPhoneStateListener(this);
     }
 
     @Override
     public void onCreate() {
         Log.d(LOGTAG, "onCreate()...");
 
-        sdkPreferences = getSharedPreferences(Constants.SDK_PREFERENCES,
-                Context.MODE_PRIVATE);
+        //        sdkPreferences = getSharedPreferences(Constants.SDK_PREFERENCES,
+        //                Context.MODE_PRIVATE);
 
         telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        deviceId = telephonyManager.getDeviceId();
-        Log.d(LOGTAG, "deviceId=" + deviceId);
-
-        Editor editor = sdkPreferences.edit();
-        editor.putString(Constants.DEVICE_ID, deviceId);
-        editor.commit();
-
-        if (deviceId == null || deviceId.trim().length() == 0
-                || deviceId.matches("0+")) {
-            if (sdkPreferences.contains("EMULATOR_DEVICE_ID")) {
-                deviceId = sdkPreferences.getString(
-                        Constants.EMULATOR_DEVICE_ID, "");
-            } else {
-                deviceId = (new StringBuilder("EMU")).append(
-                        (new Random(System.currentTimeMillis())).nextLong())
-                        .toString();
-                editor.putString(Constants.EMULATOR_DEVICE_ID, deviceId);
-                editor.commit();
-            }
-        }
+        //        deviceId = telephonyManager.getDeviceId();
+        //        Log.d(LOGTAG, "deviceId=" + deviceId);
+        //
+        //        Editor editor = sdkPreferences.edit();
+        //        editor.putString(Constants.DEVICE_ID, deviceId);
+        //        editor.commit();
+        //
+        //        if (deviceId == null || deviceId.trim().length() == 0
+        //                || deviceId.matches("0+")) {
+        //            if (sdkPreferences.contains("EMULATOR_DEVICE_ID")) {
+        //                deviceId = sdkPreferences.getString(
+        //                        Constants.EMULATOR_DEVICE_ID, "");
+        //            } else {
+        //                deviceId = (new StringBuilder("EMU")).append(
+        //                        (new Random(System.currentTimeMillis())).nextLong())
+        //                        .toString();
+        //                editor.putString(Constants.EMULATOR_DEVICE_ID, deviceId);
+        //                editor.commit();
+        //            }
+        //        }
 
         xmppManager = new XmppManager(this, taskSubmitter, taskTracker);
 
@@ -124,7 +117,6 @@ public class MainService extends Service {
     @Override
     public void onStart(Intent intent, int startId) {
         Log.d(LOGTAG, "onStart()...");
-        // TODO
     }
 
     @Override
@@ -152,37 +144,40 @@ public class MainService extends Service {
 
     // ================
 
-    private void registerPhoneStateReceiver() {
-        Log.d(LOGTAG, "registerPhoneStateReceiver()...");
-        telephonyManager.listen(phoneStateListener,
-                PhoneStateListener.LISTEN_DATA_CONNECTION_STATE);
-        IntentFilter intentfilter = new IntentFilter();
-        intentfilter.addAction("android.net.wifi.STATE_CHANGE");
-        registerReceiver(phoneStateReceiver, intentfilter);
-    }
-
-    private void unregisterPhoneStateReceiver() {
-        Log.d(LOGTAG, "unregisterPhoneStateReceiver()...");
-        telephonyManager.listen(phoneStateListener,
-                PhoneStateListener.LISTEN_NONE);
-        unregisterReceiver(phoneStateReceiver);
-    }
+    //    private void registerPhoneStateReceiver() {
+    //        Log.d(LOGTAG, "registerPhoneStateReceiver()...");
+    //        telephonyManager.listen(phoneStateListener,
+    //                PhoneStateListener.LISTEN_DATA_CONNECTION_STATE);
+    //        IntentFilter intentfilter = new IntentFilter();
+    //        intentfilter.addAction("android.net.wifi.STATE_CHANGE");
+    //        registerReceiver(phoneStateReceiver, intentfilter);
+    //    }
+    //
+    //    private void unregisterPhoneStateReceiver() {
+    //        Log.d(LOGTAG, "unregisterPhoneStateReceiver()...");
+    //        telephonyManager.listen(phoneStateListener,
+    //                PhoneStateListener.LISTEN_NONE);
+    //        unregisterReceiver(phoneStateReceiver);
+    //    }
 
     private void start() {
-        registerPhoneStateReceiver();
+        Log.d(LOGTAG, "start()...");
+        // registerPhoneStateReceiver();
         Intent intent = getIntent();
         startService(intent);
         xmppManager.connect();
     }
 
     private void stop() {
-        unregisterPhoneStateReceiver();
+        Log.d(LOGTAG, "stop()...");
+        // unregisterPhoneStateReceiver();
         // mHandler.removeMessages(what);
         xmppManager.disconnect();
         executorService.shutdown();
     }
 
     private void restart() {
+        Log.d(LOGTAG, "restart()...");
 
         taskSubmitter.submit(new Runnable() {
 
@@ -263,14 +258,10 @@ public class MainService extends Service {
             Future result = null;
             if (!MainService.getExecutorService(mainService).isTerminated()
                     && !MainService.getExecutorService(mainService)
-                            .isShutdown() && task != null)
-                try {
-                    result = MainService.getExecutorService(mainService)
-                            .submit(task);
-                } catch (RejectedExecutionException e) {
-                    Log.w(getClass().getName(),
-                            "Execution rejected on secondary thread");
-                }
+                            .isShutdown() && task != null) {
+                result = MainService.getExecutorService(mainService).submit(
+                        task);
+            }
             return result;
         }
 
@@ -300,11 +291,11 @@ public class MainService extends Service {
                 MainService.getTaskTracker(mainService).count--;
                 Log.d(getClass().getName(), "Decremented task count to "
                         + count);
-                if (MainService.getTaskTracker(mainService).count == 0) {
-                    //MainService.start(mainService);
-                    Intent intent = MainService.getIntent();
-                    mainService.startService(intent);
-                }
+//                if (MainService.getTaskTracker(mainService).count == 0) {
+//                    // MainService.start(mainService);
+//                    Intent intent = MainService.getIntent();
+//                    mainService.startService(intent);
+//                }
             }
         }
 

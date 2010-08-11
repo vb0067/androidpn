@@ -73,9 +73,9 @@ public final class ServiceManager {
         Log.i(LOGTAG, "callbackActivityClassName=" + callbackActivityClassName);
 
         //        this.sdkProperties = loadSdkProperties();
-        //        this.xmppHost = sdkProperties.getProperty("xmppHost", "localhost");
+        //        this.xmppHost = sdkProperties.getProperty("xmppHost", "127.0.0.1");
         //        this.xmppPort = sdkProperties.getProperty("xmppPort", "5222");
-        xmppHost = getMetaDataValue(ANDROIDPN_HOST, "localhost");
+        xmppHost = getMetaDataValue(ANDROIDPN_HOST, "127.0.0.1");
         xmppPort = getMetaDataValue(ANDROIDPN_PORT, "5222");
         Log.i(LOGTAG, "xmppHost=" + xmppHost);
         Log.i(LOGTAG, "xmppPort=" + xmppPort);
@@ -85,7 +85,7 @@ public final class ServiceManager {
         Log.i(LOGTAG, "apiKey=" + apiKey);
 
         //        if (apiKey == null) {
-        //            Log.e(LOGTAG, "Please set the androidpn app key in the manifest file.");
+        //            Log.e(LOGTAG, "Please set the androidpn api key in the manifest file.");
         //            //throw new RuntimeException();
         //        }
 
@@ -103,8 +103,7 @@ public final class ServiceManager {
 
     public void startService() {
         // Intent intent = new Intent(MainService.SERVICE_NAME);
-        //        Intent intent = MainService.getIntent();
-        //        context.startService(intent);
+        // context.startService(intent);
 
         Thread serviceThread = new Thread(new Runnable() {
             @Override
@@ -116,10 +115,11 @@ public final class ServiceManager {
         serviceThread.start();
     }
 
-    //    public void stopService() {
-    //        Intent intent = new Intent("org.androidpn.sdk.MainService");
-    //        context.stopService(intent);
-    //    }
+    public void stopService() {
+        // Intent intent = new Intent(MainService.SERVICE_NAME);
+        Intent intent = MainService.getIntent();
+        context.stopService(intent);
+    }
 
     private String getMetaDataValue(String name, String def) {
         String value = getMetaDataValue(name);
@@ -146,32 +146,6 @@ public final class ServiceManager {
         }
         return value.toString();
     }
-
-    //    private String getApiKey(Context context) {
-    //        if (apiKey == null) {
-    //            try {
-    //                PackageManager packageManager = context.getPackageManager();
-    //                ApplicationInfo applicationInfo = packageManager
-    //                        .getApplicationInfo(context.getPackageName(), 128);
-    //                if (applicationInfo == null || applicationInfo.metaData == null) {
-    //                    throw new RuntimeException(
-    //                            "Could not read the api key. No meta data found in the manifest file.");
-    //                }
-    //                apiKey = applicationInfo.metaData
-    //                        .getString(Constants.ANDROIDPN_API_KEY);
-    //
-    //            } catch (NameNotFoundException ex) {
-    //                throw new RuntimeException(
-    //                        "Could not read the api key. No name found in the manifest file.");
-    //            }
-    //        }
-    //        if (apiKey == null) {
-    //            throw new RuntimeException(
-    //                    "Could not read the api key because of an unknown error.");
-    //        } else {
-    //            return apiKey;
-    //        }
-    //    }
 
     //    private Properties loadSdkProperties() {
     //        InputStream in = null;

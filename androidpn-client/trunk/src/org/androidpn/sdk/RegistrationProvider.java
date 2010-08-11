@@ -20,7 +20,7 @@ import org.jivesoftware.smack.provider.IQProvider;
 import org.xmlpull.v1.XmlPullParser;
 
 /** 
- * Class desciption h
+ * Class desciption here
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */

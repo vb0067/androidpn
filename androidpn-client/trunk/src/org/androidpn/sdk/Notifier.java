@@ -118,12 +118,4 @@ public class Notifier {
         return (sound != null) ? Uri.parse(sound) : null;
     }
 
-    //    public static String stripTags(String text) {
-    //        text = text.replaceAll("<b>", "");
-    //        text = text.replaceAll("</b>", "");
-    //        text = text.replaceAll("<i>", "");
-    //        text = text.replaceAll("</i>", "");
-    //        return text;
-    //    }
-
 }

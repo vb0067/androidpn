@@ -148,14 +148,14 @@ public class XmppManager {
     }
 
     private void submitRegisterTask() {
-        submitConnectTask();
         Log.d(LOGTAG, "submitRegisterTask()...");
+        submitConnectTask();
         runTask(new RegisterTask());
     }
 
     private void submitLoginTask(ConnectionListener connectionListener) {
-        submitRegisterTask();
         Log.d(LOGTAG, "submitLoginTask()...");
+        submitRegisterTask();
         runTask(new LoginTask(connectionListener));
     }
 
@@ -352,7 +352,6 @@ public class XmppManager {
         }
 
         public void run() {
-
             Log.i(LOGTAG, "ConnectTask.run()...");
 
             if (!XmppManager.isConnected(xmppManager)) {
@@ -403,12 +402,9 @@ public class XmppManager {
         }
 
         public void run() {
-
             Log.i(LOGTAG, "RegisterTask.run()...");
 
-            if (!xmppManager.isRegistered()) {
-
-                // final XmppManager xmppManager = XmppManager.this;
+            if (!xmppManager.isRegistered()) {                
                 final String newUsername = newRandomUUID();
                 final String newPassword = newRandomUUID();
 
@@ -417,8 +413,6 @@ public class XmppManager {
                 PacketFilter packetFilter = new AndFilter(new PacketIDFilter(
                         registration.getPacketID()), new PacketTypeFilter(
                         IQ.class));
-                //                PacketFilter packetFilter = new AndFilter(new PacketIDFilter(
-                //                        registration.getPacketID()));
 
                 PacketListener packetListener = new PacketListener() {
 
@@ -483,28 +477,17 @@ public class XmppManager {
 
         final XmppManager xmppManager;
 
-        // private _LoginListener loginListener;
-
         private ConnectionListener connectionListener;
 
         private LoginTask(ConnectionListener connectionListener) {
             this.xmppManager = XmppManager.this;
-            // this.loginListener = loginListener;
             this.connectionListener = connectionListener;
         }
 
         public void run() {
-
             Log.i(LOGTAG, "LoginTask.run()...");
 
-            //            Log.d(LOGTAG, "isConnected()=" + connection.isConnected());
-            //            Log.d(LOGTAG, "isAuthenticated()=" + connection.isAuthenticated());
-            //            Log.d(LOGTAG, "isRegistered()=" + isRegistered());
-            //            Log.d(LOGTAG, "!isAuthenticated() && isRegistered()="
-            //                    + (!isAuthenticated() && isRegistered()));
-
             if (!XmppManager.isAuthenticated(xmppManager)) {
-
                 Log.d(LOGTAG, "username=" + username);
                 Log.d(LOGTAG, "password=" + password);
 
@@ -527,14 +510,12 @@ public class XmppManager {
                             NotificationIQ.class);
 
                     // packet listener
-                    // connection.addPacketListener(packetListener, packetFilter);
-                    connection.addPacketListener(packetListener, null); // for test
+                    connection.addPacketListener(packetListener, packetFilter);
 
                     XmppManager.runTask(xmppManager);
 
                 } catch (XMPPException e) {
-
-                    Log.e(LOGTAG, "LoginTask.run()... _ typical error _ ");
+                    Log.e(LOGTAG, "LoginTask.run()... _ xmpp error _ ");
                     Log.e(LOGTAG, "Failed to login to xmpp server. Caused by: "
                             + e.getMessage());
                     String INVALID_CREDENTIALS_ERROR_CODE = "401";
@@ -549,7 +530,7 @@ public class XmppManager {
                     xmppManager.reconnect();
 
                 } catch (Exception e) {
-                    Log.e(LOGTAG, "LoginTask.run()... _ random error _ ");
+                    Log.e(LOGTAG, "LoginTask.run()... _ other error _ ");
                     Log.e(LOGTAG, "Failed to login to xmpp server. Caused by: "
                             + e.getMessage());
 
