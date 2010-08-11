@@ -26,12 +26,6 @@
 		<property name="hibernate.connection.useUnicode">true</property>
 		<property name="hibernate.connection.characterEncoding">utf-8</property>
 
-		<!-- Query substitutions -->
-		<!--
-			<property name="hibernate.query.substitutions">true 'Y', false
-			'N'</property>
-		-->
-
 		<!-- Echo all executed SQL to stdout -->
 		<property name="hibernate.show_sql">false</property>
 		<property name="hibernate.format_sql">true</property>
@@ -42,9 +36,6 @@
 		<property name="hibernate.hbm2ddl.auto">update</property>
 
 		<!-- Mapping Files -->
-		<!--
-			<mapping resource="org/androidpn/server/model/User.hbm.xml" />
-		-->
 		<mapping class="org.androidpn.server.model.User" />
 
 	</session-factory>
