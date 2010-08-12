@@ -133,6 +133,12 @@ public class Connection {
             notifyCloseListeners();
         }
     }
+    
+    public void systemShutdown() {
+        deliverRawText("<stream:error><system-shutdown "
+                + "xmlns='urn:ietf:params:xml:ns:xmpp-streams'/></stream:error>");
+        close();
+    }    
 
     public void registerCloseListener(ConnectionCloseListener listener,
             Object ignore) {

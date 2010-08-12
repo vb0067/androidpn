@@ -2,9 +2,10 @@ ANDROIDPN-SERVER CHANGELOG
 ==========================
 http://androidpn.sourceforge.net/
 
-Changes in version 0.3.1 (2010-08-11)
+Changes in version 0.3.1 (2010-08-12)
 -------------------------------------
-* Updated pom.xml to set hsqldb as the default 
+* Updated pom.xml to set hsqldb as the default
+* Updated XmppServer, SessionManager, Connection 
 
 Changes in version 0.3.0 (2010-08-09)
 -------------------------------------

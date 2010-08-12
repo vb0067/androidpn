@@ -23,6 +23,7 @@ import javax.net.ssl.SSLContext;
 
 import org.androidpn.server.container.AdminConsole;
 import org.androidpn.server.util.Config;
+import org.androidpn.server.xmpp.session.SessionManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jivesoftware.util.TaskEngine;
@@ -64,6 +65,10 @@ public class XmppServer {
 
     public void start() {
         try {
+            if (isStandAlone()) {
+                Runtime.getRuntime().addShutdownHook(new ShutdownHookThread());
+            }
+
             locateServer();
             serverName = Config.getString("xmpp.domain", "127.0.0.1")
                     .toLowerCase();
@@ -104,51 +109,21 @@ public class XmppServer {
         return sslContext;
     }
 
-    //    public static void main(String[] args) {
-    //        context = new ClassPathXmlApplicationContext("applicationContext.xml");
-    //        log.info("XmppServer started.");
-    //    }
-
-    //    private File verifyHome(String homeGuess) throws FileNotFoundException {
-    //        File serverHome = new File(homeGuess);
-    //        File configDir = new File(serverHome, "conf");
-    //        if (!configDir.exists()) {
-    //            throw new FileNotFoundException();
-    //        } else {
-    //            try {
-    //                return new File(serverHome.getCanonicalPath());
-    //            } catch (Exception ex) {
-    //                throw new FileNotFoundException();
-    //            }
-    //        }
-    //    }
-
     private void locateServer() throws FileNotFoundException {
         String baseDir = System.getProperty("base.dir", "..");
 
         if (serverHomeDir == null) {
             try {
-                // serverHome = verifyHome(baseDir).getCanonicalFile();
                 File confDir = new File(baseDir, "conf");
                 if (confDir.exists()) {
                     serverHomeDir = confDir.getParentFile().getCanonicalPath();
                 }
             } catch (FileNotFoundException fe) {
-                // Ignore.
+                // Ignore
             } catch (IOException ie) {
-                // Ignore.
+                // Ignore
             }
         }
-
-        //        if (serverHome == null) {
-        //            try {
-        //                serverHome = verifyHome("..").getCanonicalFile();
-        //            } catch (FileNotFoundException fe) {
-        //                // Ignore.
-        //            } catch (IOException ie) {
-        //                // Ignore.
-        //            }
-        //        }
 
         if (serverHomeDir == null) {
             System.err.println("Could not locate home");
@@ -159,10 +134,6 @@ public class XmppServer {
         }
     }
 
-    //    public String getServerHomeDirectory() {
-    //        return serverHomeDir;
-    //    }
-
     public boolean isShuttingDown() {
         return shuttingDown;
     }
@@ -171,8 +142,27 @@ public class XmppServer {
         shuttingDown = true;
         // Shutdown the task engine.
         TaskEngine.getInstance().shutdown();
-        // hack to allow safe stopping
-        log.info("XmppServer stopped: " + serverName);
+        // Close all connections
+        SessionManager.getInstance().closeAllSessions();
+        log.info("XmppServer stopped");
+    }
+
+    public boolean isStandAlone() {
+        boolean standalone;
+        try {
+            standalone = Class.forName("org.androidpn.starter.ServerStarter") != null;
+        } catch (ClassNotFoundException e) {
+            standalone = false;
+        }
+        return standalone;
+    }
+
+    private class ShutdownHookThread extends Thread {
+        public void run() {
+            shutdownServer();
+            log.info("Server halted");
+            System.err.println("Server halted");
+        }
     }
 
     private class ShutdownThread extends Thread {

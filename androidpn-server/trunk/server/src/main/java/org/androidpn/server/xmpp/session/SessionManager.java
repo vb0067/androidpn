@@ -16,8 +16,10 @@
 package org.androidpn.server.xmpp.session;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -160,6 +162,23 @@ public class SessionManager {
             return true;
         }
         return false;
+    }
+    
+    public void closeAllSessions() {
+        try {
+            // Send the close stream header to all connections
+            Set<ClientSession> sessions = new HashSet<ClientSession>();
+            sessions.addAll(preAuthSessions.values());
+            sessions.addAll(clientSessions.values());
+
+            for (ClientSession session : sessions) {
+                try {
+                    session.getConnection().systemShutdown();
+                } catch (Throwable t) {
+                }
+            }
+        } catch (Exception e) {
+        }
     }
 
     private class ClientSessionListener implements ConnectionCloseListener {
