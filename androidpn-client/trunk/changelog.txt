@@ -2,10 +2,10 @@ ANDROIDPN-CLIENT CHANGELOG
 ==========================
 http://androidpn.sourceforge.net/
 
-Changes in version 0.2.1 (2010-08-??)
+Changes in version 0.2.1 (2010-08-12)
 -------------------------------------
 * Updated MainService, MainReceiver
-* Updated XmppManager
+* Updated XmppManager, PacketListener
 
 Changes in version 0.2.0 (2010-08-09)
 -------------------------------------
