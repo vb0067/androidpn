@@ -22,8 +22,6 @@ package org.androidpn.sdk;
  */
 public class Constants {
 
-    // public static String APP_PREFERENCES = "AppPreferences";
-
     public static final String SDK_PREFERENCES = "SdkPreferences";
 
     // KEYS

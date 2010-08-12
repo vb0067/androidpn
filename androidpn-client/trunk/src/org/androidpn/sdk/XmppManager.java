@@ -372,9 +372,6 @@ public class XmppManager {
                     Log.i(LOGTAG, "XMPP connected successfully");
 
                     // packet provider
-                    ProviderManager.getInstance().addIQProvider("registration",
-                            "androidpn:iq:registration",
-                            new RegistrationProvider());
                     ProviderManager.getInstance().addIQProvider("notification",
                             "androidpn:iq:notification",
                             new NotificationProvider());
@@ -404,7 +401,7 @@ public class XmppManager {
         public void run() {
             Log.i(LOGTAG, "RegisterTask.run()...");
 
-            if (!xmppManager.isRegistered()) {                
+            if (!xmppManager.isRegistered()) {
                 final String newUsername = newRandomUUID();
                 final String newPassword = newRandomUUID();
 

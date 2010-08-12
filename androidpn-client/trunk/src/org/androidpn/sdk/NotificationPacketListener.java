@@ -55,12 +55,12 @@ public class NotificationPacketListener implements PacketListener {
                 String notificationTicker = notification.getTicker();
                 String notificationUrl = notification.getUrl();
 
-                //                Log.d(LOGTAG, "notificationId=" + notificationId);
-                //                Log.d(LOGTAG, "notificationApiKey=" + notificationApiKey);
-                //                Log.d(LOGTAG, "notificationTitle=" + notificationTitle);
-                //                Log.d(LOGTAG, "notificationMessage=" + notificationMessage);
-                //                Log.d(LOGTAG, "notificationTicker=" + notificationTicker);
-                //                Log.d(LOGTAG, "notificationUrl=" + notificationUrl);
+//                Log.d(LOGTAG, "notificationId=" + notificationId);
+//                Log.d(LOGTAG, "notificationApiKey=" + notificationApiKey);
+//                Log.d(LOGTAG, "notificationTitle=" + notificationTitle);
+//                Log.d(LOGTAG, "notificationMessage=" + notificationMessage);
+//                Log.d(LOGTAG, "notificationTicker=" + notificationTicker);
+//                Log.d(LOGTAG, "notificationUrl=" + notificationUrl);
 
                 Intent intent = new Intent(
                         "org.androidpn.sdk.SHOW_NOTIFICATION");
@@ -74,16 +74,6 @@ public class NotificationPacketListener implements PacketListener {
                 XmppManager.getContext(xmppManager).sendBroadcast(intent);
             }
         }
-
-        //        Intent intent = new Intent("org.androidpn.sdk.SHOW_NOTIFICATION");
-        //        intent.putExtra("NOTIFICATION_ID", "12345");
-        //        intent.putExtra("NOTIFICATION_API_KEY", "1234567890");
-        //        intent.putExtra("NOTIFICATION_TITLE", "Demo App");
-        //        intent.putExtra("NOTIFICATION_MESSAGE", "This is a test message.");
-        //        intent.putExtra("NOTIFICATION_TICKER", "This is a test message.");
-        //        intent.putExtra("NOTIFICATION_URL", "");
-        //
-        //        XmppManager.getContext(xmppManager).sendBroadcast(intent);
 
     }
 
