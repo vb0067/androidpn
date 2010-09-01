@@ -55,7 +55,7 @@ public class AdminConsole {
         context.setWelcomeFiles(new String[] { "index.jsp" });
 
         adminHost = Config.getString("admin.console.host", "127.0.0.1");
-        adminPort = Config.getInt("admin.console.port", 9090);
+        adminPort = Config.getInt("admin.console.port", 8080);
         adminServer = new Server();
         adminServer.setSendServerVersion(false);
     }
