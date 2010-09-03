@@ -51,7 +51,12 @@ public class NotificationDetailsActivity extends Activity {
                 Constants.CALLBACK_ACTIVITY_PACKAGE_NAME, "");
         callbackActivityClassName = sdkPreferences.getString(
                 Constants.CALLBACK_ACTIVITY_CLASS_NAME, "");
-
+    }
+    
+    @Override
+    public void onStart() {
+        super.onStart();
+        
         Intent intent = getIntent();
         String notificationId = intent.getStringExtra("NOTIFICATION_ID");
         String notificationApiKey = intent

@@ -15,6 +15,10 @@
  */
 package org.androidpn.sdk;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -44,7 +48,7 @@ public final class ServiceManager {
 
     private SharedPreferences sdkPreferences;
 
-    //    private Properties sdkProperties;
+    private Properties sdkProperties;
 
     private String apiKey;
 
@@ -72,11 +76,11 @@ public final class ServiceManager {
                 + callbackActivityPackageName);
         Log.i(LOGTAG, "callbackActivityClassName=" + callbackActivityClassName);
 
-        //        this.sdkProperties = loadSdkProperties();
-        //        this.xmppHost = sdkProperties.getProperty("xmppHost", "127.0.0.1");
-        //        this.xmppPort = sdkProperties.getProperty("xmppPort", "5222");
-        xmppHost = getMetaDataValue(ANDROIDPN_HOST, "127.0.0.1");
-        xmppPort = getMetaDataValue(ANDROIDPN_PORT, "5222");
+        this.sdkProperties = loadSdkProperties();
+        this.xmppHost = sdkProperties.getProperty("xmppHost", "127.0.0.1");
+        this.xmppPort = sdkProperties.getProperty("xmppPort", "5222");
+        //        xmppHost = getMetaDataValue(ANDROIDPN_HOST, "127.0.0.1");
+        //        xmppPort = getMetaDataValue(ANDROIDPN_PORT, "5222");
         Log.i(LOGTAG, "xmppHost=" + xmppHost);
         Log.i(LOGTAG, "xmppPort=" + xmppPort);
 
@@ -121,10 +125,10 @@ public final class ServiceManager {
         context.stopService(intent);
     }
 
-    private String getMetaDataValue(String name, String def) {
-        String value = getMetaDataValue(name);
-        return (value == null) ? def : value;
-    }
+    //    private String getMetaDataValue(String name, String def) {
+    //        String value = getMetaDataValue(name);
+    //        return (value == null) ? def : value;
+    //    }
 
     private String getMetaDataValue(String name) {
         Object value = null;
@@ -147,30 +151,30 @@ public final class ServiceManager {
         return value.toString();
     }
 
-    //    private Properties loadSdkProperties() {
-    //        InputStream in = null;
-    //        Properties props = null;
-    //        try {
-    //            in = getClass().getResourceAsStream(
-    //                    "/org/androidpn/sdk/sdk.properties");
-    //            if (in != null) {
-    //                props = new Properties();
-    //                props.load(in);
-    //            } else {
-    //                Log.e(LOGTAG, "Could not find the sdkProperties file.");
-    //            }
-    //        } catch (IOException e) {
-    //            // e.printStackTrace();
-    //            Log.e(LOGTAG, "Could not find the sdkProperties file.", e);
-    //        } finally {
-    //            if (in != null)
-    //                try {
-    //                    in.close();
-    //                } catch (Throwable ignore) {
-    //                }
-    //        }
-    //        return props;
-    //    }
+    private Properties loadSdkProperties() {
+        InputStream in = null;
+        Properties props = null;
+        try {
+            in = getClass().getResourceAsStream(
+                    "/org/androidpn/sdk/sdk.properties");
+            if (in != null) {
+                props = new Properties();
+                props.load(in);
+            } else {
+                Log.e(LOGTAG, "Could not find the sdkProperties file.");
+            }
+        } catch (IOException e) {
+            // e.printStackTrace();
+            Log.e(LOGTAG, "Could not find the sdkProperties file.", e);
+        } finally {
+            if (in != null)
+                try {
+                    in.close();
+                } catch (Throwable ignore) {
+                }
+        }
+        return props;
+    }
 
     public void setNotificationIcon(int iconId) {
         Editor editor = sdkPreferences.edit();
