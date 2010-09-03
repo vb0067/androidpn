@@ -68,8 +68,6 @@ public class AuthToken {
     public boolean isAnonymous() {
         if (anonymous == null) {
             anonymous = (username == null);
-            // anonymous = username == null
-            //         || !UserManager.getInstance().isRegisteredUser(username);
         }
         return anonymous;
     }

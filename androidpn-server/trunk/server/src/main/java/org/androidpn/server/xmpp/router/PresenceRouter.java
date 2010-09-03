@@ -15,7 +15,6 @@
  */
 package org.androidpn.server.xmpp.router;
 
-import org.androidpn.server.XmppServer;
 import org.androidpn.server.xmpp.handler.PresenceUpdateHandler;
 import org.androidpn.server.xmpp.session.ClientSession;
 import org.androidpn.server.xmpp.session.Session;
@@ -37,13 +36,10 @@ public class PresenceRouter {
 
     private SessionManager sessionManager;
 
-    private String serverName;
-
     private PresenceUpdateHandler presenceUpdateHandler;
 
     public PresenceRouter() {
         sessionManager = SessionManager.getInstance();
-        serverName = XmppServer.getInstance().getServerName();
         presenceUpdateHandler = new PresenceUpdateHandler();
     }
 
@@ -64,23 +60,11 @@ public class PresenceRouter {
     }
 
     private void handle(Presence packet) {
-        // JID recipientJID = packet.getTo();
-        // JID senderJID = packet.getFrom();
         try {
             Presence.Type type = packet.getType();
-            // Presence updates (null is 'available')
+            // Presence updates (null == 'available')
             if (type == null || Presence.Type.unavailable == type) {
-                // check for local server target
-                //                if (recipientJID == null
-                //                        || recipientJID.getDomain() == null
-                //                        || "".equals(recipientJID.getDomain())
-                //                        || (recipientJID.getNode() == null && recipientJID
-                //                                .getResource() == null)
-                //                        && serverName.equals(recipientJID.getDomain())) {
                 presenceUpdateHandler.process(packet);
-                //                } else {
-                //                    log.warn("");
-                //                }
             } else {
                 log.warn("Unknown presence type");
             }

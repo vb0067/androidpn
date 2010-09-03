@@ -46,7 +46,6 @@ public class ClientStanzaHandler extends StanzaHandler {
             XmlPullParser xpp, Connection connection)
             throws XmlPullParserException {
         if ("jabber:client".equals(namespace)) {
-            // The connected client is a regular client so create a ClientSession
             session = ClientSession.createSession(serverName, xpp, connection);
             return true;
         }
@@ -54,20 +53,17 @@ public class ClientStanzaHandler extends StanzaHandler {
     }
 
     protected void processIQ(IQ packet) throws UnauthorizedException {
-        // Overwrite the FROM attribute to avoid spoofing
         packet.setFrom(session.getAddress());
         super.processIQ(packet);
     }
 
     protected void processPresence(Presence packet)
             throws UnauthorizedException {
-        // Overwrite the FROM attribute to avoid spoofing
         packet.setFrom(session.getAddress());
         super.processPresence(packet);
     }
 
     protected void processMessage(Message packet) throws UnauthorizedException {
-        // Overwrite the FROM attribute to avoid spoofing
         packet.setFrom(session.getAddress());
         super.processMessage(packet);
     }

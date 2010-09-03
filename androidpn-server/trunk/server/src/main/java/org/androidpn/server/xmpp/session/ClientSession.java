@@ -30,7 +30,7 @@ import org.xmpp.packet.Presence;
  */
 public class ClientSession extends Session {
 
-    //    private static final Log log = LogFactory.getLog(Session.class);
+    //    private static final Log log = LogFactory.getLog(ClientSession.class);
 
     private static final String ETHERX_NAMESPACE = "http://etherx.jabber.org/streams";
 
@@ -69,11 +69,11 @@ public class ClientSession extends Session {
             }
         }
 
-        // Store language and version information in the connection.
+        // Store language and version information
         connection.setLanaguage(language);
         connection.setXMPPVersion(MAJOR_VERSION, MINOR_VERSION);
 
-        // Create a ClientSession for this user.
+        // Create a ClientSession
         ClientSession session = SessionManager.getInstance()
                 .createClientSession(connection);
 
@@ -95,10 +95,9 @@ public class ClientSession extends Session {
         sb.append("\">");
         connection.deliverRawText(sb.toString());
 
-        // XMPP 1.0 so we need to announce stream features.
-        sb = new StringBuilder(490);
+        // XMPP 1.0 needs stream features
+        sb = new StringBuilder();
         sb.append("<stream:features>");
-        // Include Stream features
         String specificFeatures = session.getAvailableStreamFeatures();
         if (specificFeatures != null) {
             sb.append(specificFeatures);
@@ -124,7 +123,7 @@ public class ClientSession extends Session {
         setAddress(new JID(auth.getUsername(), getServerName(), resource));
         authToken = auth;
         setStatus(Session.STATUS_AUTHENTICATED);
-        // Add session to the session manager.
+        // Add session to the session manager
         sessionManager.addSession(this);
     }
 
@@ -163,15 +162,14 @@ public class ClientSession extends Session {
     }
 
     public String getAvailableStreamFeatures() {
-        StringBuilder sb = new StringBuilder(200);
+        StringBuilder sb = new StringBuilder();
         if (getAuthToken() == null) {
             // Non-SASL Authentication
             sb.append("<auth xmlns=\"http://jabber.org/features/iq-auth\"/>");
             sb
                     .append("<register xmlns=\"http://jabber.org/features/iq-register\"/>");
         } else {
-            // If the session has been authenticated then offer resource binding
-            // and session establishment
+            // If the session has been authenticated
             sb.append("<bind xmlns=\"urn:ietf:params:xml:ns:xmpp-bind\"/>");
             sb
                     .append("<session xmlns=\"urn:ietf:params:xml:ns:xmpp-session\"/>");
@@ -187,4 +185,5 @@ public class ClientSession extends Session {
     public String toString() {
         return super.toString() + " presence: " + presence;
     }
+
 }

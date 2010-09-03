@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.androidpn.server.XmppServer;
 import org.androidpn.server.xmpp.handler.IQAuthHandler;
 import org.androidpn.server.xmpp.handler.IQHandler;
 import org.androidpn.server.xmpp.handler.IQHandlerInfo;
@@ -46,15 +45,12 @@ public class IQRouter {
 
     private SessionManager sessionManager;
 
-    private String serverName;
-
     private List<IQHandler> iqHandlers = new ArrayList<IQHandler>();
 
     private Map<String, IQHandler> namespace2Handlers = new ConcurrentHashMap<String, IQHandler>();
 
     public IQRouter() {
         sessionManager = SessionManager.getInstance();
-        serverName = XmppServer.getInstance().getServerName();
         iqHandlers.add(new IQAuthHandler());
         iqHandlers.add(new IQRegisterHandler());
     }
@@ -83,7 +79,6 @@ public class IQRouter {
     }
 
     private void handle(IQ packet) {
-        JID recipientJID = packet.getTo();
         try {
             Element childElement = packet.getChildElement();
             String namespace = null;
@@ -93,26 +88,13 @@ public class IQRouter {
             if (namespace == null) {
                 if (packet.getType() != IQ.Type.result
                         && packet.getType() != IQ.Type.error) {
-                    // Do nothing. We can't handle queries outside of a valid namespace
                     log.warn("Unknown packet " + packet);
                 }
             } else {
                 IQHandler handler = getHandler(namespace);
                 if (handler == null) {
-                    if (recipientJID == null) {
-                        // Answer an error since the server can't handle the requested namespace
-                        sendErrorPacket(packet,
-                                PacketError.Condition.service_unavailable);
-                    } else if (recipientJID.getNode() == null
-                            || "".equals(recipientJID.getNode())) {
-                        // Answer an error if JID is of the form <domain>
-                        sendErrorPacket(packet,
-                                PacketError.Condition.feature_not_implemented);
-                    } else {
-                        // Answer an error since the server can't handle packets sent to a node
-                        sendErrorPacket(packet,
-                                PacketError.Condition.service_unavailable);
-                    }
+                    sendErrorPacket(packet,
+                            PacketError.Condition.service_unavailable);
                 } else {
                     handler.process(packet);
                 }
@@ -139,14 +121,8 @@ public class IQRouter {
         IQ reply = IQ.createResultIQ(originalPacket);
         reply.setChildElement(originalPacket.getChildElement().createCopy());
         reply.setError(condition);
-        // Check if the server was the sender of the IQ
-        if (serverName.equals(originalPacket.getFrom().toString())) {
-            // Just let the IQ router process the IQ error reply
-            handle(reply);
-            return;
-        }
         try {
-            // Route the error packet to the original sender of the IQ.
+            // Route the error packet to the original sender
             PacketDeliverer.deliver(reply);
         } catch (Exception e) {
             // Ignore

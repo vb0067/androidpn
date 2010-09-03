@@ -41,7 +41,7 @@ public class NotificationManager {
 
     private IQ createNotificationIQ(String apiKey, String title,
             String message, String ticker, String url) {
-        // TODO
+        // TODO Create an unique id
         String id = String.valueOf(System.currentTimeMillis());
 
         Element notification = DocumentHelper.createElement(QName.get(

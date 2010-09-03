@@ -19,10 +19,6 @@ import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
-import java.security.cert.Certificate;
-
-import javax.net.ssl.SSLPeerUnverifiedException;
-import javax.net.ssl.SSLSession;
 
 import org.androidpn.server.util.Config;
 import org.androidpn.server.xmpp.session.Session;
@@ -30,14 +26,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.session.IoSession;
-import org.apache.mina.filter.ssl.SslFilter;
 import org.dom4j.io.OutputFormat;
 import org.jivesoftware.util.XMLWriter;
 import org.xmpp.packet.Packet;
 
-/** 
+/**
  * Class desciption here.
- *
+ * 
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
 public class Connection {
@@ -75,43 +70,6 @@ public class Connection {
         return !isClosed();
     }
 
-    public byte[] getAddress() throws UnknownHostException {
-        return ((InetSocketAddress) ioSession.getRemoteAddress()).getAddress()
-                .getAddress();
-    }
-
-    public String getHostAddress() throws UnknownHostException {
-        return ((InetSocketAddress) ioSession.getRemoteAddress()).getAddress()
-                .getHostAddress();
-    }
-
-    public String getHostName() throws UnknownHostException {
-        return ((InetSocketAddress) ioSession.getRemoteAddress()).getAddress()
-                .getHostName();
-    }
-
-    public Certificate[] getLocalCertificates() {
-        SSLSession sslSession = (SSLSession) ioSession
-                .getAttribute(SslFilter.SSL_SESSION);
-        if (sslSession != null) {
-            return sslSession.getLocalCertificates();
-        }
-        return new Certificate[0];
-    }
-
-    public Certificate[] getPeerCertificates() {
-        try {
-            SSLSession sslSession = (SSLSession) ioSession
-                    .getAttribute(SslFilter.SSL_SESSION);
-            if (sslSession != null) {
-                return sslSession.getPeerCertificates();
-            }
-        } catch (SSLPeerUnverifiedException e) {
-            log.warn("Error retrieving client certificates of: " + session, e);
-        }
-        return new Certificate[0];
-    }
-
     public void close() {
         boolean closedSuccessfully = false;
         synchronized (this) {
@@ -133,12 +91,27 @@ public class Connection {
             notifyCloseListeners();
         }
     }
-    
+
     public void systemShutdown() {
         deliverRawText("<stream:error><system-shutdown "
                 + "xmlns='urn:ietf:params:xml:ns:xmpp-streams'/></stream:error>");
         close();
-    }    
+    }
+
+    public void init(Session owner) {
+        session = owner;
+    }
+
+    public boolean isClosed() {
+        if (session == null) {
+            return closed;
+        }
+        return session.getStatus() == Session.STATUS_CLOSED;
+    }
+
+    public boolean isSecure() {
+        return ioSession.getFilterChain().contains("tls");
+    }
 
     public void registerCloseListener(ConnectionCloseListener listener,
             Object ignore) {
@@ -168,19 +141,42 @@ public class Connection {
         }
     }
 
-    public void init(Session owner) {
-        session = owner;
+    public void deliverRawText(String text) {
+        // Deliver the packet in asynchronous mode
+        deliverRawText(text, true);
     }
 
-    public boolean isClosed() {
-        if (session == null) {
-            return closed;
+    private void deliverRawText(String text, boolean asynchronous) {
+        log.debug("SENT: " + text);
+        if (!isClosed()) {
+            IoBuffer buffer = IoBuffer.allocate(text.length());
+            buffer.setAutoExpand(true);
+
+            boolean errorDelivering = false;
+            try {
+                buffer.put(text.getBytes(CHARSET));
+                buffer.flip();
+                if (asynchronous) {
+                    ioSession.write(buffer);
+                } else {
+                    // Send stanza and wait for ACK
+                    boolean ok = ioSession.write(buffer).awaitUninterruptibly(
+                            Config.getInt("connection.ack.timeout", 2000));
+                    if (!ok) {
+                        log.warn("No ACK was received when sending stanza to: "
+                                + this.toString());
+                    }
+                }
+            } catch (Exception e) {
+                log.debug("NIOConnection: Error delivering raw text" + "\n"
+                        + this.toString(), e);
+                errorDelivering = true;
+            }
+            // Close the connection if delivering text fails
+            if (errorDelivering && asynchronous) {
+                close();
+            }
         }
-        return session.getStatus() == Session.STATUS_CLOSED;
-    }
-
-    public boolean isSecure() {
-        return ioSession.getFilterChain().contains("tls");
     }
 
     public void deliver(Packet packet) {
@@ -211,44 +207,19 @@ public class Connection {
         }
     }
 
-    public void deliverRawText(String text) {
-        // Deliver the packet in asynchronous mode
-        deliverRawText(text, true);
+    public byte[] getAddress() throws UnknownHostException {
+        return ((InetSocketAddress) ioSession.getRemoteAddress()).getAddress()
+                .getAddress();
     }
 
-    private void deliverRawText(String text, boolean asynchronous) {
-        log.debug("SENT: " + text);
-        if (!isClosed()) {
-            IoBuffer buffer = IoBuffer.allocate(text.length());
-            buffer.setAutoExpand(true);
+    public String getHostAddress() throws UnknownHostException {
+        return ((InetSocketAddress) ioSession.getRemoteAddress()).getAddress()
+                .getHostAddress();
+    }
 
-            boolean errorDelivering = false;
-            try {
-                // Charset charset = Charset.forName(CHARSET);
-                // buffer.putString(text, charset.newEncoder());
-                buffer.put(text.getBytes(CHARSET));
-                buffer.flip();
-                if (asynchronous) {
-                    ioSession.write(buffer);
-                } else {
-                    // Send stanza and wait for ACK (using a 2 seconds default timeout)
-                    boolean ok = ioSession.write(buffer).awaitUninterruptibly(
-                            Config.getInt("connection.ack.timeout", 2000));
-                    if (!ok) {
-                        log.warn("No ACK was received when sending stanza to: "
-                                + this.toString());
-                    }
-                }
-            } catch (Exception e) {
-                log.debug("NIOConnection: Error delivering raw text" + "\n"
-                        + this.toString(), e);
-                errorDelivering = true;
-            }
-            // Close the connection if delivering text fails and we are already not closing the connection
-            if (errorDelivering && asynchronous) {
-                close();
-            }
-        }
+    public String getHostName() throws UnknownHostException {
+        return ((InetSocketAddress) ioSession.getRemoteAddress()).getAddress()
+                .getHostName();
     }
 
     public int getMajorXMPPVersion() {

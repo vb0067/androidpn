@@ -140,7 +140,7 @@ public class XmppServer {
 
     private void shutdownServer() {
         shuttingDown = true;
-        // Shutdown the task engine.
+        // Shutdown the task engine
         TaskEngine.getInstance().shutdown();
         // Close all connections
         SessionManager.getInstance().closeAllSessions();
@@ -171,7 +171,7 @@ public class XmppServer {
                 Thread.sleep(5000);
                 System.exit(0);
             } catch (InterruptedException e) {
-                // Ignore.
+                // Ignore
             }
         }
     }

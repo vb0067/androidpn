@@ -52,8 +52,8 @@ public class PresenceUpdateHandler {
             throws UnauthorizedException, PacketException {
         try {
             Presence.Type type = presence.getType();
-            // Available
-            if (type == null) {
+            
+            if (type == null) { // null == available
                 if (session != null
                         && session.getStatus() == Session.STATUS_CLOSED) {
                     log.warn("Rejected available presence: " + presence + " - "

@@ -66,14 +66,11 @@ public abstract class StanzaHandler {
 
     public void process(String stanza, XMPPPacketReader reader)
             throws Exception {
-
         boolean initialStream = stanza.startsWith("<stream:stream");
         if (!sessionCreated || initialStream) {
             if (!initialStream) {
-                // Ignore <?xml version="1.0"?>
-                return;
+                return; // Ignore <?xml version="1.0"?>
             }
-            // Found an stream:stream tag...
             if (!sessionCreated) {
                 sessionCreated = true;
                 MXParser parser = reader.getXPPParser();
@@ -83,24 +80,24 @@ public abstract class StanzaHandler {
             return;
         }
 
-        // Verify if end of stream was requested
+        // If end of stream was requested
         if (stanza.equals("</stream:stream>")) {
             session.close();
             return;
         }
-        // Ignore <?xml version="1.0"?> stanzas sent by clients
+        // Ignore <?xml version="1.0"?>
         if (stanza.startsWith("<?xml")) {
             return;
         }
-        // Create DOM object from received stanza
+        // Create DOM object
         Element doc = reader.read(new StringReader(stanza)).getRootElement();
         if (doc == null) {
             return;
         }
-        process(doc);
+        processDoc(doc);
     }
 
-    private void process(Element doc) throws UnauthorizedException {
+    private void processDoc(Element doc) throws UnauthorizedException {
         if (doc == null) {
             return;
         }
@@ -113,7 +110,7 @@ public abstract class StanzaHandler {
                 packet = new Message(doc, !validateJIDs());
             } catch (IllegalArgumentException e) {
                 log.debug("Rejecting packet. JID malformed", e);
-                // The original packet contains a malformed JID so answer with an error.
+                // Answer JID malformed error
                 Message reply = new Message();
                 reply.setID(doc.attributeValue("id"));
                 reply.setTo(session.getAddress());
@@ -124,6 +121,7 @@ public abstract class StanzaHandler {
                 return;
             }
             processMessage(packet);
+
         } else if ("presence".equals(tag)) {
             log.debug("presence...");
             Presence packet;
@@ -131,7 +129,7 @@ public abstract class StanzaHandler {
                 packet = new Presence(doc, !validateJIDs());
             } catch (IllegalArgumentException e) {
                 log.debug("Rejecting packet. JID malformed", e);
-                // The original packet contains a malformed JID so answer an error
+                // Answer JID malformed error
                 Presence reply = new Presence();
                 reply.setID(doc.attributeValue("id"));
                 reply.setTo(session.getAddress());
@@ -141,18 +139,18 @@ public abstract class StanzaHandler {
                 session.process(reply);
                 return;
             }
-            // Check that the presence type is valid. If not then assume available type
+            // Check that the presence type is valid
             try {
                 packet.getType();
             } catch (IllegalArgumentException e) {
                 log.warn("Invalid presence type", e);
                 packet.setType(null);
             }
-            // Check that the presence show is valid. If not then assume available show value
+            // Check that the presence show is valid
             try {
                 packet.getShow();
             } catch (IllegalArgumentException e) {
-                log.warn("Invalid presence show for -" + packet.toXML(), e);
+                log.warn("Invalid presence show for - " + packet.toXML(), e);
                 packet.setShow(null);
             }
             if (session.getStatus() == Session.STATUS_CLOSED
@@ -163,6 +161,7 @@ public abstract class StanzaHandler {
                 return;
             }
             processPresence(packet);
+
         } else if ("iq".equals(tag)) {
             log.debug("iq...");
             IQ packet;
@@ -170,7 +169,7 @@ public abstract class StanzaHandler {
                 packet = getIQ(doc);
             } catch (IllegalArgumentException e) {
                 log.debug("Rejecting packet. JID malformed", e);
-                // The original packet contains a malformed JID so answer an error
+                // Answer JID malformed error
                 IQ reply = new IQ();
                 if (!doc.elements().isEmpty()) {
                     reply.setChildElement(((Element) doc.elements().get(0))
@@ -189,7 +188,7 @@ public abstract class StanzaHandler {
             if (packet.getID() == null
                     && Config.getBoolean("xmpp.server.validation.enabled",
                             false)) {
-                // IQ packets MUST have an 'id' attribute so close the connection
+                // IQ packets MUST have an 'id' attribute
                 StreamError error = new StreamError(
                         StreamError.Condition.invalid_xml);
                 session.deliverRawText(error.toXML());
@@ -197,8 +196,9 @@ public abstract class StanzaHandler {
                 return;
             }
             processIQ(packet);
+
         } else {
-            log.warn("Unexpected packet tag (not message,iq,presence)"
+            log.warn("Unexpected packet tag (not message, iq, presence)"
                     + doc.asXML());
             session.close();
         }
@@ -213,7 +213,7 @@ public abstract class StanzaHandler {
         }
     }
 
-    protected void processIQ(IQ packet) throws UnauthorizedException {
+    protected void processMessage(Message packet) throws UnauthorizedException {
         router.route(packet);
         session.incrementClientPacketCount();
     }
@@ -224,7 +224,7 @@ public abstract class StanzaHandler {
         session.incrementClientPacketCount();
     }
 
-    protected void processMessage(Message packet) throws UnauthorizedException {
+    protected void processIQ(IQ packet) throws UnauthorizedException {
         router.route(packet);
         session.incrementClientPacketCount();
     }
@@ -239,7 +239,7 @@ public abstract class StanzaHandler {
         boolean ssCreated = createSession(xpp.getNamespace(null), serverName,
                 xpp, connection);
 
-        // No session was created because of an invalid namespace prefix
+        // If no session was created because of an invalid namespace prefix
         if (!ssCreated) {
             StringBuilder sb = new StringBuilder(250);
             sb.append("<?xml version='1.0' encoding='");

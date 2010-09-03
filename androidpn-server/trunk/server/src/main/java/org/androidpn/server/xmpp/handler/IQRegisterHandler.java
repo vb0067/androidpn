@@ -25,7 +25,6 @@ import org.androidpn.server.service.ServiceManager;
 import org.androidpn.server.service.UserExistsException;
 import org.androidpn.server.service.UserNotFoundException;
 import org.androidpn.server.service.UserService;
-import org.androidpn.server.util.Config;
 import org.androidpn.server.xmpp.UnauthorizedException;
 import org.androidpn.server.xmpp.session.ClientSession;
 import org.androidpn.server.xmpp.session.Session;
@@ -51,8 +50,6 @@ public class IQRegisterHandler extends IQHandler {
 
     private Element probeResult;
 
-    private boolean registrationEnabled;
-
     public IQRegisterHandler() {
         info = new IQHandlerInfo("query", "jabber:iq:register");
         userService = ServiceManager.getUserService();
@@ -63,8 +60,6 @@ public class IQRegisterHandler extends IQHandler {
         probeResult.addElement("password");
         probeResult.addElement("email");
         probeResult.addElement("name");
-
-        registrationEnabled = Config.getBoolean("register.inband", true);
     }
 
     @Override
@@ -72,7 +67,7 @@ public class IQRegisterHandler extends IQHandler {
         ClientSession session = sessionManager.getSession(packet.getFrom());
         IQ reply = null;
 
-        // If no session was found then answer an error (if possible)
+        // If no session was found
         if (session == null) {
             log.error("Error during registration. Session not found for key "
                     + packet.getFrom());
@@ -83,56 +78,46 @@ public class IQRegisterHandler extends IQHandler {
         }
 
         if (IQ.Type.get.equals(packet.getType())) {
-            // If inband registration is not allowed, return an error.
-            if (!registrationEnabled) {
-                reply = IQ.createResultIQ(packet);
-                reply.setChildElement(packet.getChildElement().createCopy());
-                reply.setError(PacketError.Condition.forbidden);
-            } else {
-                reply = IQ.createResultIQ(packet);
-                if (session.getStatus() == Session.STATUS_AUTHENTICATED) {
-                    try {
-                        User user = userService.getUserByUsername(session
-                                .getUsername());
-                        Element currentRegistration = probeResult.createCopy();
-                        currentRegistration.addElement("registered");
-                        currentRegistration.element("username").setText(
-                                user.getUsername());
-                        currentRegistration.element("password").setText("");
-                        currentRegistration.element("email").setText(
-                                user.getEmail() == null ? "" : user.getEmail());
-                        currentRegistration.element("name").setText(
-                                user.getName());
+            reply = IQ.createResultIQ(packet);
+            if (session.getStatus() == Session.STATUS_AUTHENTICATED) {
+                try {
+                    User user = userService.getUserByUsername(session
+                            .getUsername());
+                    Element currentRegistration = probeResult.createCopy();
+                    currentRegistration.addElement("registered");
+                    currentRegistration.element("username").setText(
+                            user.getUsername());
+                    currentRegistration.element("password").setText("");
+                    currentRegistration.element("email").setText(
+                            user.getEmail() == null ? "" : user.getEmail());
+                    currentRegistration.element("name").setText(user.getName());
 
-                        Element form = currentRegistration.element(QName.get(
-                                "x", "jabber:x:data"));
-                        Iterator fields = form.elementIterator("field");
-                        Element field;
-                        while (fields.hasNext()) {
-                            field = (Element) fields.next();
-                            if ("username".equals(field.attributeValue("var"))) {
-                                field.addElement("value").addText(
-                                        user.getUsername());
-                            } else if ("name".equals(field
-                                    .attributeValue("var"))) {
-                                field.addElement("value").addText(
-                                        user.getName());
-                            } else if ("email".equals(field
-                                    .attributeValue("var"))) {
-                                field.addElement("value").addText(
-                                        user.getEmail() == null ? "" : user
-                                                .getEmail());
-                            }
+                    Element form = currentRegistration.element(QName.get("x",
+                            "jabber:x:data"));
+                    Iterator fields = form.elementIterator("field");
+                    Element field;
+                    while (fields.hasNext()) {
+                        field = (Element) fields.next();
+                        if ("username".equals(field.attributeValue("var"))) {
+                            field.addElement("value").addText(
+                                    user.getUsername());
+                        } else if ("name".equals(field.attributeValue("var"))) {
+                            field.addElement("value").addText(user.getName());
+                        } else if ("email".equals(field.attributeValue("var"))) {
+                            field.addElement("value").addText(
+                                    user.getEmail() == null ? "" : user
+                                            .getEmail());
                         }
-                        reply.setChildElement(currentRegistration);
-                    } catch (UserNotFoundException e) {
-                        reply.setChildElement(probeResult.createCopy());
                     }
-                } else {
-                    reply.setTo((JID) null);
+                    reply.setChildElement(currentRegistration);
+                } catch (UserNotFoundException e) {
                     reply.setChildElement(probeResult.createCopy());
                 }
+            } else {
+                reply.setTo((JID) null);
+                reply.setChildElement(probeResult.createCopy());
             }
+
         } else if (IQ.Type.set.equals(packet.getType())) {
             try {
                 Element iqElement = packet.getChildElement();
@@ -193,14 +178,13 @@ public class IQRegisterHandler extends IQHandler {
                         name = null;
                     }
 
-                    // So that we can set a more informative error message back,
-                    // lets test this for stringprep validity now.
+                    // So that we can set a more informative error message back
                     if (username != null) {
                         Stringprep.nodeprep(username);
                     }
 
                     if (session.getStatus() == Session.STATUS_AUTHENTICATED) {
-                        // Flag that indicates if the user is *only* changing his password
+                        // Flag that indicates if the user is only changing his password
                         boolean onlyPassword = false;
                         if (iqElement.elements().size() == 2
                                 && iqElement.element("username") != null
@@ -208,47 +192,36 @@ public class IQRegisterHandler extends IQHandler {
                             onlyPassword = true;
                         }
 
-                        // If inband registration is not allowed, return an error.
-                        if (!onlyPassword && !registrationEnabled) {
+                        User user = userService.getUser(session.getUsername());
+                        if (user.getUsername().equalsIgnoreCase(username)) {
+                            if (password != null
+                                    && password.trim().length() > 0) {
+                                user.setPassword(password);
+                            }
+                            if (!onlyPassword) {
+                                user.setEmail(email);
+                            }
+                            newUser = user;
+                        } else if (password != null
+                                && password.trim().length() > 0) {
+                            // An admin can create new accounts when logged in                               
+                            newUser = new User();
+                            newUser.setUsername(username);
+                            newUser.setPassword(password);
+                            newUser.setEmail(email);
+                            newUser.setName(name);
+                            newUser = userService.saveUser(newUser);
+                        } else {
+                            // Deny registration of users with no password
                             reply = IQ.createResultIQ(packet);
                             reply.setChildElement(packet.getChildElement()
                                     .createCopy());
-                            reply.setError(PacketError.Condition.forbidden);
+                            reply
+                                    .setError(PacketError.Condition.not_acceptable);
                             return reply;
-                        } else {
-                            User user = userService.getUser(session
-                                    .getUsername());
-                            if (user.getUsername().equalsIgnoreCase(username)) {
-                                if (password != null
-                                        && password.trim().length() > 0) {
-                                    user.setPassword(password);
-                                }
-                                if (!onlyPassword) {
-                                    user.setEmail(email);
-                                }
-                                newUser = user;
-                            } else if (password != null
-                                    && password.trim().length() > 0) {
-                                // An admin can create new accounts when logged in.                                
-                                newUser = new User();
-                                newUser.setUsername(username);
-                                newUser.setPassword(password);
-                                newUser.setEmail(email);
-                                newUser.setName(name);
-                                newUser = userService.saveUser(newUser);
-                            } else {
-                                // Deny registration of users with no password
-                                reply = IQ.createResultIQ(packet);
-                                reply.setChildElement(packet.getChildElement()
-                                        .createCopy());
-                                reply
-                                        .setError(PacketError.Condition.not_acceptable);
-                                return reply;
-                            }
                         }
                     } else {
-                        // Inform the entity of failed registration if some required
-                        // information was not provided
+                        // If some required information was not provided
                         if (password == null || password.trim().length() == 0) {
                             reply = IQ.createResultIQ(packet);
                             reply.setChildElement(packet.getChildElement()
@@ -266,12 +239,6 @@ public class IQRegisterHandler extends IQHandler {
                         }
                     }
 
-                    //                    // Set and save the extra user info (e.g. full name, etc.)
-                    //                    if (newUser != null && name != null
-                    //                            && !name.equals(newUser.getName())) {
-                    //                        newUser.setName(name);
-                    //                    }
-
                     reply = IQ.createResultIQ(packet);
                 }
             } catch (UserExistsException e) {
@@ -283,23 +250,19 @@ public class IQRegisterHandler extends IQHandler {
                 reply.setChildElement(packet.getChildElement().createCopy());
                 reply.setError(PacketError.Condition.bad_request);
             } catch (StringprepException e) {
-                // The specified username is not correct according to the stringprep specs
                 reply = IQ.createResultIQ(packet);
                 reply.setChildElement(packet.getChildElement().createCopy());
                 reply.setError(PacketError.Condition.jid_malformed);
             } catch (IllegalArgumentException e) {
-                // At least one of the fields passed in is not valid
                 reply = IQ.createResultIQ(packet);
                 reply.setChildElement(packet.getChildElement().createCopy());
                 reply.setError(PacketError.Condition.not_acceptable);
                 log.warn(e);
             } catch (UnsupportedOperationException e) {
-                // The User provider is read-only so this operation is not allowed
                 reply = IQ.createResultIQ(packet);
                 reply.setChildElement(packet.getChildElement().createCopy());
                 reply.setError(PacketError.Condition.not_allowed);
             } catch (Exception e) {
-                // Some unexpected error happened so return an internal_server_error
                 reply = IQ.createResultIQ(packet);
                 reply.setChildElement(packet.getChildElement().createCopy());
                 reply.setError(PacketError.Condition.internal_server_error);

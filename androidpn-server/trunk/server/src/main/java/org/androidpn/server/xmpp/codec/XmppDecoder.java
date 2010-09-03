@@ -37,10 +37,8 @@ public class XmppDecoder extends CumulativeProtocolDecoder {
             ProtocolDecoderOutput out) throws Exception {
         log.debug("doDecode(...)...");
 
-        // Get the XML light parser from the IoSession
         XMLLightweightParser parser = (XMLLightweightParser) session
-                .getAttribute("XML-PARSER");
-        // Parse as many stanzas as possible from the received data
+                .getAttribute("XML_PARSER");
         parser.read(in);
 
         if (parser.areThereMsgs()) {

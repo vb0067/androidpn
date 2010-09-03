@@ -62,7 +62,7 @@ public class IQAuthHandler extends IQHandler {
         JID from = packet.getFrom();
         ClientSession session = (ClientSession) sessionManager.getSession(from);
 
-        // If no session was found then answer an error (if possible)
+        // If no session was found
         if (session == null) {
             log.error("Error during authentication. Session not found for key "
                     + from);
@@ -73,7 +73,6 @@ public class IQAuthHandler extends IQHandler {
         }
 
         IQ reply = null;
-        //        boolean resourceBound = false;
         try {
             Element iq = packet.getElement();
             Element query = iq.element("query");
@@ -88,7 +87,7 @@ public class IQAuthHandler extends IQHandler {
                 if (session.getStatus() != Session.STATUS_AUTHENTICATED) {
                     reply.setTo((JID) null);
                 }
-            } else { // Otherwise set query
+            } else { // set query
                 String username = query.elementText("username");
                 String password = query.elementText("password");
                 String digest = null;
@@ -98,7 +97,6 @@ public class IQAuthHandler extends IQHandler {
 
                 reply = login(query, packet, username, password, session,
                         digest);
-                //                resourceBound = (session.getStatus() == Session.STATUS_AUTHENTICATED);
             }
         } catch (UserNotFoundException e) {
             reply = IQ.createResultIQ(packet);
@@ -114,16 +112,10 @@ public class IQAuthHandler extends IQHandler {
             reply.setError(PacketError.Condition.internal_server_error);
         }
 
-        // Send the response directly to the correct session.
+        // Send the response directly to the session
         if (reply != null) {
             session.process(reply);
         }
-
-        //        if (resourceBound) {
-        //            // After the client has been informed, inform all listeners as well.
-        //            SessionEventDispatcher.dispatchEvent(session,
-        //                    SessionEventDispatcher.EventType.resource_bound);
-        //        }
 
         return null;
     }
@@ -131,7 +123,7 @@ public class IQAuthHandler extends IQHandler {
     private IQ login(Element iq, IQ packet, String username, String password,
             ClientSession session, String digest) throws UnauthorizedException,
             UserNotFoundException, UnauthenticatedException {
-        // Verify the validity of the username
+        // Verify the username
         if (username == null || username.trim().length() == 0) {
             throw new UnauthorizedException("Invalid username (empty or null).");
         }
@@ -141,7 +133,7 @@ public class IQAuthHandler extends IQHandler {
             throw new UnauthorizedException("Invalid username: " + username, e);
         }
 
-        // Verify that specified resource is not violating any string prep rule
+        // Verify the resource
         String resource = iq.elementText("resource");
         if (resource != null) {
             try {
@@ -151,7 +143,7 @@ public class IQAuthHandler extends IQHandler {
                         "Invalid resource: " + resource, e);
             }
         } else {
-            // Answer a not_acceptable error since a resource was not supplied
+            // Answer a not_acceptable error
             IQ response = IQ.createResultIQ(packet);
             response.setChildElement(packet.getChildElement().createCopy());
             response.setError(PacketError.Condition.not_acceptable);
@@ -159,7 +151,7 @@ public class IQAuthHandler extends IQHandler {
         }
 
         username = username.toLowerCase();
-        // Verify that supplied username and password are correct (i.e. user authentication was successful)
+        // Verify that username and password are correct
         AuthToken token = null;
         if (password != null && AuthManager.isPlainSupported()) {
             token = AuthManager.authenticate(username, password);
@@ -172,7 +164,7 @@ public class IQAuthHandler extends IQHandler {
             throw new UnauthorizedException();
         }
 
-        // Set that the new session has been authenticated successfully
+        // Set the session authenticated successfully
         session.setAuthToken(token, resource);
         packet.setFrom(session.getAddress());
         return IQ.createResultIQ(packet);

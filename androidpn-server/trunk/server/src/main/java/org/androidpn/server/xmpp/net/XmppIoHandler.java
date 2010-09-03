@@ -41,7 +41,7 @@ public class XmppIoHandler implements IoHandler {
 
     public static final String CHARSET = "UTF-8";
 
-    public static final String XML_PARSER = "XML-PARSER";
+    public static final String XML_PARSER = "XML_PARSER";
 
     private static final String CONNECTION = "CONNECTION";
 
@@ -51,9 +51,6 @@ public class XmppIoHandler implements IoHandler {
 
     private static Map<Integer, XMPPPacketReader> parsers = new ConcurrentHashMap<Integer, XMPPPacketReader>();
 
-    /**
-     * Reuse the same factory for all the connections.
-     */
     private static XmlPullParserFactory factory = null;
 
     static {
@@ -81,10 +78,10 @@ public class XmppIoHandler implements IoHandler {
     public void sessionOpened(IoSession session) throws Exception {
         log.debug("sessionOpened()...");
         log.debug("remoteAddress=" + session.getRemoteAddress());
-        // Create a new XML parser for the new connection
+        // Create a new XML parser
         XMLLightweightParser parser = new XMLLightweightParser(CHARSET);
         session.setAttribute(XML_PARSER, parser);
-        // Create a new Connection for the new session
+        // Create a new connection
         Connection connection = new Connection(session);
         session.setAttribute(CONNECTION, connection);
         session.setAttribute(STANZA_HANDLER, new ClientStanzaHandler(
@@ -118,11 +115,11 @@ public class XmppIoHandler implements IoHandler {
         log.debug("messageReceived()...");
         // log.debug("RCVD: " + message);
 
-        // Get the stanza handler for this session
+        // Get the stanza handler
         StanzaHandler handler = (StanzaHandler) session
                 .getAttribute(STANZA_HANDLER);
 
-        // Get the parser to use to process stanza.
+        // Get the XMPP packet parser
         int hashCode = Thread.currentThread().hashCode();
         XMPPPacketReader parser = parsers.get(hashCode);
         if (parser == null) {
@@ -130,10 +127,8 @@ public class XmppIoHandler implements IoHandler {
             parser.setXPPFactory(factory);
             parsers.put(hashCode, parser);
         }
-        //        // Update counter of read btyes
-        //        updateReadBytesCounter(session);
 
-        // Let the stanza handler process the received stanza
+        // The stanza handler processes the message
         try {
             handler.process((String) message, parser);
         } catch (Exception e) {
@@ -150,18 +145,5 @@ public class XmppIoHandler implements IoHandler {
         log.debug("messageSent()...");
         // log.debug("SENT >>>>> " + message);
     }
-
-    //    private void updateReadBytesCounter(IoSession session) {
-    //        long currentBytes = session.getReadBytes();
-    //        Long prevBytes = (Long) session.getAttribute("_read_bytes");
-    //        long delta;
-    //        if (prevBytes == null) {
-    //            delta = currentBytes;
-    //        } else {
-    //            delta = currentBytes - prevBytes;
-    //        }
-    //        session.setAttribute("_read_bytes", currentBytes);
-    //        // ServerTrafficCounter.incrementIncomingCounter(delta);
-    //    }
 
 }

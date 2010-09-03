@@ -59,8 +59,8 @@ public class User extends BaseObject implements Serializable {
     @Column(name = "created_date", updatable = false)
     private Date createdDate = new Date();
 
-    //    @Column(name = "updated_date")
-    //    private Date updatedDate;
+    @Column(name = "updated_date")
+    private Date updatedDate;
 
     @Transient
     private boolean online;
@@ -120,13 +120,13 @@ public class User extends BaseObject implements Serializable {
         this.createdDate = createdDate;
     }
 
-    //    public Date getUpdatedDate() {
-    //        return updatedDate;
-    //    }
-    //
-    //    public void setUpdatedDate(Date updatedDate) {
-    //        this.updatedDate = updatedDate;
-    //    }
+    public Date getUpdatedDate() {
+        return updatedDate;
+    }
+
+    public void setUpdatedDate(Date updatedDate) {
+        this.updatedDate = updatedDate;
+    }
 
     public boolean isOnline() {
         return online;

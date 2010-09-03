@@ -176,16 +176,16 @@ public abstract class Session {
         }
     }
 
-    public boolean validate() {
-        return conn.validate();
+    public boolean isClosed() {
+        return conn.isClosed();
     }
 
     public boolean isSecure() {
         return conn.isSecure();
     }
 
-    public boolean isClosed() {
-        return conn.isClosed();
+    public boolean validate() {
+        return conn.validate();
     }
 
     public String getHostAddress() throws UnknownHostException {

@@ -60,7 +60,6 @@ public class AuthManager {
         }
         username = username.trim().toLowerCase();
         if (username.contains("@")) {
-            // Check that the specified domain matches the server's domain
             int index = username.indexOf("@");
             String domain = username.substring(index + 1);
             if (domain.equals(XmppServer.getInstance().getServerName())) {
@@ -86,7 +85,6 @@ public class AuthManager {
         }
         username = username.trim().toLowerCase();
         if (username.contains("@")) {
-            // Check that the specified domain matches the server's domain
             int index = username.indexOf("@");
             String domain = username.substring(index + 1);
             if (domain.equals(XmppServer.getInstance().getServerName())) {

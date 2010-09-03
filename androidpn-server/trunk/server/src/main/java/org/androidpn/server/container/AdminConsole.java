@@ -61,7 +61,6 @@ public class AdminConsole {
     }
 
     public void startup() {
-        // Create connector for http traffic if it's enabled.
         if (adminPort > 0) {
             Connector httpConnector = new SelectChannelConnector();
             httpConnector.setHost(adminHost);
@@ -69,7 +68,6 @@ public class AdminConsole {
             adminServer.addConnector(httpConnector);
         }
 
-        // Make sure that at least one connector was registered.
         if (adminServer.getConnectors() == null
                 || adminServer.getConnectors().length == 0) {
             adminServer = null;
@@ -83,7 +81,7 @@ public class AdminConsole {
         try {
             adminServer.start();
             httpStarted = true;
-            log.debug("Admin Console started.");
+            log.debug("Admin console started.");
         } catch (Exception e) {
             log.error("Could not start admin conosle server", e);
         }
