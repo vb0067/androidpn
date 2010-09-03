@@ -53,7 +53,7 @@
 
 	<target name="build" depends="clean, assembly" />
 
-	<target name="start" description="" depends="build">
+	<target name="start" description="">
 		<unzip dest="target">
 			<fileset dir=".">
 				<include name="target/${project.name}-${project.version}-bin.zip" />
@@ -67,5 +67,7 @@
 			<jvmarg value="-server" />
 		</java>
 	</target>
+	
+	<target name="build-start" depends="build, start" />
 
 </project>

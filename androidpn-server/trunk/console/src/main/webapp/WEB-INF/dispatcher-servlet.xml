@@ -10,7 +10,7 @@
 				/index.do=filenameController
 				/user.do=userController
 				/session.do=sessionController
-				/notif.do=notificationController				
+				/notification.do=notificationController				
 			</value>
 		</property>
 		<property name="order" value="1" />

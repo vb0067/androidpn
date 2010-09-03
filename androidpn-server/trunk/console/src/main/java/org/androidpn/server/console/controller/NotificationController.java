@@ -31,21 +31,17 @@ import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
  */
 public class NotificationController extends MultiActionController {
 
-    //private UserService userService;
-
     private NotificationManager notificationManager;
 
     public NotificationController() {
-        //userService = ServiceManager.getUserService();
         notificationManager = new NotificationManager();
     }
 
     public ModelAndView list(HttpServletRequest request,
             HttpServletResponse response) throws Exception {
-
         ModelAndView mav = new ModelAndView();
         // mav.addObject("list", null);
-        mav.setViewName("notif/form");
+        mav.setViewName("notification/form");
         return mav;
     }
 
@@ -62,13 +58,6 @@ public class NotificationController extends MultiActionController {
                 "ticker");
         String url = ServletRequestUtils.getStringParameter(request, "url");
 
-        //        logger.debug("broadcast=" + broadcast);
-        //        logger.debug("username=" + username);
-        //        logger.debug("title=" + title);
-        //        logger.debug("message=" + message);
-        //        logger.debug("ticker=" + ticker);
-        //        logger.debug("url=" + url);
-
         String apiKey = Config.getString("apiKey", "");
         logger.debug("apiKey=" + apiKey);
 
@@ -81,8 +70,7 @@ public class NotificationController extends MultiActionController {
         }
 
         ModelAndView mav = new ModelAndView();
-        // mav.addObject("list", null);
-        mav.setViewName("redirect:notif.do");
+        mav.setViewName("redirect:notification.do");
         return mav;
     }
 

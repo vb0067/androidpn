@@ -24,8 +24,8 @@
 					class="<c:if test="${topMenu eq 'user'}"><c:out value="current" /></c:if>">Users</a></li>
 				<li><a href="/session.do"
 					class="<c:if test="${topMenu eq 'session'}"><c:out value="current" /></c:if>">Sessions</a></li>
-				<li><a href="/notif.do"
-					class="<c:if test="${topMenu eq 'notif'}"><c:out value="current" /></c:if>">Notifications</a></li>
+				<li><a href="/notification.do"
+					class="<c:if test="${topMenu eq 'notification'}"><c:out value="current" /></c:if>">Notifications</a></li>
 			</ul>
 			<div id="tabcontent">
 				<decorator:body/>			
