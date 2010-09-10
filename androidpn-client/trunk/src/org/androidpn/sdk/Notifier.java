@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 the original author or authors.
+ * Copyright (C) 2010 The Androidpn Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.util.Log;
+import android.widget.Toast;
 
 /** 
  * Class desciption here.
@@ -51,57 +52,60 @@ public class Notifier {
 
     public void notify(String notificationId, String apiKey, String title,
             String message, String ticker, String url) {
-
         Log.d(LOGTAG, "notify()...");
-
-        //        final Notification notification = new Notification();
-        //        notification.number++;
-        //        notification.flags |= Notification.FLAG_AUTO_CANCEL;
-        //
-        //        Intent toLaunch = new Intent(Notifications.this, Notifications.class);
-        //        PendingIntent intentBack = PendingIntent.getActivity(
-        //                Notifications.this, 0, toLaunch, 0);
-        //
-        //        notification.setLatestEventInfo(Notifications.this, "Hi there!",
-        //                "This is even more text.", intentBack);
 
         Notification notification = new Notification();
 
         int icon = getNotificationIcon(context);
         Uri sound = getNotificationSound(context);
-
         notification.icon = icon;
         notification.sound = sound;
         // notification.number++;
+        // notification.defaults = Notification.DEFAULT_ALL;
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
 
-        Intent positiveIntent = new Intent(
-                "org.androidpn.sdk.NOTIFICATION_CLICKED");
-        positiveIntent.putExtra("NOTIFICATION_ID", notificationId);
-        positiveIntent.putExtra("NOTIFICATION_API_KEY", apiKey);
-        positiveIntent.putExtra("NOTIFICATION_TITLE", title);
-        positiveIntent.putExtra("NOTIFICATION_MESSAGE", message);
-        positiveIntent.putExtra("NOTIFICATION_TICKER", ticker);
-        positiveIntent.putExtra("NOTIFICATION_URL", url);
+        Log.e(LOGTAG, "notificationId=" + notificationId);
+        Log.e(LOGTAG, "notificationApiKey=" + apiKey);
+        Log.e(LOGTAG, "notificationTitle=" + title);
+        Log.e(LOGTAG, "notificationMessage=" + message);
+        Log.e(LOGTAG, "notificationTicker=" + ticker);
+        Log.e(LOGTAG, "notificationUrl=" + url);
 
-        PendingIntent positivePendingIntent = PendingIntent.getBroadcast(
-                context, 0, positiveIntent, 0);
+        Intent clickIntent = new Intent(Constants.ACTION_NOTIFICATION_CLICKED);
+        clickIntent.putExtra(Constants.NOTIFICATION_ID, notificationId);
+        clickIntent.putExtra(Constants.NOTIFICATION_API_KEY, apiKey);
+        clickIntent.putExtra(Constants.NOTIFICATION_TITLE, title);
+        clickIntent.putExtra(Constants.NOTIFICATION_MESSAGE, message);
+        clickIntent.putExtra(Constants.NOTIFICATION_TICKER, ticker);
+        clickIntent.putExtra(Constants.NOTIFICATION_URL, url);
+        //        positiveIntent.setData(Uri.parse((new StringBuilder(
+        //                "notif://notification.adroidpn.org/")).append(apiKey).append(
+        //                "/").append(System.currentTimeMillis()).toString()));
+        PendingIntent clickPendingIntent = PendingIntent.getBroadcast(context,
+                0, clickIntent, 0);
 
-        Intent negativeIntent = new Intent(
-                "org.androidpn.sdk.NOTIFICATION_CLEARED");
-        negativeIntent.putExtra("NOTIFICATION_ID", notificationId);
-        negativeIntent.putExtra("NOTIFICATION_API_KEY", apiKey);
+        Intent clearIntent = new Intent(Constants.ACTION_NOTIFICATION_CLEARED);
+        clearIntent.putExtra(Constants.NOTIFICATION_ID, notificationId);
+        clearIntent.putExtra(Constants.NOTIFICATION_API_KEY, apiKey);
+        //        negativeIntent.setData(Uri.parse((new StringBuilder(
+        //                "notif://notification.adroidpn.org/")).append(apiKey).append(
+        //                "/").append(System.currentTimeMillis()).toString()));
+        PendingIntent clearPendingIntent = PendingIntent.getBroadcast(context,
+                0, clearIntent, 0);
 
-        PendingIntent negativePendingIntent = PendingIntent.getBroadcast(
-                context, 0, negativeIntent, 0);
-
-        notification.tickerText = ticker;
+        if (ticker != null && ticker.length() > 0) {
+            notification.tickerText = ticker;
+        } else {
+            notification.tickerText = title;
+        }
         notification.when = System.currentTimeMillis();
         notification.setLatestEventInfo(context, title, message,
-                positivePendingIntent);
-        notification.deleteIntent = negativePendingIntent;
+                clickPendingIntent);
+        notification.deleteIntent = clearPendingIntent;
+
         notificationManager.notify(random.nextInt(), notification);
 
+        // Toast.makeText(context, title, Toast.LENGTH_SHORT).show();
     }
 
     public static int getNotificationIcon(Context context) {

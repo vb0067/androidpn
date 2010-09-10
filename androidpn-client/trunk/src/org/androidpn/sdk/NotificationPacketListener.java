@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 the original author or authors.
+ * Copyright (C) 2010 The Androidpn Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,21 +55,22 @@ public class NotificationPacketListener implements PacketListener {
                 String notificationTicker = notification.getTicker();
                 String notificationUrl = notification.getUrl();
 
-//                Log.d(LOGTAG, "notificationId=" + notificationId);
-//                Log.d(LOGTAG, "notificationApiKey=" + notificationApiKey);
-//                Log.d(LOGTAG, "notificationTitle=" + notificationTitle);
-//                Log.d(LOGTAG, "notificationMessage=" + notificationMessage);
-//                Log.d(LOGTAG, "notificationTicker=" + notificationTicker);
-//                Log.d(LOGTAG, "notificationUrl=" + notificationUrl);
-
-                Intent intent = new Intent(
-                        "org.androidpn.sdk.SHOW_NOTIFICATION");
-                intent.putExtra("NOTIFICATION_ID", notificationId);
-                intent.putExtra("NOTIFICATION_API_KEY", notificationApiKey);
-                intent.putExtra("NOTIFICATION_TITLE", notificationTitle);
-                intent.putExtra("NOTIFICATION_MESSAGE", notificationMessage);
-                intent.putExtra("NOTIFICATION_TICKER", notificationTicker);
-                intent.putExtra("NOTIFICATION_URL", notificationUrl);
+                Intent intent = new Intent(Constants.ACTION_SHOW_NOTIFICATION);
+                intent.putExtra(Constants.NOTIFICATION_ID, notificationId);
+                intent.putExtra(Constants.NOTIFICATION_API_KEY,
+                        notificationApiKey);
+                intent
+                        .putExtra(Constants.NOTIFICATION_TITLE,
+                                notificationTitle);
+                intent.putExtra(Constants.NOTIFICATION_MESSAGE,
+                        notificationMessage);
+                intent.putExtra(Constants.NOTIFICATION_TICKER,
+                        notificationTicker);
+                intent.putExtra(Constants.NOTIFICATION_URL, notificationUrl);
+                //                intent.setData(Uri.parse((new StringBuilder(
+                //                        "notif://notification.androidpn.org/")).append(
+                //                        notificationApiKey).append("/").append(
+                //                        System.currentTimeMillis()).toString()));
 
                 XmppManager.getContext(xmppManager).sendBroadcast(intent);
             }

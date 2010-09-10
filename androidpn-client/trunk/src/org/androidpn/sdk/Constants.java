@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 the original author or authors.
+ * Copyright (C) 2010 The Androidpn Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ public class Constants {
 
     public static final String SDK_PREFERENCES = "SdkPreferences";
 
-    // KEYS
+    // PREFERENCE KEYS
 
     public static final String API_KEY = "API_KEY";
 
@@ -42,14 +42,34 @@ public class Constants {
 
     public static final String EMULATOR_DEVICE_ID = "EMULATOR_DEVICE_ID";
 
-    public static final String NOTIFICATION_ICON = "NOTIFICATION_ICON";
-
-    public static final String NOTIFICATION_SOUND = "NOTIFICATION_SOUND";
-
     public static final String CALLBACK_ACTIVITY_PACKAGE_NAME = "CALLBACK_ACTIVITY_PACKAGE_NAME";
 
     public static final String CALLBACK_ACTIVITY_CLASS_NAME = "CALLBACK_ACTIVITY_CLASS_NAME";
 
-    // INTENTS
+    public static final String NOTIFICATION_ICON = "NOTIFICATION_ICON";
+
+    public static final String NOTIFICATION_SOUND = "NOTIFICATION_SOUND";
+
+    // NOTIFICATION FIELDS
+
+    public static final String NOTIFICATION_ID = "NOTIFICATION_ID";
+
+    public static final String NOTIFICATION_API_KEY = "NOTIFICATION_API_KEY";
+
+    public static final String NOTIFICATION_TITLE = "NOTIFICATION_TITLE";
+
+    public static final String NOTIFICATION_MESSAGE = "NOTIFICATION_MESSAGE";
+
+    public static final String NOTIFICATION_TICKER = "NOTIFICATION_TICKER";
+
+    public static final String NOTIFICATION_URL = "NOTIFICATION_URL";
+
+    // INTENT ACTIONS
+
+    public static final String ACTION_SHOW_NOTIFICATION = "org.androidpn.sdk.SHOW_NOTIFICATION";
+
+    public static final String ACTION_NOTIFICATION_CLICKED = "org.androidpn.sdk.NOTIFICATION_CLICKED";
+
+    public static final String ACTION_NOTIFICATION_CLEARED = "org.androidpn.sdk.NOTIFICATION_CLEARED";
 
 }

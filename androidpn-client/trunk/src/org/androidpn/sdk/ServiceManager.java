@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 the original author or authors.
+ * Copyright (C) 2010 The Androidpn Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,6 +49,8 @@ public final class ServiceManager {
     private SharedPreferences sdkPreferences;
 
     private Properties sdkProperties;
+    
+    private String sdkVersion;
 
     private String apiKey;
 
@@ -77,6 +79,7 @@ public final class ServiceManager {
         Log.i(LOGTAG, "callbackActivityClassName=" + callbackActivityClassName);
 
         this.sdkProperties = loadSdkProperties();
+        this.sdkVersion = sdkProperties.getProperty("sdkVersion");
         this.xmppHost = sdkProperties.getProperty("xmppHost", "127.0.0.1");
         this.xmppPort = sdkProperties.getProperty("xmppPort", "5222");
         //        xmppHost = getMetaDataValue(ANDROIDPN_HOST, "127.0.0.1");
@@ -174,6 +177,14 @@ public final class ServiceManager {
                 }
         }
         return props;
+    }
+    
+    public String getSdkVersion() {
+        return this.sdkVersion;
+    }
+    
+    public String getApiKey() {
+        return this.apiKey;
     }
 
     public void setNotificationIcon(int iconId) {

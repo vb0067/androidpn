@@ -2,6 +2,11 @@ ANDROIDPN-CLIENT CHANGELOG
 ==========================
 http://androidpn.sourceforge.net/
 
+Changes in version 0.3.1 (2010-09-10)
+-------------------------------------
+* Updated ServiceManager
+* Changed the copyright statement
+
 Changes in version 0.3.0 (2010-09-03)
 -------------------------------------
 * Updated NotificationDetailsActivity

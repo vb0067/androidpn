@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 the original author or authors.
+ * Copyright (C) 2010 The Androidpn Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,6 +58,8 @@ public class MainService extends Service {
     private TaskTracker taskTracker;
 
     private XmppManager xmppManager;
+
+    //    private BroadcastReceiver notificationReceiver = new MainReceiver();
 
     //    private String deviceId;
 
@@ -160,8 +162,21 @@ public class MainService extends Service {
     //        unregisterReceiver(phoneStateReceiver);
     //    }
 
+    //    private void registerNotificationReceiver() {
+    //        IntentFilter filter = new IntentFilter();
+    //        filter.addAction(Constants.ACTION_SHOW_NOTIFICATION);
+    //        filter.addAction(Constants.ACTION_NOTIFICATION_CLICKED);
+    //        filter.addAction(Constants.ACTION_NOTIFICATION_CLEARED);
+    //        registerReceiver(this.notificationReceiver, filter);
+    //    }
+    //    
+    //    private void unregisterNotificationReceiver() {
+    //        unregisterReceiver(this.notificationReceiver);
+    //    }
+
     private void start() {
         Log.d(LOGTAG, "start()...");
+        // registerNotificationReceiver();
         // registerPhoneStateReceiver();
         Intent intent = getIntent();
         startService(intent);
@@ -170,6 +185,7 @@ public class MainService extends Service {
 
     private void stop() {
         Log.d(LOGTAG, "stop()...");
+        // unregisterNotificationReceiver();
         // unregisterPhoneStateReceiver();
         // mHandler.removeMessages(what);
         xmppManager.disconnect();
@@ -291,11 +307,11 @@ public class MainService extends Service {
                 MainService.getTaskTracker(mainService).count--;
                 Log.d(getClass().getName(), "Decremented task count to "
                         + count);
-//                if (MainService.getTaskTracker(mainService).count == 0) {
-//                    // MainService.start(mainService);
-//                    Intent intent = MainService.getIntent();
-//                    mainService.startService(intent);
-//                }
+                //                if (MainService.getTaskTracker(mainService).count == 0) {
+                //                    // MainService.start(mainService);
+                //                    Intent intent = MainService.getIntent();
+                //                    mainService.startService(intent);
+                //                }
             }
         }
 

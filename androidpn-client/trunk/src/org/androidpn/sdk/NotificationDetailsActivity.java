@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 the original author or authors.
+ * Copyright (C) 2010 The Androidpn Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,6 +41,9 @@ public class NotificationDetailsActivity extends Activity {
 
     private String callbackActivityClassName;
 
+    public NotificationDetailsActivity() {
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,22 +54,20 @@ public class NotificationDetailsActivity extends Activity {
                 Constants.CALLBACK_ACTIVITY_PACKAGE_NAME, "");
         callbackActivityClassName = sdkPreferences.getString(
                 Constants.CALLBACK_ACTIVITY_CLASS_NAME, "");
-    }
-    
-    @Override
-    public void onStart() {
-        super.onStart();
-        
+
         Intent intent = getIntent();
-        String notificationId = intent.getStringExtra("NOTIFICATION_ID");
+        String notificationId = intent
+                .getStringExtra(Constants.NOTIFICATION_ID);
         String notificationApiKey = intent
-                .getStringExtra("NOTIFICATION_API_KEY");
-        String notificationTitle = intent.getStringExtra("NOTIFICATION_TITLE");
+                .getStringExtra(Constants.NOTIFICATION_API_KEY);
+        String notificationTitle = intent
+                .getStringExtra(Constants.NOTIFICATION_TITLE);
         String notificationMessage = intent
-                .getStringExtra("NOTIFICATION_MESSAGE");
+                .getStringExtra(Constants.NOTIFICATION_MESSAGE);
         String notificationTicker = intent
-                .getStringExtra("NOTIFICATION_TICKER");
-        String notificationUrl = intent.getStringExtra("NOTIFICATION_URL");
+                .getStringExtra(Constants.NOTIFICATION_TICKER);
+        String notificationUrl = intent
+                .getStringExtra(Constants.NOTIFICATION_URL);
 
         Log.d(LOGTAG, "notificationId=" + notificationId);
         Log.d(LOGTAG, "notificationApiKey=" + notificationApiKey);
@@ -163,6 +164,14 @@ public class NotificationDetailsActivity extends Activity {
         linearLayout.addView(innerLayout);
 
         return linearLayout;
+    }
+
+    protected void onPause() {
+        super.onPause();
+    }
+
+    protected void onResume() {
+        super.onResume();
     }
 
 }
