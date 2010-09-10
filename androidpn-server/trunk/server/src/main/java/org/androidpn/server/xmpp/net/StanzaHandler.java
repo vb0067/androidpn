@@ -1,17 +1,19 @@
 /*
- * Copyright 2010 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright (C) 2010 The Androidpn Team
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 package org.androidpn.server.xmpp.net;
 
@@ -19,8 +21,8 @@ import java.io.IOException;
 import java.io.StringReader;
 
 import org.androidpn.server.util.Config;
-import org.androidpn.server.xmpp.UnauthorizedException;
 import org.androidpn.server.xmpp.router.PacketRouter;
+import org.androidpn.server.xmpp.session.ClientSession;
 import org.androidpn.server.xmpp.session.Session;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -42,7 +44,7 @@ import org.xmpp.packet.StreamError;
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
-public abstract class StanzaHandler {
+public class StanzaHandler {
 
     private static final Log log = LogFactory.getLog(StanzaHandler.class);
 
@@ -94,114 +96,115 @@ public abstract class StanzaHandler {
         if (doc == null) {
             return;
         }
-        processDoc(doc);
-    }
-
-    private void processDoc(Element doc) throws UnauthorizedException {
-        if (doc == null) {
-            return;
-        }
 
         String tag = doc.getName();
         if ("message".equals(tag)) {
-            log.debug("message...");
-            Message packet;
-            try {
-                packet = new Message(doc, !validateJIDs());
-            } catch (IllegalArgumentException e) {
-                log.debug("Rejecting packet. JID malformed", e);
-                // Answer JID malformed error
-                Message reply = new Message();
-                reply.setID(doc.attributeValue("id"));
-                reply.setTo(session.getAddress());
-                reply.getElement().addAttribute("from",
-                        doc.attributeValue("to"));
-                reply.setError(PacketError.Condition.jid_malformed);
-                session.process(reply);
-                return;
-            }
-            processMessage(packet);
-
+            processMessage(doc);
         } else if ("presence".equals(tag)) {
             log.debug("presence...");
-            Presence packet;
-            try {
-                packet = new Presence(doc, !validateJIDs());
-            } catch (IllegalArgumentException e) {
-                log.debug("Rejecting packet. JID malformed", e);
-                // Answer JID malformed error
-                Presence reply = new Presence();
-                reply.setID(doc.attributeValue("id"));
-                reply.setTo(session.getAddress());
-                reply.getElement().addAttribute("from",
-                        doc.attributeValue("to"));
-                reply.setError(PacketError.Condition.jid_malformed);
-                session.process(reply);
-                return;
-            }
-            // Check that the presence type is valid
-            try {
-                packet.getType();
-            } catch (IllegalArgumentException e) {
-                log.warn("Invalid presence type", e);
-                packet.setType(null);
-            }
-            // Check that the presence show is valid
-            try {
-                packet.getShow();
-            } catch (IllegalArgumentException e) {
-                log.warn("Invalid presence show for - " + packet.toXML(), e);
-                packet.setShow(null);
-            }
-            if (session.getStatus() == Session.STATUS_CLOSED
-                    && packet.isAvailable()) {
-                log
-                        .warn("Ignoring available presence packet of closed session: "
-                                + packet);
-                return;
-            }
-            processPresence(packet);
-
+            processPresence(doc);
         } else if ("iq".equals(tag)) {
             log.debug("iq...");
-            IQ packet;
-            try {
-                packet = getIQ(doc);
-            } catch (IllegalArgumentException e) {
-                log.debug("Rejecting packet. JID malformed", e);
-                // Answer JID malformed error
-                IQ reply = new IQ();
-                if (!doc.elements().isEmpty()) {
-                    reply.setChildElement(((Element) doc.elements().get(0))
-                            .createCopy());
-                }
-                reply.setID(doc.attributeValue("id"));
-                reply.setTo(session.getAddress());
-                if (doc.attributeValue("to") != null) {
-                    reply.getElement().addAttribute("from",
-                            doc.attributeValue("to"));
-                }
-                reply.setError(PacketError.Condition.jid_malformed);
-                session.process(reply);
-                return;
-            }
-            if (packet.getID() == null
-                    && Config.getBoolean("xmpp.server.validation.enabled",
-                            false)) {
-                // IQ packets MUST have an 'id' attribute
-                StreamError error = new StreamError(
-                        StreamError.Condition.invalid_xml);
-                session.deliverRawText(error.toXML());
-                session.close();
-                return;
-            }
-            processIQ(packet);
-
+            processIQ(doc);
         } else {
             log.warn("Unexpected packet tag (not message, iq, presence)"
                     + doc.asXML());
             session.close();
         }
+
+    }
+
+    private void processMessage(Element doc) {
+        log.debug("processMessage()...");
+        Message packet;
+        try {
+            packet = new Message(doc, !validateJIDs());
+        } catch (IllegalArgumentException e) {
+            log.debug("Rejecting packet. JID malformed", e);
+            Message reply = new Message();
+            reply.setID(doc.attributeValue("id"));
+            reply.setTo(session.getAddress());
+            reply.getElement().addAttribute("from", doc.attributeValue("to"));
+            reply.setError(PacketError.Condition.jid_malformed);
+            session.process(reply);
+            return;
+        }
+        router.route(packet);
+        session.incrementClientPacketCount();
+    }
+
+    private void processPresence(Element doc) {
+        log.debug("processPresence()...");
+        Presence packet;
+        try {
+            packet = new Presence(doc, !validateJIDs());
+        } catch (IllegalArgumentException e) {
+            log.debug("Rejecting packet. JID malformed", e);
+            Presence reply = new Presence();
+            reply.setID(doc.attributeValue("id"));
+            reply.setTo(session.getAddress());
+            reply.getElement().addAttribute("from", doc.attributeValue("to"));
+            reply.setError(PacketError.Condition.jid_malformed);
+            session.process(reply);
+            return;
+        }
+        // Check that the presence type is valid
+        try {
+            packet.getType();
+        } catch (IllegalArgumentException e) {
+            log.warn("Invalid presence type", e);
+            packet.setType(null);
+        }
+        // Check that the presence show is valid
+        try {
+            packet.getShow();
+        } catch (IllegalArgumentException e) {
+            log.warn("Invalid presence show for - " + packet.toXML(), e);
+            packet.setShow(null);
+        }
+        if (session.getStatus() == Session.STATUS_CLOSED
+                && packet.isAvailable()) {
+            log.warn("Ignoring available presence packet of closed session: "
+                    + packet);
+            return;
+        }
+        router.route(packet);
+        session.incrementClientPacketCount();
+    }
+
+    private void processIQ(Element doc) {
+        log.debug("processIQ()...");
+        IQ packet;
+        try {
+            packet = getIQ(doc);
+        } catch (IllegalArgumentException e) {
+            log.debug("Rejecting packet. JID malformed", e);
+            IQ reply = new IQ();
+            if (!doc.elements().isEmpty()) {
+                reply.setChildElement(((Element) doc.elements().get(0))
+                        .createCopy());
+            }
+            reply.setID(doc.attributeValue("id"));
+            reply.setTo(session.getAddress());
+            if (doc.attributeValue("to") != null) {
+                reply.getElement().addAttribute("from",
+                        doc.attributeValue("to"));
+            }
+            reply.setError(PacketError.Condition.jid_malformed);
+            session.process(reply);
+            return;
+        }
+        if (packet.getID() == null
+                && Config.getBoolean("xmpp.server.validation.enabled", false)) {
+            // IQ packets MUST have an 'id' attribute
+            StreamError error = new StreamError(
+                    StreamError.Condition.invalid_xml);
+            session.deliverRawText(error.toXML());
+            session.close();
+            return;
+        }
+        router.route(packet);
+        session.incrementClientPacketCount();
     }
 
     private IQ getIQ(Element doc) {
@@ -213,23 +216,7 @@ public abstract class StanzaHandler {
         }
     }
 
-    protected void processMessage(Message packet) throws UnauthorizedException {
-        router.route(packet);
-        session.incrementClientPacketCount();
-    }
-
-    protected void processPresence(Presence packet)
-            throws UnauthorizedException {
-        router.route(packet);
-        session.incrementClientPacketCount();
-    }
-
-    protected void processIQ(IQ packet) throws UnauthorizedException {
-        router.route(packet);
-        session.incrementClientPacketCount();
-    }
-
-    protected void createSession(XmlPullParser xpp)
+    private void createSession(XmlPullParser xpp)
             throws XmlPullParserException, IOException {
         for (int eventType = xpp.getEventType(); eventType != XmlPullParser.START_TAG;) {
             eventType = xpp.next();
@@ -268,12 +255,22 @@ public abstract class StanzaHandler {
         }
     }
 
-    abstract public String getNamespace();
+    //    public String getNamespace() {
+    //        return "jabber:client";
+    //    }
 
-    abstract public boolean validateJIDs();
+    private boolean validateJIDs() {
+        return true;
+    }
 
-    abstract public boolean createSession(String namespace, String serverName,
+    private boolean createSession(String namespace, String serverName,
             XmlPullParser xpp, Connection connection)
-            throws XmlPullParserException;
+            throws XmlPullParserException {
+        if ("jabber:client".equals(namespace)) {
+            session = ClientSession.createSession(serverName, xpp, connection);
+            return true;
+        }
+        return false;
+    }
 
 }

@@ -2,6 +2,11 @@ ANDROIDPN-SERVER CHANGELOG
 ==========================
 http://androidpn.sourceforge.net/
 
+Changes in version 0.3.3 (2010-09-10)
+-------------------------------------
+* Updated StanzaHandler
+* Changed the copyright statement
+
 Changes in version 0.3.2 (2010-09-03)
 -------------------------------------
 * Cleaned unused codes
