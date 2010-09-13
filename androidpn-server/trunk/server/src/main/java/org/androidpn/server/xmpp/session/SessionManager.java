@@ -85,6 +85,8 @@ public class SessionManager {
         preAuthSessions.put(session.getAddress().getResource(), session);
         // Increment the counter of user sessions
         connectionsCounter.incrementAndGet();
+
+        log.debug("ClientSession created.");
         return session;
     }
 
@@ -165,7 +167,7 @@ public class SessionManager {
         }
         return false;
     }
-    
+
     public void closeAllSessions() {
         try {
             // Send the close stream header to all connections
@@ -206,5 +208,5 @@ public class SessionManager {
             }
         }
     }
-    
+
 }

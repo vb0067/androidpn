@@ -129,6 +129,8 @@ public class StanzaHandler {
             session.process(reply);
             return;
         }
+
+        packet.setFrom(session.getAddress());
         router.route(packet);
         session.incrementClientPacketCount();
     }
@@ -168,6 +170,8 @@ public class StanzaHandler {
                     + packet);
             return;
         }
+
+        packet.setFrom(session.getAddress());
         router.route(packet);
         session.incrementClientPacketCount();
     }
@@ -203,6 +207,8 @@ public class StanzaHandler {
             session.close();
             return;
         }
+
+        packet.setFrom(session.getAddress());
         router.route(packet);
         session.incrementClientPacketCount();
     }
@@ -222,36 +228,38 @@ public class StanzaHandler {
             eventType = xpp.next();
         }
 
-        // Create the correct session based on the sent namespace     
-        boolean ssCreated = createSession(xpp.getNamespace(null), serverName,
-                xpp, connection);
+        // Create the correct session based on the sent namespace
+        String namespace = xpp.getNamespace(null);
+        if ("jabber:client".equals(namespace)) {
+            session = ClientSession.createSession(serverName, xpp, connection);
+            // If no session was created
+            if (session == null) {
+                StringBuilder sb = new StringBuilder(250);
+                sb.append("<?xml version='1.0' encoding='");
+                sb.append(CHARSET);
+                sb.append("'?>");
+                sb.append("<stream:stream ");
+                sb.append("from=\"").append(serverName).append("\" ");
+                sb.append("id=\"").append(StringUtils.randomString(5)).append(
+                        "\" ");
+                sb.append("xmlns=\"").append(xpp.getNamespace(null)).append(
+                        "\" ");
+                sb.append("xmlns:stream=\"").append(xpp.getNamespace("stream"))
+                        .append("\" ");
+                sb.append("version=\"1.0\">");
 
-        // If no session was created because of an invalid namespace prefix
-        if (!ssCreated) {
-            StringBuilder sb = new StringBuilder(250);
-            sb.append("<?xml version='1.0' encoding='");
-            sb.append(CHARSET);
-            sb.append("'?>");
-            sb.append("<stream:stream ");
-            sb.append("from=\"").append(serverName).append("\" ");
-            sb.append("id=\"").append(StringUtils.randomString(5))
-                    .append("\" ");
-            sb.append("xmlns=\"").append(xpp.getNamespace(null)).append("\" ");
-            sb.append("xmlns:stream=\"").append(xpp.getNamespace("stream"))
-                    .append("\" ");
-            sb.append("version=\"1.0\">");
-
-            // Include the bad-namespace-prefix in the response
-            StreamError error = new StreamError(
-                    StreamError.Condition.bad_namespace_prefix);
-            sb.append(error.toXML());
-            connection.deliverRawText(sb.toString());
-            connection.close();
-            log
-                    .warn("Closing session due to bad_namespace_prefix in stream header. Prefix: "
-                            + xpp.getNamespace(null)
-                            + ". Connection: "
-                            + connection);
+                // Include the bad-namespace-prefix in the response
+                StreamError error = new StreamError(
+                        StreamError.Condition.bad_namespace_prefix);
+                sb.append(error.toXML());
+                connection.deliverRawText(sb.toString());
+                connection.close();
+                log
+                        .warn("Closing session due to bad_namespace_prefix in stream header. Prefix: "
+                                + xpp.getNamespace(null)
+                                + ". Connection: "
+                                + connection);
+            }
         }
     }
 
@@ -261,16 +269,6 @@ public class StanzaHandler {
 
     private boolean validateJIDs() {
         return true;
-    }
-
-    private boolean createSession(String namespace, String serverName,
-            XmlPullParser xpp, Connection connection)
-            throws XmlPullParserException {
-        if ("jabber:client".equals(namespace)) {
-            session = ClientSession.createSession(serverName, xpp, connection);
-            return true;
-        }
-        return false;
     }
 
 }
