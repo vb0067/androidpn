@@ -4,8 +4,10 @@ http://androidpn.sourceforge.net/
 
 Changes in version 0.4.0 (2010-09-??)
 -------------------------------------
-* Refactored packages
+* Refactored some packages
 * Removed unused classes
+* Updated Session, ClientSession, SessionManager
+* Updated AuthToken
 
 Changes in version 0.3.3 (2010-09-13)
 -------------------------------------

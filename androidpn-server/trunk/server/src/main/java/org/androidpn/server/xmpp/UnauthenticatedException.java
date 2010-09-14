@@ -18,12 +18,12 @@
 package org.androidpn.server.xmpp;
 
 /** 
- * Thrown if a user does not have permission to do a particular operation.
+ * Thrown if a user was not authenticated to do a particular operation.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
 public class UnauthenticatedException extends Exception {
-    
+
     private static final long serialVersionUID = 1L;
 
     public UnauthenticatedException() {

@@ -29,7 +29,7 @@ import org.apache.commons.logging.LogFactory;
 import org.jivesoftware.util.StringUtils;
 
 /** 
- * Class desciption here.
+ * This class is to provide the methods associated with user authentication. 
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */

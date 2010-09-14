@@ -49,9 +49,9 @@ public class XmppServer {
     private boolean shuttingDown;
 
     /**
-     * Returns a singleton instance of XmppServer.
+     * Returns the singleton instance of XmppServer.
      *
-     * @return an instance.
+     * @return the server instance.
      */
     public static XmppServer getInstance() {
         return instance;

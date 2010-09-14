@@ -42,7 +42,7 @@ public class XmppIoHandler implements IoHandler {
 
     private static final Log log = LogFactory.getLog(XmppIoHandler.class);
 
-    private static final String XML_PARSER = "XML_PARSER";
+    public static final String XML_PARSER = "XML_PARSER";
 
     private static final String CONNECTION = "CONNECTION";
 

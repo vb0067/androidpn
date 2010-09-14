@@ -17,8 +17,7 @@
  */
 package org.androidpn.server.xmpp.codec;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.androidpn.server.xmpp.net.XmppIoHandler;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.CumulativeProtocolDecoder;
@@ -26,21 +25,21 @@ import org.apache.mina.filter.codec.ProtocolDecoderOutput;
 import org.jivesoftware.openfire.nio.XMLLightweightParser;
 
 /** 
- * Class desciption here.
+ * Decoder class that parses ByteBuffers and generates XML stanzas.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
 public class XmppDecoder extends CumulativeProtocolDecoder {
 
-    private final Log log = LogFactory.getLog(XmppDecoder.class);
+    // private final Log log = LogFactory.getLog(XmppDecoder.class);
 
     @Override
     public boolean doDecode(IoSession session, IoBuffer in,
             ProtocolDecoderOutput out) throws Exception {
-        log.debug("doDecode(...)...");
+        // log.debug("doDecode(...)...");
 
         XMLLightweightParser parser = (XMLLightweightParser) session
-                .getAttribute("XML_PARSER");
+                .getAttribute(XmppIoHandler.XML_PARSER);
         parser.read(in);
 
         if (parser.areThereMsgs()) {

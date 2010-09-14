@@ -184,6 +184,39 @@ public class Connection {
     }
 
     /**
+     * Delivers the packet to this connection (without checking the recipient).
+     * 
+     * @param packet the packet to deliver
+     */
+    public void deliver(Packet packet) {
+        log.debug("SENT: " + packet.toXML());
+        if (!isClosed()) {
+            IoBuffer buffer = IoBuffer.allocate(4096);
+            buffer.setAutoExpand(true);
+
+            boolean errorDelivering = false;
+            try {
+                XMLWriter xmlSerializer = new XMLWriter(new IoBufferWriter(
+                        buffer, (CharsetEncoder) encoder.get()),
+                        new OutputFormat());
+                xmlSerializer.write(packet.getElement());
+                xmlSerializer.flush();
+                buffer.flip();
+                ioSession.write(buffer);
+            } catch (Exception e) {
+                log.debug("Connection: Error delivering packet" + "\n"
+                        + this.toString(), e);
+                errorDelivering = true;
+            }
+            if (errorDelivering) {
+                close();
+            } else {
+                session.incrementServerPacketCount();
+            }
+        }
+    }
+
+    /**
      * Delivers raw text to this connection (in asynchronous mode).
      * 
      * @param text the XML stanza string to deliver
@@ -226,53 +259,9 @@ public class Connection {
     }
 
     /**
-     * Delivers the packet to this connection (without checking the recipient).
+     * Returns the IP address.
      * 
-     * @param packet the packet to deliver
-     */
-    public void deliver(Packet packet) {
-        log.debug("SENT: " + packet.toXML());
-        if (!isClosed()) {
-            IoBuffer buffer = IoBuffer.allocate(4096);
-            buffer.setAutoExpand(true);
-
-            boolean errorDelivering = false;
-            try {
-                XMLWriter xmlSerializer = new XMLWriter(new IoBufferWriter(
-                        buffer, (CharsetEncoder) encoder.get()),
-                        new OutputFormat());
-                xmlSerializer.write(packet.getElement());
-                xmlSerializer.flush();
-                buffer.flip();
-                ioSession.write(buffer);
-            } catch (Exception e) {
-                log.debug("Connection: Error delivering packet" + "\n"
-                        + this.toString(), e);
-                errorDelivering = true;
-            }
-            if (errorDelivering) {
-                close();
-            } else {
-                session.incrementServerPacketCount();
-            }
-        }
-    }
-
-    //    /**
-    //     * Returns the raw IP address.
-    //     * 
-    //     * @return the raw IP address
-    //     * @throws UnknownHostException if IP address of host could not be determined.
-    //     */
-    //    public byte[] getAddress() throws UnknownHostException {
-    //        return ((InetSocketAddress) ioSession.getRemoteAddress()).getAddress()
-    //                .getAddress();
-    //    }
-
-    /**
-     * Returns the IP address string in textual presentation.
-     * 
-     * @return the raw IP address in a string format
+     * @return the IP address
      * @throws UnknownHostException if IP address of host could not be determined.
      */
     public String getHostAddress() throws UnknownHostException {

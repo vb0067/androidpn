@@ -242,7 +242,7 @@ public class StanzaHandler {
         // Create the correct session based on the sent namespace
         String namespace = xpp.getNamespace(null);
         if ("jabber:client".equals(namespace)) {
-            session = ClientSession.createSession(serverName, xpp, connection);
+            session = ClientSession.createSession(serverName, connection, xpp);
             // If no session was created
             if (session == null) {
                 StringBuilder sb = new StringBuilder(250);
