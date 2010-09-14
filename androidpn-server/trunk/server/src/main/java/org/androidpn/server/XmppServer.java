@@ -28,7 +28,6 @@ import org.androidpn.server.util.Config;
 import org.androidpn.server.xmpp.session.SessionManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jivesoftware.util.TaskEngine;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -142,8 +141,6 @@ public class XmppServer {
 
     private void shutdownServer() {
         shuttingDown = true;
-        // Shutdown the task engine
-        TaskEngine.getInstance().shutdown();
         // Close all connections
         SessionManager.getInstance().closeAllSessions();
         log.info("XmppServer stopped");

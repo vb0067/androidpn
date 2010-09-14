@@ -26,7 +26,7 @@ import org.xmpp.packet.JID;
 import org.xmpp.packet.Presence;
 
 /** 
- * Class desciption here.
+ * This class represents a session between the server and a client.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
@@ -79,9 +79,7 @@ public class ClientSession extends Session {
 
         // Build the start packet response
         StringBuilder sb = new StringBuilder(200);
-        sb.append("<?xml version='1.0' encoding='");
-        sb.append(CHARSET);
-        sb.append("'?>");
+        sb.append("<?xml version='1.0' encoding='UTF-8'?>");
         sb.append("<stream:stream ");
         sb
                 .append("xmlns:stream=\"http://etherx.jabber.org/streams\" xmlns=\"jabber:client\" from=\"");
@@ -163,13 +161,11 @@ public class ClientSession extends Session {
 
     public String getAvailableStreamFeatures() {
         StringBuilder sb = new StringBuilder();
-        if (getAuthToken() == null) {
-            // Non-SASL Authentication
+        if (getAuthToken() == null) { // Non-SASL Authentication            
             sb.append("<auth xmlns=\"http://jabber.org/features/iq-auth\"/>");
             sb
                     .append("<register xmlns=\"http://jabber.org/features/iq-register\"/>");
-        } else {
-            // If the session has been authenticated
+        } else { // If the session has been authenticated            
             sb.append("<bind xmlns=\"urn:ietf:params:xml:ns:xmpp-bind\"/>");
             sb
                     .append("<session xmlns=\"urn:ietf:params:xml:ns:xmpp-session\"/>");

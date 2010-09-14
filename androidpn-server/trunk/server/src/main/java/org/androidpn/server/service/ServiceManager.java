@@ -17,7 +17,7 @@
  */
 package org.androidpn.server.service;
 
-import org.androidpn.server.XmppServer;
+import org.androidpn.server.xmpp.XmppServer;
 
 /** 
  * Class desciption here.

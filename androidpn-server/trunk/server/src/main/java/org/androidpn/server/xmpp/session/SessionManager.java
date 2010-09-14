@@ -25,7 +25,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.androidpn.server.XmppServer;
+import org.androidpn.server.xmpp.XmppServer;
 import org.androidpn.server.xmpp.net.Connection;
 import org.androidpn.server.xmpp.net.ConnectionCloseListener;
 import org.apache.commons.logging.Log;
@@ -80,7 +80,7 @@ public class SessionManager {
         ClientSession session = new ClientSession(serverName, conn, streamId);
         conn.init(session);
         // Register to receive close notification on this session
-        conn.registerCloseListener(clientSessionListener, session);
+        conn.registerCloseListener(clientSessionListener);
         // Add to pre-authenticated sessions
         preAuthSessions.put(session.getAddress().getResource(), session);
         // Increment the counter of user sessions
@@ -203,7 +203,6 @@ public class SessionManager {
                     removeSession(session);
                 }
             } catch (Exception e) {
-                // Can't do anything about this problem...
                 log.error("Could not close socket", e);
             }
         }

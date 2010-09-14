@@ -33,15 +33,13 @@ import org.jivesoftware.util.XMLWriter;
 import org.xmpp.packet.Packet;
 
 /**
- * Class desciption here.
+ * This class represents a XMPP connection on the server.
  * 
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
 public class Connection {
 
     private static final Log log = LogFactory.getLog(Connection.class);
-
-    public static final String CHARSET = "UTF-8";
 
     private IoSession ioSession;
 
@@ -55,23 +53,38 @@ public class Connection {
 
     private String language = null;
 
+    @SuppressWarnings("unchecked")
     private static ThreadLocal encoder = new ThreadLocalEncoder();
 
     private boolean closed;
 
+    /**
+     * Constructor.
+     * 
+     * @param ioSession the IoSession
+     */
     public Connection(IoSession ioSession) {
         this.ioSession = ioSession;
         this.closed = false;
     }
 
-    public boolean validate() {
-        if (isClosed()) {
-            return false;
-        }
-        deliverRawText(" ");
-        return !isClosed();
-    }
+    //    /**
+    //     * Verifies that the connection is still live.
+    //     * 
+    //     * @return true if the socket remains valid, false otherwise.
+    //     */
+    //    public boolean validate() {
+    //        if (isClosed()) {
+    //            return false;
+    //        }
+    //        deliverRawText(" ");
+    //        return !isClosed();
+    //    }
 
+    /**
+     * Closes the session including associated socket connection,
+     * notifing all listeners that the channel is shutting down.
+     */
     public void close() {
         boolean closedSuccessfully = false;
         synchronized (this) {
@@ -94,16 +107,29 @@ public class Connection {
         }
     }
 
+    /**
+     * Sends notification message indicating that the server is being shutdown.
+     */
     public void systemShutdown() {
         deliverRawText("<stream:error><system-shutdown "
                 + "xmlns='urn:ietf:params:xml:ns:xmpp-streams'/></stream:error>");
         close();
     }
 
-    public void init(Session owner) {
-        session = owner;
+    /**
+     * Initializes the connection with it's owning session.
+     * 
+     * @param session the session that owns this connection
+     */
+    public void init(Session session) {
+        this.session = session;
     }
 
+    /**
+     * Returns true if the connection is closed.
+     * 
+     * @return true if the connection is closed, false otherwise.
+     */
     public boolean isClosed() {
         if (session == null) {
             return closed;
@@ -111,12 +137,21 @@ public class Connection {
         return session.getStatus() == Session.STATUS_CLOSED;
     }
 
-    public boolean isSecure() {
-        return ioSession.getFilterChain().contains("tls");
-    }
+    //    /**
+    //     * Returns true if this connection is secure.
+    //     * 
+    //     * @return true if the connection is secure
+    //     */
+    //    public boolean isSecure() {
+    //        return ioSession.getFilterChain().contains("tls");
+    //    }
 
-    public void registerCloseListener(ConnectionCloseListener listener,
-            Object ignore) {
+    /**
+     * Registers a listener for close event notification.
+     * 
+     * @param listener the listener to register for close events.
+     */
+    public void registerCloseListener(ConnectionCloseListener listener) {
         if (closeListener != null) {
             throw new IllegalStateException("Close listener already configured");
         }
@@ -127,7 +162,12 @@ public class Connection {
         }
     }
 
-    public void removeCloseListener(ConnectionCloseListener listener) {
+    /**
+     *  Removes a registered close event listener.
+     *  
+     * @param listener the listener to unregister for close events.
+     */
+    public void unregisterCloseListener(ConnectionCloseListener listener) {
         if (closeListener == listener) {
             closeListener = null;
         }
@@ -143,8 +183,12 @@ public class Connection {
         }
     }
 
+    /**
+     * Delivers raw text to this connection (in asynchronous mode).
+     * 
+     * @param text the XML stanza string to deliver
+     */
     public void deliverRawText(String text) {
-        // Deliver the packet in asynchronous mode
         deliverRawText(text, true);
     }
 
@@ -156,7 +200,7 @@ public class Connection {
 
             boolean errorDelivering = false;
             try {
-                buffer.put(text.getBytes(CHARSET));
+                buffer.put(text.getBytes("UTF-8"));
                 buffer.flip();
                 if (asynchronous) {
                     ioSession.write(buffer);
@@ -170,7 +214,7 @@ public class Connection {
                     }
                 }
             } catch (Exception e) {
-                log.debug("NIOConnection: Error delivering raw text" + "\n"
+                log.debug("Connection: Error delivering raw text" + "\n"
                         + this.toString(), e);
                 errorDelivering = true;
             }
@@ -181,6 +225,11 @@ public class Connection {
         }
     }
 
+    /**
+     * Delivers the packet to this connection (without checking the recipient).
+     * 
+     * @param packet the packet to deliver
+     */
     public void deliver(Packet packet) {
         log.debug("SENT: " + packet.toXML());
         if (!isClosed()) {
@@ -209,45 +258,90 @@ public class Connection {
         }
     }
 
-    public byte[] getAddress() throws UnknownHostException {
-        return ((InetSocketAddress) ioSession.getRemoteAddress()).getAddress()
-                .getAddress();
-    }
+    //    /**
+    //     * Returns the raw IP address.
+    //     * 
+    //     * @return the raw IP address
+    //     * @throws UnknownHostException if IP address of host could not be determined.
+    //     */
+    //    public byte[] getAddress() throws UnknownHostException {
+    //        return ((InetSocketAddress) ioSession.getRemoteAddress()).getAddress()
+    //                .getAddress();
+    //    }
 
+    /**
+     * Returns the IP address string in textual presentation.
+     * 
+     * @return the raw IP address in a string format
+     * @throws UnknownHostException if IP address of host could not be determined.
+     */
     public String getHostAddress() throws UnknownHostException {
         return ((InetSocketAddress) ioSession.getRemoteAddress()).getAddress()
                 .getHostAddress();
     }
 
+    /**
+     * Gets the host name for the IP address.
+     * 
+     * @return the host name for this IP address
+     * @throws UnknownHostException  if IP address of host could not be determined.
+     */
     public String getHostName() throws UnknownHostException {
         return ((InetSocketAddress) ioSession.getRemoteAddress()).getAddress()
                 .getHostName();
     }
 
+    /**
+     * Returns the major version of XMPP being used by this connection.
+     * 
+     * @return the major XMPP version
+     */
     public int getMajorXMPPVersion() {
         return majorVersion;
     }
 
+    /**
+     * Returns the minor version of XMPP being used by this connection.
+     * 
+     * @return the minor XMPP version
+     */
     public int getMinorXMPPVersion() {
         return minorVersion;
     }
 
+    /**
+     * Sets the XMPP version information.
+     * 
+     * @param majorVersion the major version
+     * @param minorVersion the minor version
+     */
     public void setXMPPVersion(int majorVersion, int minorVersion) {
         this.majorVersion = majorVersion;
         this.minorVersion = minorVersion;
     }
 
+    /**
+     * Returns the language code that should be used for this connection.
+     * 
+     * @return the language code
+     */
     public String getLanguage() {
         return language;
     }
 
+    /**
+     * Sets the language code that should be used for this connection.
+     * 
+     * @param language the language code
+     */
     public void setLanaguage(String language) {
         this.language = language;
     }
 
+    @SuppressWarnings("unchecked")
     private static class ThreadLocalEncoder extends ThreadLocal {
         protected Object initialValue() {
-            return Charset.forName(CHARSET).newEncoder();
+            return Charset.forName("UTF-8").newEncoder();
         }
     }
 

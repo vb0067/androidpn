@@ -32,7 +32,8 @@ import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.webapp.WebAppContext;
 
 /** 
- * Class desciption here.
+ * This class starts a Jerry instance on the configured port and loads
+ * the admin console web application. 
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
@@ -50,6 +51,11 @@ public class AdminConsole {
 
     private boolean httpStarted = false;
 
+    /**
+     * Constuctor that create a Jetty module.
+     * 
+     * @param homeDir the application home directory
+     */
     public AdminConsole(String homeDir) {
         contexts = new ContextHandlerCollection();
         Context context = new WebAppContext(contexts, homeDir + File.separator
@@ -62,6 +68,9 @@ public class AdminConsole {
         adminServer.setSendServerVersion(false);
     }
 
+    /**
+     * Starts the Jetty server instance.
+     */
     public void startup() {
         if (adminPort > 0) {
             Connector httpConnector = new SelectChannelConnector();
@@ -89,6 +98,9 @@ public class AdminConsole {
         }
     }
 
+    /**
+     * Shuts down the Jetty server instance.
+     */
     public void shutdown() {
         try {
             if (adminServer != null && adminServer.isRunning()) {
@@ -100,10 +112,9 @@ public class AdminConsole {
         adminServer = null;
     }
 
-    public ContextHandlerCollection getContexts() {
-        return contexts;
-    }
-
+    /**
+     * Restarts the Jetty server instance.
+     */
     public void restart() {
         try {
             adminServer.stop();
@@ -113,14 +124,38 @@ public class AdminConsole {
         }
     }
 
+    /**
+     * Returns the collection of Jetty contexts used in the admin console.
+     *  
+     * @return the Jetty context handlers 
+     */
+    public ContextHandlerCollection getContexts() {
+        return contexts;
+    }
+
+    /**
+     * Returns the host name of the admin console.
+     * 
+     * @return the host name of the admin console.
+     */
     public String getAdminHost() {
         return adminHost;
     }
 
+    /**
+     * Returns the port of the admin console.
+     * 
+     * @return the port of the admin console.
+     */
     public int getAdminPort() {
         return adminPort;
     }
 
+    /**
+     * Returns the start stutus of the admin console.
+     * 
+     * @return true if the admin console has been started, false otherwise.  
+     */
     public boolean isHttpStarted() {
         return httpStarted;
     }

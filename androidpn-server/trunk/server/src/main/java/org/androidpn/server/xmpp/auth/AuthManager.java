@@ -20,10 +20,10 @@ package org.androidpn.server.xmpp.auth;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import org.androidpn.server.XmppServer;
 import org.androidpn.server.service.ServiceManager;
 import org.androidpn.server.service.UserNotFoundException;
 import org.androidpn.server.xmpp.UnauthorizedException;
+import org.androidpn.server.xmpp.XmppServer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jivesoftware.util.StringUtils;

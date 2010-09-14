@@ -40,15 +40,13 @@ import org.xmpp.packet.Roster;
 import org.xmpp.packet.StreamError;
 
 /** 
- * Class desciption here.
+ * This class is to handle incoming XML stanzas.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
 public class StanzaHandler {
 
     private static final Log log = LogFactory.getLog(StanzaHandler.class);
-
-    protected static String CHARSET = "UTF-8";
 
     protected Connection connection;
 
@@ -60,12 +58,25 @@ public class StanzaHandler {
 
     private PacketRouter router;
 
+    /**
+     * Constructor.
+     * 
+     * @param serverName the server name
+     * @param connection the connection
+     */
     public StanzaHandler(String serverName, Connection connection) {
         this.serverName = serverName;
         this.connection = connection;
         this.router = new PacketRouter();
     }
 
+    /**
+     * Process the received stanza using the given XMPP packet reader.
+     *  
+     * @param stanza the received statza
+     * @param reader the XMPP packet reader
+     * @throws Exception if the XML stream is not valid.
+     */
     public void process(String stanza, XMPPPacketReader reader)
             throws Exception {
         boolean initialStream = stanza.startsWith("<stream:stream");
@@ -235,9 +246,7 @@ public class StanzaHandler {
             // If no session was created
             if (session == null) {
                 StringBuilder sb = new StringBuilder(250);
-                sb.append("<?xml version='1.0' encoding='");
-                sb.append(CHARSET);
-                sb.append("'?>");
+                sb.append("<?xml version='1.0' encoding='UTF-8'?>");
                 sb.append("<stream:stream ");
                 sb.append("from=\"").append(serverName).append("\" ");
                 sb.append("id=\"").append(StringUtils.randomString(5)).append(
@@ -263,12 +272,12 @@ public class StanzaHandler {
         }
     }
 
-    //    public String getNamespace() {
-    //        return "jabber:client";
-    //    }
-
     private boolean validateJIDs() {
         return true;
     }
+
+    //  public String getNamespace() {
+    //  return "jabber:client";
+    //}
 
 }

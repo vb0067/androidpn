@@ -20,7 +20,7 @@ package org.androidpn.server.xmpp.net;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.androidpn.server.XmppServer;
+import org.androidpn.server.xmpp.XmppServer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.mina.core.service.IoHandler;
@@ -33,7 +33,8 @@ import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 /** 
- * Class desciption here.
+ * This class is to create new sessions, destroy sessions and deliver
+ * received XML stanzas to the StanzaHandler.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
@@ -41,15 +42,13 @@ public class XmppIoHandler implements IoHandler {
 
     private static final Log log = LogFactory.getLog(XmppIoHandler.class);
 
-    public static final String CHARSET = "UTF-8";
-
-    public static final String XML_PARSER = "XML_PARSER";
+    private static final String XML_PARSER = "XML_PARSER";
 
     private static final String CONNECTION = "CONNECTION";
 
     private static final String STANZA_HANDLER = "STANZA_HANDLER";
 
-    protected String serverName;
+    private String serverName;
 
     private static Map<Integer, XMPPPacketReader> parsers = new ConcurrentHashMap<Integer, XMPPPacketReader>();
 
@@ -65,37 +64,48 @@ public class XmppIoHandler implements IoHandler {
         }
     }
 
+    /**
+     * Constructor. Set the server name from server instance. 
+     */
     protected XmppIoHandler() {
         serverName = XmppServer.getInstance().getServerName();
     }
 
-    protected XmppIoHandler(String serverName) {
-        this.serverName = serverName;
-    }
-
+    /**
+     * Invoked from an I/O processor thread when a new connection has been created.
+     */
     public void sessionCreated(IoSession session) throws Exception {
         log.debug("sessionCreated()...");
     }
 
+    /**
+     * Invoked when a connection has been opened.
+     */
     public void sessionOpened(IoSession session) throws Exception {
         log.debug("sessionOpened()...");
         log.debug("remoteAddress=" + session.getRemoteAddress());
         // Create a new XML parser
-        XMLLightweightParser parser = new XMLLightweightParser(CHARSET);
+        XMLLightweightParser parser = new XMLLightweightParser("UTF-8");
         session.setAttribute(XML_PARSER, parser);
         // Create a new connection
         Connection connection = new Connection(session);
         session.setAttribute(CONNECTION, connection);
-        session.setAttribute(STANZA_HANDLER, new StanzaHandler(
-                serverName, connection));
+        session.setAttribute(STANZA_HANDLER, new StanzaHandler(serverName,
+                connection));
     }
 
+    /**
+     * Invoked when a connection is closed.
+     */
     public void sessionClosed(IoSession session) throws Exception {
         log.debug("sessionClosed()...");
         Connection connection = (Connection) session.getAttribute(CONNECTION);
         connection.close();
     }
 
+    /**
+     * Invoked with the related IdleStatus when a connection becomes idle.
+     */
     public void sessionIdle(IoSession session, IdleStatus status)
             throws Exception {
         log.debug("sessionIdle()...");
@@ -106,16 +116,22 @@ public class XmppIoHandler implements IoHandler {
         connection.close();
     }
 
+    /**
+     * Invoked when any exception is thrown.
+     */
     public void exceptionCaught(IoSession session, Throwable cause)
             throws Exception {
         log.debug("exceptionCaught()...");
         log.error(cause);
     }
 
+    /**
+     * Invoked when a message is received.
+     */
     public void messageReceived(IoSession session, Object message)
             throws Exception {
         log.debug("messageReceived()...");
-        // log.debug("RCVD: " + message);
+        log.debug("RCVD: " + message);
 
         // Get the stanza handler
         StanzaHandler handler = (StanzaHandler) session
@@ -143,9 +159,11 @@ public class XmppIoHandler implements IoHandler {
         }
     }
 
+    /**
+     * Invoked when a message written by IoSession.write(Object) is sent out.
+     */
     public void messageSent(IoSession session, Object message) throws Exception {
         log.debug("messageSent()...");
-        // log.debug("SENT >>>>> " + message);
     }
 
 }

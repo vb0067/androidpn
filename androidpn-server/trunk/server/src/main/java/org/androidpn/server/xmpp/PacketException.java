@@ -18,11 +18,11 @@
 package org.androidpn.server.xmpp;
 
 /** 
- * Class desciption here.
+ * Runtime exceptions produced by failed packet operations.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
-public class PacketException extends Exception {
+public class PacketException extends RuntimeException {
     
     private static final long serialVersionUID = 1L;
 

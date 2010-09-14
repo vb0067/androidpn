@@ -29,7 +29,7 @@ import org.xmpp.packet.JID;
 import org.xmpp.packet.Packet;
 
 /** 
- * Class desciption here.
+ * An abstract class for a session between the server and a client.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
@@ -44,8 +44,6 @@ public abstract class Session {
     public static final int STATUS_CONNECTED = 1;
 
     public static final int STATUS_AUTHENTICATED = 3;
-
-    protected static final String CHARSET = "UTF-8";
 
     private static final Log log = LogFactory.getLog(Session.class);
 
@@ -182,13 +180,13 @@ public abstract class Session {
         return conn.isClosed();
     }
 
-    public boolean isSecure() {
-        return conn.isSecure();
-    }
+    //    public boolean isSecure() {
+    //        return conn.isSecure();
+    //    }
 
-    public boolean validate() {
-        return conn.validate();
-    }
+    //    public boolean validate() {
+    //        return conn.validate();
+    //    }
 
     public String getHostAddress() throws UnknownHostException {
         return conn.getHostAddress();

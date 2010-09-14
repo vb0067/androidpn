@@ -18,7 +18,7 @@
 package org.androidpn.server.xmpp;
 
 /** 
- * Class desciption here.
+ * Thrown if a user does not have permission to do a particular operation.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
