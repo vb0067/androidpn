@@ -48,7 +48,7 @@
 						<manifest>
 							<packageName>starter</packageName>
 							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-							<mainClass>org.androidpn.starter.ServerStarter</mainClass>
+							<mainClass>org.androidpn.server.starter.ServerStarter</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
