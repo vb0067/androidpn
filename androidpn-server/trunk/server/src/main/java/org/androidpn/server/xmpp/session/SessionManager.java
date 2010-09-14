@@ -31,16 +31,17 @@ import org.androidpn.server.xmpp.net.ConnectionCloseListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.xmpp.packet.JID;
-import org.xmpp.packet.Presence;
 
 /** 
- * Class desciption here.
+ * This class manages the sessions connected to the server.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
 public class SessionManager {
 
     private static final Log log = LogFactory.getLog(SessionManager.class);
+
+    private static final String RESOURCE_NAME = "AndroidpnClient";
 
     private static SessionManager instance;
 
@@ -58,6 +59,11 @@ public class SessionManager {
         serverName = XmppServer.getInstance().getServerName();
     }
 
+    /**
+     * Returns the singleton instance of SessionManager.
+     * 
+     * @return the instance
+     */
     public static SessionManager getInstance() {
         if (instance == null) {
             synchronized (SessionManager.class) {
@@ -67,22 +73,27 @@ public class SessionManager {
         return instance;
     }
 
+    /**
+     * Creates a new ClientSession and returns it.
+     *  
+     * @param conn the connection
+     * @return a newly created session
+     */
     public ClientSession createClientSession(Connection conn) {
-        Random random = new Random();
-        String streamId = Integer.toHexString(random.nextInt());
-        return createClientSession(conn, streamId);
-    }
-
-    public ClientSession createClientSession(Connection conn, String streamId) {
         if (serverName == null) {
             throw new IllegalStateException("Server not initialized");
         }
+
+        Random random = new Random();
+        String streamId = Integer.toHexString(random.nextInt());
+
         ClientSession session = new ClientSession(serverName, conn, streamId);
         conn.init(session);
-        // Register to receive close notification on this session
         conn.registerCloseListener(clientSessionListener);
+
         // Add to pre-authenticated sessions
         preAuthSessions.put(session.getAddress().getResource(), session);
+
         // Increment the counter of user sessions
         connectionsCounter.incrementAndGet();
 
@@ -90,25 +101,38 @@ public class SessionManager {
         return session;
     }
 
+    /**
+     * Adds a new session that has been authenticated. 
+     *  
+     * @param session the session
+     */
     public void addSession(ClientSession session) {
-        // Remove the pre-Authenticated session but remember to use the temporary ID as the key
         preAuthSessions.remove(session.getStreamID().toString());
-
         clientSessions.put(session.getAddress().toString(), session);
     }
 
+    /**
+     * Returns the session associated with the username.
+     * 
+     * @param username the username of the client address
+     * @return the session associated with the username
+     */
     public ClientSession getSession(String username) {
         // return getSession(new JID(username, serverName, null, true));
-        return getSession(new JID(username, serverName, "AndroidpnClient", true));
+        return getSession(new JID(username, serverName, RESOURCE_NAME, true));
     }
 
+    /**
+     * Returns the session associated with the JID.
+     * 
+     * @param from the client address
+     * @return the session associated with the JID
+     */
     public ClientSession getSession(JID from) {
-
         if (from == null || serverName == null
                 || !serverName.equals(from.getDomain())) {
             return null;
         }
-
         // Check pre-authenticated sessions
         if (from.getResource() != null) {
             ClientSession session = preAuthSessions.get(from.getResource());
@@ -116,58 +140,48 @@ public class SessionManager {
                 return session;
             }
         }
-
         if (from.getResource() == null || from.getNode() == null) {
             return null;
         }
-
         return clientSessions.get(from.toString());
     }
 
+    /**
+     * Returns a list that contains all authenticated client sessions.
+     * 
+     * @return a list that contains all client sessions
+     */
     public Collection<ClientSession> getSessions() {
         return clientSessions.values();
     }
 
+    /**
+     * Removes a client session.
+     * 
+     * @param session the session to be removed
+     * @return true if the session was successfully removed 
+     */
     public boolean removeSession(ClientSession session) {
         if (session == null || serverName == null) {
             return false;
         }
+        JID fullJID = session.getAddress();
 
-        return removeSession(session, session.getAddress(), false);
-    }
+        // Remove the session from list
+        boolean clientRemoved = clientSessions.remove(fullJID.toString()) != null;
+        boolean preAuthRemoved = (preAuthSessions.remove(fullJID.getResource()) != null);
 
-    public boolean removeSession(ClientSession session, JID fullJID,
-            boolean forceUnavailable) {
-        if (serverName == null) {
-            return false;
-        }
-
-        if (session == null) {
-            session = getSession(fullJID);
-        }
-
-        boolean removed = clientSessions.remove(fullJID.toString()) != null;
-
-        // Remove the session from the pre-Authenticated sessions list (if present)
-        boolean preauthRemoved = preAuthSessions.remove(fullJID.getResource()) != null;
-
-        // If the user is still available then send an unavailable presence
-        if (forceUnavailable || session.getPresence().isAvailable()) {
-            Presence offline = new Presence();
-            offline.setFrom(fullJID);
-            offline.setTo(new JID(null, serverName, null, true));
-            offline.setType(Presence.Type.unavailable);
-            // router.route(offline);
-        }
-
-        if (removed || preauthRemoved) {
-            // Decrement the counter of user sessions
+        // Decrement the counter of user sessions
+        if (clientRemoved || preAuthRemoved) {
             connectionsCounter.decrementAndGet();
             return true;
         }
         return false;
     }
 
+    /**
+     * Closes the all sessions. 
+     */
     public void closeAllSessions() {
         try {
             // Send the close stream header to all connections
@@ -185,23 +199,15 @@ public class SessionManager {
         }
     }
 
+    /**
+     * A listner to handle a session that has been closed.
+     */
     private class ClientSessionListener implements ConnectionCloseListener {
 
         public void onConnectionClose(Object handback) {
             try {
                 ClientSession session = (ClientSession) handback;
-                try {
-                    if ((session.getPresence().isAvailable() || !session
-                            .wasAvailable())) {
-                        // Send an unavailable presence to the user's subscribers
-                        Presence presence = new Presence();
-                        presence.setType(Presence.Type.unavailable);
-                        presence.setFrom(session.getAddress());
-                        // router.route(presence);
-                    }
-                } finally {
-                    removeSession(session);
-                }
+                removeSession(session);
             } catch (Exception e) {
                 log.error("Could not close socket", e);
             }

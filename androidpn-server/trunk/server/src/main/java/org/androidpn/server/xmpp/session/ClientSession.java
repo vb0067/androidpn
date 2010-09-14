@@ -20,6 +20,8 @@ package org.androidpn.server.xmpp.session;
 import org.androidpn.server.service.UserNotFoundException;
 import org.androidpn.server.xmpp.auth.AuthToken;
 import org.androidpn.server.xmpp.net.Connection;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmpp.packet.JID;
@@ -32,11 +34,15 @@ import org.xmpp.packet.Presence;
  */
 public class ClientSession extends Session {
 
-    //    private static final Log log = LogFactory.getLog(ClientSession.class);
+    private static final Log log = LogFactory.getLog(ClientSession.class);
 
     private static final String ETHERX_NAMESPACE = "http://etherx.jabber.org/streams";
 
-    protected AuthToken authToken;
+    private static final int MAJOR_VERSION = 1;
+
+    private static final int MINOR_VERSION = 0;
+
+    private AuthToken authToken;
 
     private boolean initialized;
 
@@ -44,6 +50,13 @@ public class ClientSession extends Session {
 
     private Presence presence = null;
 
+    /**
+     * Constructor.
+     * 
+     * @param serverName the server name
+     * @param connection the connection
+     * @param streamID the stream ID
+     */
     public ClientSession(String serverName, Connection connection,
             String streamID) {
         super(serverName, connection, streamID);
@@ -51,9 +64,20 @@ public class ClientSession extends Session {
         presence.setType(Presence.Type.unavailable);
     }
 
+    /**
+     * Creates a new session between the server and a client, and returns it.
+     * 
+     * @param serverName the server name
+     * @param connection the connection
+     * @param xpp the XML parser to handle incoming data 
+     * @return a newly created session
+     * @throws XmlPullParserException if an error occurs while parsing incoming data
+     */
     public static ClientSession createSession(String serverName,
-            XmlPullParser xpp, Connection connection)
+            Connection connection, XmlPullParser xpp)
             throws XmlPullParserException {
+        log.debug("createSession()...");
+
         if (!xpp.getName().equals("stream")) {
             throw new XmlPullParserException("Bad opening tag (not stream)");
         }
@@ -106,6 +130,12 @@ public class ClientSession extends Session {
         return session;
     }
 
+    /**
+     * Returns the username associated with this session.
+     * 
+     * @return the username
+     * @throws UserNotFoundException if a user has not authenticated yet
+     */
     public String getUsername() throws UserNotFoundException {
         if (authToken == null) {
             throw new UserNotFoundException();
@@ -113,42 +143,70 @@ public class ClientSession extends Session {
         return getAddress().getNode();
     }
 
-    public void setAuthToken(AuthToken auth) {
-        authToken = auth;
+    /**
+     * Returns the authentication token associated with this session.
+     * 
+     * @return the authentication token
+     */
+    public AuthToken getAuthToken() {
+        return authToken;
     }
 
-    public void setAuthToken(AuthToken auth, String resource) {
-        setAddress(new JID(auth.getUsername(), getServerName(), resource));
-        authToken = auth;
+    /**
+     * Initialize the session with an authentication token and resource name.
+     * 
+     * @param authToken the authentication token
+     * @param resource the resource
+     */
+    public void setAuthToken(AuthToken authToken, String resource) {
+        setAddress(new JID(authToken.getUsername(), getServerName(), resource));
+        this.authToken = authToken;
         setStatus(Session.STATUS_AUTHENTICATED);
         // Add session to the session manager
         sessionManager.addSession(this);
     }
 
-    public AuthToken getAuthToken() {
-        return authToken;
-    }
-
-    public boolean isAnonymousUser() {
-        return authToken == null || authToken.isAnonymous();
-    }
-
+    /**
+     * Indicates if the session has been initialized.
+     * 
+     * @return true if the session has been initialized, false otherwise.
+     */
     public boolean isInitialized() {
         return initialized;
     }
 
-    public void setInitialized(boolean isInit) {
-        initialized = isInit;
+    /**
+     * Sets the initialization state of the session.
+     * 
+     * @param initialized true if the session has been initialized
+     */
+    public void setInitialized(boolean initialized) {
+        this.initialized = initialized;
     }
 
+    /**
+     * Indicates if the session was available ever.
+     *  
+     * @return true if the session was available ever, false otherwise.
+     */
     public boolean wasAvailable() {
         return wasAvailable;
     }
 
+    /**
+     * Returns the presence of this session.
+     *  
+     * @return the presence
+     */
     public Presence getPresence() {
         return presence;
     }
 
+    /**
+     * Sets the presence of this session.
+     * 
+     * @param presence the presence
+     */
     public void setPresence(Presence presence) {
         Presence oldPresence = this.presence;
         this.presence = presence;
@@ -159,13 +217,19 @@ public class ClientSession extends Session {
         }
     }
 
+    /**
+     * Returns a text with the available stream features. 
+     */
     public String getAvailableStreamFeatures() {
         StringBuilder sb = new StringBuilder();
-        if (getAuthToken() == null) { // Non-SASL Authentication            
+        if (getAuthToken() == null) {
+            // Supports Non-SASL Authentication            
             sb.append("<auth xmlns=\"http://jabber.org/features/iq-auth\"/>");
+            // Supports In-Band Registration
             sb
                     .append("<register xmlns=\"http://jabber.org/features/iq-register\"/>");
-        } else { // If the session has been authenticated            
+        } else {
+            // If the session has been authenticated            
             sb.append("<bind xmlns=\"urn:ietf:params:xml:ns:xmpp-bind\"/>");
             sb
                     .append("<session xmlns=\"urn:ietf:params:xml:ns:xmpp-session\"/>");
@@ -173,6 +237,7 @@ public class ClientSession extends Session {
         return sb.toString();
     }
 
+    @Override
     public String toString() {
         return super.toString() + " presence: " + presence;
     }
