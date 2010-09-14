@@ -46,6 +46,8 @@ public class XmppServer {
 
     private String serverHomeDir;
 
+    private String version;
+
     private boolean shuttingDown;
 
     /**
@@ -80,17 +82,19 @@ public class XmppServer {
             locateServer();
             serverName = Config.getString("xmpp.domain", "127.0.0.1")
                     .toLowerCase();
+            version = Config.getString("androidpn.server.version", "");
             context = new ClassPathXmlApplicationContext("spring-config.xml");
             log.info("Spring Configuration loaded.");
 
             AdminConsole adminConsole = new AdminConsole(serverHomeDir);
             adminConsole.startup();
             if (adminConsole.isHttpStarted()) {
-                log.info("Admin console listening at: http://"
+                log.info("Admin console listening at http://"
                         + adminConsole.getAdminHost() + ":"
                         + adminConsole.getAdminPort());
             }
             log.info("XmppServer started: " + serverName);
+            log.info("Androidpn Server v" + version);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -144,7 +148,8 @@ public class XmppServer {
     public boolean isStandAlone() {
         boolean standalone;
         try {
-            standalone = Class.forName("org.androidpn.server.starter.ServerStarter") != null;
+            standalone = Class
+                    .forName("org.androidpn.server.starter.ServerStarter") != null;
         } catch (ClassNotFoundException e) {
             standalone = false;
         }

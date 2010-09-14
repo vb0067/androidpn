@@ -23,7 +23,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /** 
- * Class desciption here.
+ * This class to manage the applicatin configruation.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
@@ -39,6 +39,11 @@ public class ConfigManager {
         loadConfig();
     }
 
+    /**
+     * Returns the singleton instance of ConfigManger.
+     * 
+     * @return the instance
+     */
     public static ConfigManager getInstance() {
         if (instance == null) {
             synchronized (ConfigManager.class) {
@@ -48,10 +53,18 @@ public class ConfigManager {
         return instance;
     }
 
+    /**
+     * Loads the default configuration file.
+     */
     public void loadConfig() {
         loadConfig("config.xml");
     }
 
+    /**
+     * Loads the specific configuration file.
+     * 
+     * @param configFileName the file name
+     */
     public void loadConfig(String configFileName) {
         try {
             ConfigurationFactory factory = new ConfigurationFactory(
@@ -65,6 +78,11 @@ public class ConfigManager {
         }
     }
 
+    /**
+     * Returns the loaded configuration object.
+     * 
+     * @return the configuration
+     */
     public Configuration getConfig() {
         return config;
     }

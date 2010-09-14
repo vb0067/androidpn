@@ -23,7 +23,7 @@ import org.xmpp.packet.Packet;
 import org.xmpp.packet.Presence;
 
 /** 
- * Class desciption here.
+ * This class is to handle incoming packets and route them to their corresponding handler.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
@@ -35,12 +35,20 @@ public class PacketRouter {
 
     private IQRouter iqRouter;
 
+    /**
+     * Constructor. 
+     */
     public PacketRouter() {
         messageRouter = new MessageRouter();
         presenceRouter = new PresenceRouter();
         iqRouter = new IQRouter();
     }
 
+    /**
+     * Routes the packet based on its type.
+     * 
+     * @param packet the packet to route
+     */
     public void route(Packet packet) {
         if (packet instanceof Message) {
             route((Message) packet);
@@ -53,14 +61,29 @@ public class PacketRouter {
         }
     }
 
+    /**
+     * Routes the IQ packet.
+     * 
+     * @param packet the packet to route
+     */
     public void route(IQ packet) {
         iqRouter.route(packet);
     }
 
+    /**
+     * Routes the Message packet.
+     * 
+     * @param packet the packet to route
+     */
     public void route(Message packet) {
         messageRouter.route(packet);
     }
 
+    /**
+     * Routes the Presence packet.
+     * 
+     * @param packet the packet to route
+     */
     public void route(Presence packet) {
         presenceRouter.route(packet);
     }

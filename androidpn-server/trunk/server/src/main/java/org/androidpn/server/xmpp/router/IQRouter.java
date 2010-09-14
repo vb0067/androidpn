@@ -26,6 +26,7 @@ import org.androidpn.server.xmpp.handler.IQAuthHandler;
 import org.androidpn.server.xmpp.handler.IQHandler;
 import org.androidpn.server.xmpp.handler.IQHandlerInfo;
 import org.androidpn.server.xmpp.handler.IQRegisterHandler;
+import org.androidpn.server.xmpp.handler.IQRosterHandler;
 import org.androidpn.server.xmpp.session.ClientSession;
 import org.androidpn.server.xmpp.session.Session;
 import org.androidpn.server.xmpp.session.SessionManager;
@@ -37,7 +38,7 @@ import org.xmpp.packet.JID;
 import org.xmpp.packet.PacketError;
 
 /** 
- * Class desciption here.
+ * This class is to route IQ packets to their corresponding handler.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
@@ -51,12 +52,21 @@ public class IQRouter {
 
     private Map<String, IQHandler> namespace2Handlers = new ConcurrentHashMap<String, IQHandler>();
 
+    /**
+     * Constucts a packet router registering new IQ handlers.
+     */
     public IQRouter() {
         sessionManager = SessionManager.getInstance();
         iqHandlers.add(new IQAuthHandler());
         iqHandlers.add(new IQRegisterHandler());
+        iqHandlers.add(new IQRosterHandler());
     }
 
+    /**
+     * Routes the IQ packet based on its namespace.
+     * 
+     * @param packet the packet to route
+     */
     public void route(IQ packet) {
         if (packet == null) {
             throw new NullPointerException();
@@ -113,6 +123,9 @@ public class IQRouter {
         }
     }
 
+    /**
+     * Senda the error packet to the original sender
+     */
     private void sendErrorPacket(IQ originalPacket,
             PacketError.Condition condition) {
         if (IQ.Type.error == originalPacket.getType()) {
@@ -124,13 +137,17 @@ public class IQRouter {
         reply.setChildElement(originalPacket.getChildElement().createCopy());
         reply.setError(condition);
         try {
-            // Route the error packet to the original sender
             PacketDeliverer.deliver(reply);
         } catch (Exception e) {
             // Ignore
         }
     }
 
+    /**
+     * Adds a new IQHandler to the list of registered handler.
+     * 
+     * @param handler the IQHandler
+     */
     public void addHandler(IQHandler handler) {
         if (iqHandlers.contains(handler)) {
             throw new IllegalArgumentException(
@@ -139,6 +156,11 @@ public class IQRouter {
         namespace2Handlers.put(handler.getInfo().getNamespace(), handler);
     }
 
+    /**
+     * Removes an IQHandler from the list of registered handler.
+     * 
+     * @param handler the IQHandler
+     */
     public void removeHandler(IQHandler handler) {
         if (iqHandlers.contains(handler)) {
             throw new IllegalArgumentException(
@@ -147,6 +169,9 @@ public class IQRouter {
         namespace2Handlers.remove(handler.getInfo().getNamespace());
     }
 
+    /**
+     * Returns an IQHandler with the given namespace.
+     */
     private IQHandler getHandler(String namespace) {
         IQHandler handler = namespace2Handlers.get(namespace);
         if (handler == null) {

@@ -28,7 +28,7 @@ import org.xmpp.packet.PacketError;
 import org.xmpp.packet.Presence;
 
 /** 
- * Class desciption here.
+ * This class is to route Presence packets to their corresponding handler.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
@@ -40,11 +40,19 @@ public class PresenceRouter {
 
     private PresenceUpdateHandler presenceUpdateHandler;
 
+    /**
+     * Constucts a packet router.
+     */
     public PresenceRouter() {
         sessionManager = SessionManager.getInstance();
         presenceUpdateHandler = new PresenceUpdateHandler();
     }
 
+    /**
+     * Routes the Presence packet.
+     * 
+     * @param packet the packet to route
+     */
     public void route(Presence packet) {
         if (packet == null) {
             throw new NullPointerException();

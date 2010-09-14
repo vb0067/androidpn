@@ -8,6 +8,7 @@ Changes in version 0.4.0 (2010-09-??)
 * Removed unused classes
 * Updated Session, ClientSession, SessionManager
 * Updated AuthToken
+* Updated XmppServer
 
 Changes in version 0.3.3 (2010-09-13)
 -------------------------------------

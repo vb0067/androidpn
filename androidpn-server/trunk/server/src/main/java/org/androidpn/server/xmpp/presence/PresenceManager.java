@@ -23,7 +23,7 @@ import org.androidpn.server.xmpp.session.SessionManager;
 import org.xmpp.packet.Presence;
 
 /** 
- * Class desciption here.
+ * This class is to manage the presences of users. 
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
@@ -31,14 +31,29 @@ public class PresenceManager {
 
     private SessionManager sessionManager;
 
+    /**
+     * Constructor.
+     */
     public PresenceManager() {
         sessionManager = SessionManager.getInstance();
     }
 
+    /**
+     * Returns the availability of the user.
+     * 
+     * @param user the user
+     * @return true if the user is available
+     */
     public boolean isAvailable(User user) {
         return sessionManager.getSession(user.getUsername()) != null;
     }
 
+    /**
+     * Returns the current presence of the user.
+     * 
+     * @param user the user
+     * @return the current presence of the user.
+     */
     public Presence getPresence(User user) {
         if (user == null) {
             return null;

@@ -26,7 +26,7 @@ import org.xmpp.packet.JID;
 import org.xmpp.packet.Packet;
 
 /** 
- * Class desciption here.
+ * This class is to deliver the packets to the connected sessions. 
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
@@ -34,9 +34,12 @@ public class PacketDeliverer {
 
     private static final Log log = LogFactory.getLog(PacketDeliverer.class);
 
-    public PacketDeliverer() {
-    }
-
+    /**
+     * Delivers the packet to the packet recipient.  
+     * 
+     * @param packet the packet to deliver
+     * @throws PacketException if the packet is null or the recipient was not found.
+     */
     public static void deliver(Packet packet) throws PacketException {
         if (packet == null) {
             throw new PacketException("Packet was null");
@@ -52,7 +55,7 @@ public class PacketDeliverer {
                 }
             }
         } catch (Exception e) {
-            log.error("Could not deliver packet\n" + packet.toString(), e);
+            log.error("Could not deliver packet: " + packet.toString(), e);
         }
     }
 }

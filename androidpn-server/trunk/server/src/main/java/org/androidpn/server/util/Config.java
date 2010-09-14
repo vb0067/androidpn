@@ -20,7 +20,7 @@ package org.androidpn.server.util;
 import java.util.List;
 
 /** 
- * Class desciption here.
+ * Utility class to obtain the values from configruation.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
