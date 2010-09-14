@@ -114,9 +114,11 @@
 						</constructor-arg>
 					</bean>
 				</entry>
+				<!--
 				<entry key="logging">
 					<bean class="org.apache.mina.filter.logging.LoggingFilter" />
 				</entry>
+				-->
 			</map>
 		</property>
 	</bean>
