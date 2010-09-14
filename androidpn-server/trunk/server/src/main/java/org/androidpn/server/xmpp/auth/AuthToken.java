@@ -20,7 +20,7 @@ package org.androidpn.server.xmpp.auth;
 import org.androidpn.server.util.Config;
 
 /** 
- * Class desciption here.
+ * This class represents a token that proves a user's authentication.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
@@ -30,8 +30,11 @@ public class AuthToken {
 
     private String domain;
 
-    private Boolean anonymous;
-
+    /**
+     * Constucts a new AuthToken with the specified JID.
+     * 
+     * @param jid the username or bare JID
+     */
     public AuthToken(String jid) {
         if (jid == null) {
             this.domain = Config.getString("xmpp.domain");
@@ -47,30 +50,22 @@ public class AuthToken {
         }
     }
 
-    public AuthToken(String jid, Boolean anonymous) {
-        int index = jid.indexOf("@");
-        if (index > -1) {
-            this.username = jid.substring(0, index);
-            this.domain = jid.substring(index + 1);
-        } else {
-            this.username = jid;
-            this.domain = Config.getString("xmpp.domain");
-        }
-        this.anonymous = anonymous;
-    }
-
+    /**
+     * Returns the username.
+     * 
+     * @return the username
+     */
     public String getUsername() {
         return username;
     }
 
+    /**
+     * Returns the domain.
+     * 
+     * @return the domain
+     */
     public String getDomain() {
         return domain;
     }
 
-    public boolean isAnonymous() {
-        if (anonymous == null) {
-            anonymous = (username == null);
-        }
-        return anonymous;
-    }
 }
