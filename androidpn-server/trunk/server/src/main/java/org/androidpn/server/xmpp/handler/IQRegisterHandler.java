@@ -40,31 +40,38 @@ import org.xmpp.packet.JID;
 import org.xmpp.packet.PacketError;
 
 /** 
- * Class desciption here.
+ * This class is to handle the TYPE_IQ jabber:iq:register protocol.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
 public class IQRegisterHandler extends IQHandler {
 
-    private IQHandlerInfo info;
+    private static final String NAMESPACE = "jabber:iq:register";
 
     private UserService userService;
 
     private Element probeResult;
 
+    /**
+     * Constructor.
+     */
     public IQRegisterHandler() {
-        info = new IQHandlerInfo("query", "jabber:iq:register");
         userService = ServiceLocator.getUserService();
-
-        probeResult = DocumentHelper.createElement(QName.get("query",
-                "jabber:iq:register"));
+        probeResult = DocumentHelper.createElement(QName
+                .get("query", NAMESPACE));
         probeResult.addElement("username");
         probeResult.addElement("password");
         probeResult.addElement("email");
         probeResult.addElement("name");
     }
 
-    @Override
+    /**
+     * Handles the received IQ packet.
+     * 
+     * @param packet the packet
+     * @return the response to send back
+     * @throws UnauthorizedException if the user is not authorized
+     */
     public IQ handleIQ(IQ packet) throws UnauthorizedException {
         ClientSession session = sessionManager.getSession(packet.getFrom());
         IQ reply = null;
@@ -278,7 +285,13 @@ public class IQRegisterHandler extends IQHandler {
         return null;
     }
 
-    public IQHandlerInfo getInfo() {
-        return info;
+    /**
+     * Returns the namespace of the handler.
+     * 
+     * @return the namespace
+     */
+    public String getNamespace() {
+        return NAMESPACE;
     }
+
 }

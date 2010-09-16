@@ -28,7 +28,7 @@ import org.xmpp.packet.Packet;
 import org.xmpp.packet.PacketError;
 
 /** 
- * Class desciption here.
+ * This is an abstract class to handle routed IQ packets.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
@@ -38,11 +38,19 @@ public abstract class IQHandler {
 
     protected SessionManager sessionManager;
 
+    /**
+     * Constructor.
+     */
     public IQHandler() {
         sessionManager = SessionManager.getInstance();
     }
 
-    public void process(Packet packet) throws PacketException {
+    /**
+     * Processes the received IQ packet.
+     * 
+     * @param packet the packet
+     */
+    public void process(Packet packet) {
         IQ iq = (IQ) packet;
         try {
             IQ reply = handleIQ(iq);
@@ -74,7 +82,20 @@ public abstract class IQHandler {
         }
     }
 
+    /**
+     * Handles the received IQ packet.
+     * 
+     * @param packet the packet
+     * @return the response to send back
+     * @throws UnauthorizedException if the user is not authorized
+     */
     public abstract IQ handleIQ(IQ packet) throws UnauthorizedException;
 
-    public abstract IQHandlerInfo getInfo();
+    /**
+     * Returns the namespace of the handler.
+     * 
+     * @return the namespace
+     */
+    public abstract String getNamespace();
+
 }

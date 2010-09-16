@@ -17,8 +17,6 @@
  */
 package org.androidpn.server.xmpp.handler;
 
-import org.androidpn.server.xmpp.PacketException;
-import org.androidpn.server.xmpp.UnauthorizedException;
 import org.androidpn.server.xmpp.router.PacketDeliverer;
 import org.androidpn.server.xmpp.session.ClientSession;
 import org.androidpn.server.xmpp.session.Session;
@@ -31,7 +29,7 @@ import org.xmpp.packet.PacketError;
 import org.xmpp.packet.Presence;
 
 /** 
- * Class desciption here.
+ * This class is to handle the presence protocol.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
@@ -41,20 +39,25 @@ public class PresenceUpdateHandler {
 
     protected SessionManager sessionManager;
 
+    /**
+     * Constructor.
+     */
     public PresenceUpdateHandler() {
         sessionManager = SessionManager.getInstance();
     }
 
-    public void process(Packet packet) throws UnauthorizedException,
-            PacketException {
-        process((Presence) packet, sessionManager.getSession(packet.getFrom()));
-    }
+    /**
+     * Processes the presence packet.
+     * 
+     * @param packet the packet
+     */
+    public void process(Packet packet) {
+        ClientSession session = sessionManager.getSession(packet.getFrom());
 
-    private void process(Presence presence, ClientSession session)
-            throws UnauthorizedException, PacketException {
         try {
+            Presence presence = (Presence) packet;
             Presence.Type type = presence.getType();
-            
+
             if (type == null) { // null == available
                 if (session != null
                         && session.getStatus() == Session.STATUS_CLOSED) {
@@ -93,8 +96,7 @@ public class PresenceUpdateHandler {
             }
 
         } catch (Exception e) {
-            log.error(
-                    "Internal server error. Triggered by packet: " + presence,
+            log.error("Internal server error. Triggered by packet: " + packet,
                     e);
         }
     }

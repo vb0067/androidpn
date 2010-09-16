@@ -21,20 +21,39 @@ import org.androidpn.server.xmpp.UnauthorizedException;
 import org.xmpp.packet.IQ;
 
 /** 
- * Class desciption here.
+ * This class is to handle the TYPE_IQ jabber:iq:roster protocol.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
 public class IQRosterHandler extends IQHandler {
-
-    @Override
-    public IQHandlerInfo getInfo() {
-        return null;
+    
+    private static final String NAMESPACE = "jabber:iq:roster";
+    
+    /**
+     * Constructor.
+     */
+    public IQRosterHandler() {        
     }
 
-    @Override
+    /**
+     * Handles the received IQ packet.
+     * 
+     * @param packet the packet
+     * @return the response to send back
+     * @throws UnauthorizedException if the user is not authorized
+     */
     public IQ handleIQ(IQ packet) throws UnauthorizedException {
+        // TODO
         return null;
+    }
+    
+    /**
+     * Returns the namespace of the handler.
+     * 
+     * @return the namespace
+     */
+    public String getNamespace() {
+        return NAMESPACE;
     }
 
 }

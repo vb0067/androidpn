@@ -27,7 +27,7 @@ import org.xmpp.packet.JID;
 import org.xmpp.packet.Packet;
 
 /** 
- * An abstract class for a session between the server and a client.
+ * This is an abstract class for a session between the server and a client.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */

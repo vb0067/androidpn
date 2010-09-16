@@ -35,21 +35,22 @@ import org.xmpp.packet.JID;
 import org.xmpp.packet.PacketError;
 
 /** 
- * Class desciption here.
+ * This class is to handle the TYPE_IQ jabber:iq:auth protocol.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
 public class IQAuthHandler extends IQHandler {
 
-    private IQHandlerInfo info;
+    private static final String NAMESPACE = "jabber:iq:auth";
 
     private Element probeResponse;
 
+    /**
+     * Constructor.
+     */
     public IQAuthHandler() {
-        info = new IQHandlerInfo("query", "jabber:iq:auth");
-
         probeResponse = DocumentHelper.createElement(QName.get("query",
-                "jabber:iq:auth"));
+                NAMESPACE));
         probeResponse.addElement("username");
         if (AuthManager.isPlainSupported()) {
             probeResponse.addElement("password");
@@ -60,6 +61,13 @@ public class IQAuthHandler extends IQHandler {
         probeResponse.addElement("resource");
     }
 
+    /**
+     * Handles the received IQ packet.
+     * 
+     * @param packet the packet
+     * @return the response to send back
+     * @throws UnauthorizedException if the user is not authorized
+     */
     public IQ handleIQ(IQ packet) throws UnauthorizedException {
         JID from = packet.getFrom();
         ClientSession session = (ClientSession) sessionManager.getSession(from);
@@ -172,8 +180,13 @@ public class IQAuthHandler extends IQHandler {
         return IQ.createResultIQ(packet);
     }
 
-    public IQHandlerInfo getInfo() {
-        return info;
+    /**
+     * Returns the namespace of the handler.
+     * 
+     * @return the namespace
+     */
+    public String getNamespace() {
+        return NAMESPACE;
     }
 
 }

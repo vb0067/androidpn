@@ -24,7 +24,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.androidpn.server.xmpp.handler.IQAuthHandler;
 import org.androidpn.server.xmpp.handler.IQHandler;
-import org.androidpn.server.xmpp.handler.IQHandlerInfo;
 import org.androidpn.server.xmpp.handler.IQRegisterHandler;
 import org.androidpn.server.xmpp.handler.IQRosterHandler;
 import org.androidpn.server.xmpp.session.ClientSession;
@@ -153,7 +152,7 @@ public class IQRouter {
             throw new IllegalArgumentException(
                     "IQHandler already provided by the server");
         }
-        namespace2Handlers.put(handler.getInfo().getNamespace(), handler);
+        namespace2Handlers.put(handler.getNamespace(), handler);
     }
 
     /**
@@ -166,7 +165,7 @@ public class IQRouter {
             throw new IllegalArgumentException(
                     "Cannot remove an IQHandler provided by the server");
         }
-        namespace2Handlers.remove(handler.getInfo().getNamespace());
+        namespace2Handlers.remove(handler.getNamespace());
     }
 
     /**
@@ -176,10 +175,7 @@ public class IQRouter {
         IQHandler handler = namespace2Handlers.get(namespace);
         if (handler == null) {
             for (IQHandler handlerCandidate : iqHandlers) {
-                IQHandlerInfo handlerInfo = handlerCandidate.getInfo();
-                if (handlerInfo != null
-                        && namespace.equalsIgnoreCase(handlerInfo
-                                .getNamespace())) {
+                if (namespace.equalsIgnoreCase(handlerCandidate.getNamespace())) {
                     handler = handlerCandidate;
                     namespace2Handlers.put(namespace, handler);
                     break;
