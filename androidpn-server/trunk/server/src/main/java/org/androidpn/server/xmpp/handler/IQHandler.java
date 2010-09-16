@@ -17,7 +17,6 @@
  */
 package org.androidpn.server.xmpp.handler;
 
-import org.androidpn.server.xmpp.PacketException;
 import org.androidpn.server.xmpp.UnauthorizedException;
 import org.androidpn.server.xmpp.router.PacketDeliverer;
 import org.androidpn.server.xmpp.session.SessionManager;
