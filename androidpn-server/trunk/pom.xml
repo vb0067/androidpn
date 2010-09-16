@@ -6,7 +6,7 @@
 	<groupId>org.androidpn</groupId>
 	<artifactId>androidpn-server</artifactId>
 	<packaging>pom</packaging>
-	<version>0.3.3</version>
+	<version>0.4.0</version>
 	<name>Andorid Push Notification</name>
 	<url>http://androidpn.sourceforge.net/</url>
 
