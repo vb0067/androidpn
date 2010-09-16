@@ -24,7 +24,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 
 /** 
- * Class desciption here.
+ * This is a simple classloader to include all jars in a lib directory.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
@@ -33,10 +33,10 @@ public class ServerClassLoader extends URLClassLoader {
     /**
      * Constructs the classloader.
      * 
-     * @param parent the parent class loader (or null for none).
-     * @param confDir the directory to load configration files from.
-     * @param libDir the directory to load jar files from.
-     * @throws java.net.MalformedURLException if the libDir path is not valid.
+     * @param parent the parent class loader (or null for none)
+     * @param confDir the directory to load configration files from
+     * @param libDir the directory to load jar files from
+     * @throws java.net.MalformedURLException if the libDir path is not valid
      */
     public ServerClassLoader(ClassLoader parent, File confDir, File libDir)
             throws MalformedURLException {

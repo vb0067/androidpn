@@ -23,7 +23,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /** 
- * This class to manage the applicatin configruation.
+ * This class is to manage the applicatin configruation.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */

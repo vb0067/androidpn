@@ -17,28 +17,34 @@
  */
 package org.androidpn.server.service;
 
+import org.androidpn.server.xmpp.XmppServer;
+
 /** 
- * Thrown if a requested user could not be loaded.
+ * This is a helper class to look up service objects.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
-public class UserNotFoundException extends Exception {
+public class ServiceLocator {
 
-    private static final long serialVersionUID = 1L;
+    public static String USER_SERVICE = "userService";
 
-    public UserNotFoundException() {
-        super();
+    /**
+     * Generic method to obtain a service object for a given name. 
+     * 
+     * @param name the service bean name
+     * @return
+     */
+    public static Object getService(String name) {
+        return XmppServer.getInstance().getBean(name);
     }
 
-    public UserNotFoundException(String message) {
-        super(message);
+    /**
+     * Obtains the user service.
+     * 
+     * @return the user service
+     */
+    public static UserService getUserService() {
+        return (UserService) XmppServer.getInstance().getBean(USER_SERVICE);
     }
 
-    public UserNotFoundException(Throwable cause) {
-        super(cause);
-    }
-
-    public UserNotFoundException(String message, Throwable cause) {
-        super(message, cause);
-    }
 }

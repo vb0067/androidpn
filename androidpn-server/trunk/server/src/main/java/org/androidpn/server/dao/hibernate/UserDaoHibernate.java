@@ -24,7 +24,7 @@ import org.androidpn.server.model.User;
 import org.androidpn.server.service.UserNotFoundException;
 
 /** 
- * Class desciption here.
+ * This class is the implementation of UserDAO using Spring's HibernateTemplate.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
@@ -46,11 +46,6 @@ public class UserDaoHibernate extends GenericDaoHibernate<User, Long> implements
         getHibernateTemplate().flush();
         return user;
     }
-
-    //    @Override
-    //    public User save(User user) {
-    //        return this.saveUser(user);
-    //    }
 
     @SuppressWarnings("unchecked")
     public User getUserByUsername(String username) throws UserNotFoundException {

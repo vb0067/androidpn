@@ -26,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 /** 
- * Class desciption here.
+ * This class is the Base class for all other DAOs serving common CRUD methods.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */

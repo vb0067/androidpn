@@ -7,6 +7,7 @@ Changes in version 0.4.0 (2010-09-??)
 * Updated XmppServer
 * Updated AuthToken
 * Updated Session, ClientSession, SessionManager
+* Renamed ServiceManager to ServiceLocator
 * Refactored some packages
 * Removed unused classes
 

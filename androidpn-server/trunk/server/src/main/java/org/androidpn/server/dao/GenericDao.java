@@ -21,7 +21,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /** 
- * Class desciption here.
+ * Generic DAO with common methods to CRUD POJOs.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */

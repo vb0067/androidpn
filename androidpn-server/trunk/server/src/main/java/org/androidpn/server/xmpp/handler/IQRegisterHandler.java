@@ -23,7 +23,7 @@ import gnu.inet.encoding.StringprepException;
 import java.util.Iterator;
 
 import org.androidpn.server.model.User;
-import org.androidpn.server.service.ServiceManager;
+import org.androidpn.server.service.ServiceLocator;
 import org.androidpn.server.service.UserExistsException;
 import org.androidpn.server.service.UserNotFoundException;
 import org.androidpn.server.service.UserService;
@@ -54,7 +54,7 @@ public class IQRegisterHandler extends IQHandler {
 
     public IQRegisterHandler() {
         info = new IQHandlerInfo("query", "jabber:iq:register");
-        userService = ServiceManager.getUserService();
+        userService = ServiceLocator.getUserService();
 
         probeResult = DocumentHelper.createElement(QName.get("query",
                 "jabber:iq:register"));

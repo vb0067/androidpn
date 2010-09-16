@@ -32,7 +32,7 @@ import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
 import org.xmpp.packet.Presence;
 
 /** 
- * Class desciption here.
+ * A controller class to process the session related requests.  
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
@@ -41,7 +41,7 @@ public class SessionController extends MultiActionController {
     //private UserService userService;
 
     public SessionController() {
-        //userService = ServiceManager.getUserService();
+        //userService = ServiceLocator.getUserService();
     }
 
     public ModelAndView list(HttpServletRequest request,

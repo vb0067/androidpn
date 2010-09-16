@@ -18,7 +18,7 @@
 package org.androidpn.server.model;
 
 /** 
- * Class desciption here.
+ * Base class for domain model objects.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */

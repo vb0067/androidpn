@@ -18,7 +18,7 @@
 package org.androidpn.server.service;
 
 /** 
- * Class desciption here.
+ * Thrown if an unique constraint violation occured during saving a user. 
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */

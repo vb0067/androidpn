@@ -27,7 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
 
 /** 
- * Class desciption here.
+ * A controller class to process the notification related requests.  
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */

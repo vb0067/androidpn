@@ -32,7 +32,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
 /** 
- * Class desciption here.
+ * This class represents the basic user object.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */

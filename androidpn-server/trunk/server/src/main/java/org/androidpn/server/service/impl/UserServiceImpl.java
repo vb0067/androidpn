@@ -31,7 +31,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 
 /** 
- * Class desciption here.
+ * This class is the implementation of UserService.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */

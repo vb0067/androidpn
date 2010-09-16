@@ -23,14 +23,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.androidpn.server.model.User;
-import org.androidpn.server.service.ServiceManager;
+import org.androidpn.server.service.ServiceLocator;
 import org.androidpn.server.service.UserService;
 import org.androidpn.server.xmpp.presence.PresenceManager;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
 
 /** 
- * Class desciption here.
+ * A controller class to process the user related requests.  
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
@@ -39,7 +39,7 @@ public class UserController extends MultiActionController {
     private UserService userService;
 
     public UserController() {
-        userService = ServiceManager.getUserService();
+        userService = ServiceLocator.getUserService();
     }
 
     public ModelAndView list(HttpServletRequest request,

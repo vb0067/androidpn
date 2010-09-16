@@ -20,7 +20,7 @@ package org.androidpn.server.console.vo;
 import java.util.Date;
 
 /** 
- * Class desciption here.
+ * A command class to represent a session.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */

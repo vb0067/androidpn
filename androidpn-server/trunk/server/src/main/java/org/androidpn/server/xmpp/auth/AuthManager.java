@@ -20,7 +20,7 @@ package org.androidpn.server.xmpp.auth;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import org.androidpn.server.service.ServiceManager;
+import org.androidpn.server.service.ServiceLocator;
 import org.androidpn.server.service.UserNotFoundException;
 import org.androidpn.server.xmpp.UnauthorizedException;
 import org.androidpn.server.xmpp.XmppServer;
@@ -49,12 +49,28 @@ public class AuthManager {
         }
     }
 
+    /**
+     * Returns the user's password. 
+     * 
+     * @param username the username
+     * @return the user's password
+     * @throws UserNotFoundException if the your was not found
+     */
     public static String getPassword(String username)
             throws UserNotFoundException {
-        return ServiceManager.getUserService().getUserByUsername(username)
+        return ServiceLocator.getUserService().getUserByUsername(username)
                 .getPassword();
     }
 
+    /**
+     * Authenticates a user with a username and plain text password, and
+     * returns an AuthToken.
+     * 
+     * @param username the username
+     * @param password the password
+     * @return an AuthToken
+     * @throws UnauthorizedException if the username and password do not match
+     */
     public static AuthToken authenticate(String username, String password)
             throws UnauthorizedException {
         if (username == null || password == null) {
@@ -80,6 +96,16 @@ public class AuthManager {
         return new AuthToken(username);
     }
 
+    /**
+     * Authenticates a user with a username, token, and digest, and returns
+     * an AuthToken.
+     * 
+     * @param username the username
+     * @param token the token
+     * @param digest the digest
+     * @return an AuthToken
+     * @throws UnauthorizedException if the username and password do not match 
+     */
     public static AuthToken authenticate(String username, String token,
             String digest) throws UnauthorizedException {
         if (username == null || token == null || digest == null) {
@@ -108,22 +134,20 @@ public class AuthManager {
         return new AuthToken(username);
     }
 
-    public static boolean authorize(String username, String principal) {
-        if (log.isDebugEnabled()) {
-            log.debug("Trying authorize(" + username + " , " + principal + ")");
-        }
-        try {
-            ServiceManager.getUserService().getUserByUsername(username);
-        } catch (UserNotFoundException nfe) {
-            return false;
-        }
-        return true;
-    }
-
+    /**
+     * Returns true if plain text password authentication is supported according to JEP-0078.
+     * 
+     * @return true if plain text password authentication is supported
+     */
     public static boolean isPlainSupported() {
         return true;
     }
 
+    /**
+     * Returns true if digest authentication is supported according to JEP-0078.
+     * 
+     * @return true if digest authentication is supported
+     */
     public static boolean isDigestSupported() {
         return true;
     }

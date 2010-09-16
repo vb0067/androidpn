@@ -22,7 +22,7 @@ import java.util.List;
 import org.androidpn.server.model.User;
 
 /** 
- * Class desciption here.
+ * Business service interface for the user management.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */

@@ -24,7 +24,7 @@ import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
 
 /** 
- * Class desciption here.
+ * This is a bootstrap class that starts the XMPP server.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
