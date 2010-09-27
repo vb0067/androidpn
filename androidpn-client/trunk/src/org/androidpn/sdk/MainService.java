@@ -20,11 +20,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.os.IBinder;
+import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
@@ -47,9 +50,9 @@ public class MainService extends Service {
 
     private ConnectivityManager connectivityManager;
 
-    //    private final PhoneStateListener phoneStateListener;
-    //
-    //    private BroadcastReceiver phoneStateReceiver;
+    private final PhoneStateListener phoneStateListener;
+
+    private BroadcastReceiver phoneStateReceiver;
 
     private ExecutorService executorService;
 
@@ -67,7 +70,7 @@ public class MainService extends Service {
         executorService = Executors.newSingleThreadExecutor();
         taskSubmitter = new TaskSubmitter(this);
         taskTracker = new TaskTracker(this);
-        //        phoneStateListener = new SdkPhoneStateListener(this);
+        phoneStateListener = new SdkPhoneStateListener(this);
     }
 
     @Override
@@ -146,21 +149,21 @@ public class MainService extends Service {
 
     // ================
 
-    //    private void registerPhoneStateReceiver() {
-    //        Log.d(LOGTAG, "registerPhoneStateReceiver()...");
-    //        telephonyManager.listen(phoneStateListener,
-    //                PhoneStateListener.LISTEN_DATA_CONNECTION_STATE);
-    //        IntentFilter intentfilter = new IntentFilter();
-    //        intentfilter.addAction("android.net.wifi.STATE_CHANGE");
-    //        registerReceiver(phoneStateReceiver, intentfilter);
-    //    }
-    //
-    //    private void unregisterPhoneStateReceiver() {
-    //        Log.d(LOGTAG, "unregisterPhoneStateReceiver()...");
-    //        telephonyManager.listen(phoneStateListener,
-    //                PhoneStateListener.LISTEN_NONE);
-    //        unregisterReceiver(phoneStateReceiver);
-    //    }
+    private void registerPhoneStateReceiver() {
+        Log.d(LOGTAG, "registerPhoneStateReceiver()...");
+        telephonyManager.listen(phoneStateListener,
+                PhoneStateListener.LISTEN_DATA_CONNECTION_STATE);
+        IntentFilter intentfilter = new IntentFilter();
+        intentfilter.addAction("android.net.wifi.STATE_CHANGE");
+        registerReceiver(phoneStateReceiver, intentfilter);
+    }
+
+    private void unregisterPhoneStateReceiver() {
+        Log.d(LOGTAG, "unregisterPhoneStateReceiver()...");
+        telephonyManager.listen(phoneStateListener,
+                PhoneStateListener.LISTEN_NONE);
+        unregisterReceiver(phoneStateReceiver);
+    }
 
     //    private void registerNotificationReceiver() {
     //        IntentFilter filter = new IntentFilter();
@@ -177,7 +180,7 @@ public class MainService extends Service {
     private void start() {
         Log.d(LOGTAG, "start()...");
         // registerNotificationReceiver();
-        // registerPhoneStateReceiver();
+        registerPhoneStateReceiver();
         Intent intent = getIntent();
         startService(intent);
         xmppManager.connect();
@@ -186,8 +189,7 @@ public class MainService extends Service {
     private void stop() {
         Log.d(LOGTAG, "stop()...");
         // unregisterNotificationReceiver();
-        // unregisterPhoneStateReceiver();
-        // mHandler.removeMessages(what);
+        unregisterPhoneStateReceiver();
         xmppManager.disconnect();
         executorService.shutdown();
     }

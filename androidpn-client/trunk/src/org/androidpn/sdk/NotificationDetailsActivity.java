@@ -18,7 +18,6 @@ package org.androidpn.sdk;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -37,9 +36,9 @@ public class NotificationDetailsActivity extends Activity {
     private static final String LOGTAG = Config
             .makeLogTag(NotificationDetailsActivity.class);
 
-//    private String callbackActivityPackageName;
-//
-//    private String callbackActivityClassName;
+    //    private String callbackActivityPackageName;
+    //
+    //    private String callbackActivityClassName;
 
     public NotificationDetailsActivity() {
     }
@@ -48,12 +47,12 @@ public class NotificationDetailsActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        SharedPreferences sdkPreferences = this.getSharedPreferences(
-//                Constants.SDK_PREFERENCES, Context.MODE_PRIVATE);
-//        callbackActivityPackageName = sdkPreferences.getString(
-//                Constants.CALLBACK_ACTIVITY_PACKAGE_NAME, "");
-//        callbackActivityClassName = sdkPreferences.getString(
-//                Constants.CALLBACK_ACTIVITY_CLASS_NAME, "");
+        //        SharedPreferences sdkPreferences = this.getSharedPreferences(
+        //                Constants.SDK_PREFERENCES, Context.MODE_PRIVATE);
+        //        callbackActivityPackageName = sdkPreferences.getString(
+        //                Constants.CALLBACK_ACTIVITY_PACKAGE_NAME, "");
+        //        callbackActivityClassName = sdkPreferences.getString(
+        //                Constants.CALLBACK_ACTIVITY_CLASS_NAME, "");
 
         Intent intent = getIntent();
         String notificationId = intent
