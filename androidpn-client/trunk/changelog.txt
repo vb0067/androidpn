@@ -2,6 +2,11 @@ ANDROIDPN-CLIENT CHANGELOG
 ==========================
 http://androidpn.sourceforge.net/
 
+Changes in version 0.4.0 (2010-09-??)
+-------------------------------------
+* Refactored package and class names
+* Shrinked jar file size
+
 Changes in version 0.3.2 (2010-09-17)
 -------------------------------------
 * Updated NotificationDetailsActivity
