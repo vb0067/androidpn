@@ -35,7 +35,7 @@ import android.util.Log;
  */
 public class Notifier {
 
-    private static final String LOGTAG = Config.makeLogTag(Notifier.class);
+    private static final String LOGTAG = LogUtil.makeLogTag(Notifier.class);
 
     private static final Random random = new Random(System.currentTimeMillis());
 

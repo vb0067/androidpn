@@ -40,7 +40,7 @@ public class MainService extends Service {
 
     public static final String SERVICE_NAME = "org.androidpn.sdk.MainService";
 
-    private static final String LOGTAG = Config.makeLogTag(MainService.class);
+    private static final String LOGTAG = LogUtil.makeLogTag(MainService.class);
 
     //    private SharedPreferences sdkPreferences;
 
@@ -287,7 +287,7 @@ public class MainService extends Service {
 
     public class TaskTracker {
 
-        // final String logTag = Config.makeLogTag(getClass());
+        // final String logTag = LogUtil.makeLogTag(getClass());
 
         final MainService mainService;
 

@@ -26,7 +26,7 @@ import android.util.Log;
  */
 public class PersistentConnectionListener implements ConnectionListener {
 
-    private static final String LOGTAG = Config
+    private static final String LOGTAG = LogUtil
             .makeLogTag(PersistentConnectionListener.class);
 
     private final XmppManager xmppManager;

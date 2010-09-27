@@ -29,7 +29,7 @@ import android.widget.Toast;
  */
 public final class MainReceiver extends BroadcastReceiver {
 
-    private static final String LOGTAG = Config.makeLogTag(MainReceiver.class);
+    private static final String LOGTAG = LogUtil.makeLogTag(MainReceiver.class);
 
     public MainReceiver() {
     }

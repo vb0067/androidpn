@@ -42,7 +42,7 @@ public final class ServiceManager {
 
     public static final String ANDROIDPN_API_KEY = "ANDROIDPN_API_KEY";
 
-    private static final String LOGTAG = Config
+    private static final String LOGTAG = LogUtil
             .makeLogTag(ServiceManager.class);
 
     private Context context;

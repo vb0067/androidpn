@@ -5,8 +5,8 @@ http://androidpn.sourceforge.net/
 Changes in version 0.3.2 (2010-09-27)
 -------------------------------------
 * Updated NotificationDetailsActivity
-* Added makeLogTag method
 * Added Register/Unregister PhoneStateReceiver
+* Added LogUtil
 
 Changes in version 0.3.1 (2010-09-10)
 -------------------------------------

@@ -33,7 +33,7 @@ import android.widget.TextView;
  */
 public class NotificationDetailsActivity extends Activity {
 
-    private static final String LOGTAG = Config
+    private static final String LOGTAG = LogUtil
             .makeLogTag(NotificationDetailsActivity.class);
 
     //    private String callbackActivityPackageName;

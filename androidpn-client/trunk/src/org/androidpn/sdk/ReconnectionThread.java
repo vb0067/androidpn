@@ -26,7 +26,7 @@ import android.util.Log;
  */
 public class ReconnectionThread extends Thread {
 
-    private static final String LOGTAG = Config
+    private static final String LOGTAG = LogUtil
             .makeLogTag(ReconnectionThread.class);
 
     private final XmppManager xmppManager;
