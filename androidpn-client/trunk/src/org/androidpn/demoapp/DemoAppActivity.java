@@ -15,7 +15,7 @@
  */
 package org.androidpn.demoapp;
 
-import org.androidpn.sdk.ServiceManager;
+import org.androidpn.client.ServiceManager;
 
 import android.app.Activity;
 import android.os.Bundle;
