@@ -34,12 +34,12 @@ import android.widget.TextView;
  */
 public class NotificationDetailsActivity extends Activity {
 
-    private static final String LOGTAG = NotificationDetailsActivity.class
-            .getName();
+    private static final String LOGTAG = Config
+            .makeLogTag(NotificationDetailsActivity.class);
 
-    private String callbackActivityPackageName;
-
-    private String callbackActivityClassName;
+//    private String callbackActivityPackageName;
+//
+//    private String callbackActivityClassName;
 
     public NotificationDetailsActivity() {
     }
@@ -48,12 +48,12 @@ public class NotificationDetailsActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        SharedPreferences sdkPreferences = this.getSharedPreferences(
-                Constants.SDK_PREFERENCES, Context.MODE_PRIVATE);
-        callbackActivityPackageName = sdkPreferences.getString(
-                Constants.CALLBACK_ACTIVITY_PACKAGE_NAME, "");
-        callbackActivityClassName = sdkPreferences.getString(
-                Constants.CALLBACK_ACTIVITY_CLASS_NAME, "");
+//        SharedPreferences sdkPreferences = this.getSharedPreferences(
+//                Constants.SDK_PREFERENCES, Context.MODE_PRIVATE);
+//        callbackActivityPackageName = sdkPreferences.getString(
+//                Constants.CALLBACK_ACTIVITY_PACKAGE_NAME, "");
+//        callbackActivityClassName = sdkPreferences.getString(
+//                Constants.CALLBACK_ACTIVITY_CLASS_NAME, "");
 
         Intent intent = getIntent();
         String notificationId = intent
@@ -128,38 +128,46 @@ public class NotificationDetailsActivity extends Activity {
         textDetails.setLayoutParams(layoutParams);
         linearLayout.addView(textDetails);
 
-        Button closeButton = new Button(this);
-        closeButton.setText("Close");
-        closeButton.setWidth(100);
+        Button okButton = new Button(this);
+        okButton.setText("Ok");
+        okButton.setWidth(100);
         //closeButton.setLayoutParams(layoutParams);
         //linearLayout.addView(closeButton);
-        closeButton.setOnClickListener(new View.OnClickListener() {
+        okButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 NotificationDetailsActivity.this.finish();
             }
         });
 
-        Button viewButton = new Button(this);
-        viewButton.setText("View");
-        viewButton.setWidth(100);
-        //viewButton.setLayoutParams(layoutParams);
-        //linearLayout.addView(viewButton);
-        viewButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                NotificationDetailsActivity.this.finish();
-                Intent intent = new Intent();
-                //                intent.setClassName(DemoAppActivity.class.getPackage()
-                //                        .getName(), DemoAppActivity.class.getName());
-                intent.setClassName(callbackActivityPackageName,
-                        callbackActivityClassName);
-                context.startActivity(intent);
-            }
-        });
+        //        Button closeButton = new Button(this);
+        //        closeButton.setText("Close");
+        //        closeButton.setWidth(100);
+        //        closeButton.setOnClickListener(new View.OnClickListener() {
+        //            public void onClick(View view) {
+        //                NotificationDetailsActivity.this.finish();
+        //            }
+        //        });
+        //
+        //        Button viewButton = new Button(this);
+        //        viewButton.setText("View");
+        //        viewButton.setWidth(100);
+        //        viewButton.setOnClickListener(new View.OnClickListener() {
+        //            public void onClick(View view) {
+        //                NotificationDetailsActivity.this.finish();
+        //                Intent intent = new Intent();
+        //                //                intent.setClassName(DemoAppActivity.class.getPackage()
+        //                //                        .getName(), DemoAppActivity.class.getName());
+        //                intent.setClassName(callbackActivityPackageName,
+        //                        callbackActivityClassName);
+        //                context.startActivity(intent);
+        //            }
+        //        });
 
         LinearLayout innerLayout = new LinearLayout(context);
         innerLayout.setGravity(Gravity.CENTER);
-        innerLayout.addView(closeButton);
-        innerLayout.addView(viewButton);
+        innerLayout.addView(okButton);
+        //        innerLayout.addView(closeButton);
+        //        innerLayout.addView(viewButton);
 
         linearLayout.addView(innerLayout);
 

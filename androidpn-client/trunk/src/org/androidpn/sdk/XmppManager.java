@@ -48,7 +48,7 @@ import android.util.Log;
  */
 public class XmppManager {
 
-    private static final String LOGTAG = XmppManager.class.getName();
+    private static final String LOGTAG = Config.makeLogTag(XmppManager.class);
 
     private Context context;
 

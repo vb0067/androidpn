@@ -26,7 +26,8 @@ import android.util.Log;
  */
 public class SdkPhoneStateListener extends PhoneStateListener {
 
-    private static final String LOGTAG = SdkPhoneStateListener.class.getName();
+    private static final String LOGTAG = Config
+            .makeLogTag(SdkPhoneStateListener.class);
 
     private final MainService mainService;
 

@@ -27,7 +27,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.util.Log;
-import android.widget.Toast;
 
 /** 
  * Class desciption here.
@@ -36,7 +35,7 @@ import android.widget.Toast;
  */
 public class Notifier {
 
-    private static final String LOGTAG = Notifier.class.getName();
+    private static final String LOGTAG = Config.makeLogTag(Notifier.class);
 
     private static final Random random = new Random(System.currentTimeMillis());
 

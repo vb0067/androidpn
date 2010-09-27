@@ -29,7 +29,7 @@ import android.widget.Toast;
  */
 public final class MainReceiver extends BroadcastReceiver {
 
-    private static final String LOGTAG = MainReceiver.class.getName();
+    private static final String LOGTAG = Config.makeLogTag(MainReceiver.class);
 
     public MainReceiver() {
     }
@@ -67,14 +67,14 @@ public final class MainReceiver extends BroadcastReceiver {
             notifier.notify(notificationId, notificationApiKey,
                     notificationTitle, notificationMessage, notificationTicker,
                     notificationUrl);
-            
+
             intent.removeExtra(Constants.NOTIFICATION_ID);
             intent.removeExtra(Constants.NOTIFICATION_API_KEY);
             intent.removeExtra(Constants.NOTIFICATION_TITLE);
             intent.removeExtra(Constants.NOTIFICATION_MESSAGE);
             intent.removeExtra(Constants.NOTIFICATION_TICKER);
             intent.removeExtra(Constants.NOTIFICATION_URL);
-            
+
             Log.d(LOGTAG, "notifier.notify()... done!");
 
         } else if (Constants.ACTION_NOTIFICATION_CLICKED.equals(action)) {
@@ -120,7 +120,7 @@ public final class MainReceiver extends BroadcastReceiver {
                 toast.show();
             }
 
-            Log.d(LOGTAG, "detailsActivity... started!");            
+            Log.d(LOGTAG, "detailsActivity... started!");
 
         } else if (Constants.ACTION_NOTIFICATION_CLEARED.equals(action)) {
             //

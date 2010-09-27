@@ -37,7 +37,7 @@ public class MainService extends Service {
 
     public static final String SERVICE_NAME = "org.androidpn.sdk.MainService";
 
-    private static final String LOGTAG = MainService.class.getName();
+    private static final String LOGTAG = Config.makeLogTag(MainService.class);
 
     //    private SharedPreferences sdkPreferences;
 
@@ -285,6 +285,8 @@ public class MainService extends Service {
 
     public class TaskTracker {
 
+        // final String logTag = Config.makeLogTag(getClass());
+
         final MainService mainService;
 
         public int count;
@@ -297,16 +299,14 @@ public class MainService extends Service {
         public void increase() {
             synchronized (MainService.getTaskTracker(mainService)) {
                 MainService.getTaskTracker(mainService).count++;
-                Log.d(getClass().getName(), "Incremented task count to "
-                        + count);
+                Log.d(LOGTAG, "Incremented task count to " + count);
             }
         }
 
         public void decrease() {
             synchronized (MainService.getTaskTracker(mainService)) {
                 MainService.getTaskTracker(mainService).count--;
-                Log.d(getClass().getName(), "Decremented task count to "
-                        + count);
+                Log.d(LOGTAG, "Decremented task count to " + count);
                 //                if (MainService.getTaskTracker(mainService).count == 0) {
                 //                    // MainService.start(mainService);
                 //                    Intent intent = MainService.getIntent();

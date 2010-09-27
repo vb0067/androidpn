@@ -30,7 +30,8 @@ import android.util.Log;
  */
 public class SdkPhoneStateReceiver extends BroadcastReceiver {
 
-    private static final String LOGTAG = SdkPhoneStateReceiver.class.getName();
+    private static final String LOGTAG = Config
+            .makeLogTag(SdkPhoneStateReceiver.class);
 
     private MainService mainService;
 

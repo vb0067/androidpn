@@ -42,14 +42,15 @@ public final class ServiceManager {
 
     public static final String ANDROIDPN_API_KEY = "ANDROIDPN_API_KEY";
 
-    private static final String LOGTAG = ServiceManager.class.getName();
+    private static final String LOGTAG = Config
+            .makeLogTag(ServiceManager.class);
 
     private Context context;
 
     private SharedPreferences sdkPreferences;
 
     private Properties sdkProperties;
-    
+
     private String sdkVersion;
 
     private String apiKey;
@@ -58,9 +59,9 @@ public final class ServiceManager {
 
     private String xmppPort;
 
-    private String callbackActivityPackageName;
-
-    private String callbackActivityClassName;
+//    private String callbackActivityPackageName;
+//
+//    private String callbackActivityClassName;
 
     public ServiceManager(Context context) {
         this.context = context;
@@ -69,14 +70,14 @@ public final class ServiceManager {
 
         if (context instanceof Activity) {
             Log.i(LOGTAG, "Callback Activity...");
-            Activity callbackActivity = (Activity) context;
-            callbackActivityPackageName = callbackActivity.getPackageName();
-            callbackActivityClassName = callbackActivity.getClass().getName();
+//            Activity callbackActivity = (Activity) context;
+//            callbackActivityPackageName = callbackActivity.getPackageName();
+//            callbackActivityClassName = callbackActivity.getClass().getName();
         }
 
-        Log.i(LOGTAG, "callbackActivityPackageName="
-                + callbackActivityPackageName);
-        Log.i(LOGTAG, "callbackActivityClassName=" + callbackActivityClassName);
+//        Log.i(LOGTAG, "callbackActivityPackageName="
+//                + callbackActivityPackageName);
+//        Log.i(LOGTAG, "callbackActivityClassName=" + callbackActivityClassName);
 
         this.sdkProperties = loadSdkProperties();
         this.sdkVersion = sdkProperties.getProperty("sdkVersion");
@@ -97,10 +98,10 @@ public final class ServiceManager {
         //        }
 
         Editor editor = sdkPreferences.edit();
-        editor.putString(Constants.CALLBACK_ACTIVITY_PACKAGE_NAME,
-                callbackActivityPackageName);
-        editor.putString(Constants.CALLBACK_ACTIVITY_CLASS_NAME,
-                callbackActivityClassName);
+//        editor.putString(Constants.CALLBACK_ACTIVITY_PACKAGE_NAME,
+//                callbackActivityPackageName);
+//        editor.putString(Constants.CALLBACK_ACTIVITY_CLASS_NAME,
+//                callbackActivityClassName);
         editor.putString(Constants.API_KEY, apiKey);
         editor.putString(Constants.XMPP_HOST, xmppHost);
         editor.putInt(Constants.XMPP_PORT, Integer.parseInt(xmppPort));
@@ -178,11 +179,11 @@ public final class ServiceManager {
         }
         return props;
     }
-    
+
     public String getSdkVersion() {
         return this.sdkVersion;
     }
-    
+
     public String getApiKey() {
         return this.apiKey;
     }
