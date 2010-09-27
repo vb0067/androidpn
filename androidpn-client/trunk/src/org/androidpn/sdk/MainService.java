@@ -71,6 +71,7 @@ public class MainService extends Service {
         taskSubmitter = new TaskSubmitter(this);
         taskTracker = new TaskTracker(this);
         phoneStateListener = new SdkPhoneStateListener(this);
+        phoneStateReceiver = new SdkPhoneStateReceiver(this);
     }
 
     @Override
