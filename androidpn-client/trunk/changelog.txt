@@ -2,7 +2,7 @@ ANDROIDPN-CLIENT CHANGELOG
 ==========================
 http://androidpn.sourceforge.net/
 
-Changes in version 0.3.2 (2010-09-27)
+Changes in version 0.3.2 (2010-09-17)
 -------------------------------------
 * Updated NotificationDetailsActivity
 * Added Register/Unregister PhoneStateReceiver
