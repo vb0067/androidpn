@@ -9,20 +9,20 @@
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
-		<activity android:name="org.androidpn.sdk.NotificationDetailsActivity"
+		<activity android:name="org.androidpn.client.NotificationDetailsActivity"
 			android:label="Notification Details" android:excludeFromRecents="true">
 		</activity>
-		<service android:enabled="true" android:name="org.androidpn.sdk.MainService"
+		<service android:enabled="true" android:name="org.androidpn.client.MainService"
 			android:label="Notification Service">
 			<intent-filter>
-				<action android:name="org.androidpn.sdk.MainService" />
+				<action android:name="org.androidpn.client.MainService" />
 			</intent-filter>
 		</service>
-		<receiver android:name="org.androidpn.sdk.MainReceiver">
+		<receiver android:name="org.androidpn.client.MainReceiver">
 			<intent-filter>
-				<action android:name="org.androidpn.sdk.SHOW_NOTIFICATION" />
-				<action android:name="org.androidpn.sdk.NOTIFICATION_CLICKED" />
-				<action android:name="org.androidpn.sdk.NOTIFICATION_CLEARED" />
+				<action android:name="org.androidpn.client.SHOW_NOTIFICATION" />
+				<action android:name="org.androidpn.client.NOTIFICATION_CLICKED" />
+				<action android:name="org.androidpn.client.NOTIFICATION_CLEARED" />
 				<!--
 					<data android:scheme="notif"
 					android:host="notification.androidpn.org"
