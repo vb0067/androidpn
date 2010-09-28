@@ -16,7 +16,7 @@
 package org.androidpn.client;
 
 /**
- * Class desciption here.
+ * Static constants for this package.
  * 
  * @author Sehwan Noh (sehnoh@gmail.com)
  */

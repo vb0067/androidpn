@@ -58,17 +58,17 @@ public class Notifier {
         int icon = getNotificationIcon(context);
         Uri sound = getNotificationSound(context);
         notification.icon = icon;
-        notification.sound = sound;
+        notification.sound = sound;        
         // notification.number++;
-        // notification.defaults = Notification.DEFAULT_ALL;
+        notification.defaults = Notification.DEFAULT_ALL;
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
 
-        Log.e(LOGTAG, "notificationId=" + notificationId);
-        Log.e(LOGTAG, "notificationApiKey=" + apiKey);
-        Log.e(LOGTAG, "notificationTitle=" + title);
-        Log.e(LOGTAG, "notificationMessage=" + message);
-        Log.e(LOGTAG, "notificationTicker=" + ticker);
-        Log.e(LOGTAG, "notificationUrl=" + url);
+        Log.d(LOGTAG, "notificationId=" + notificationId);
+        Log.d(LOGTAG, "notificationApiKey=" + apiKey);
+        Log.d(LOGTAG, "notificationTitle=" + title);
+        Log.d(LOGTAG, "notificationMessage=" + message);
+        Log.d(LOGTAG, "notificationTicker=" + ticker);
+        Log.d(LOGTAG, "notificationUrl=" + url);
 
         Intent clickIntent = new Intent(Constants.ACTION_NOTIFICATION_CLICKED);
         clickIntent.putExtra(Constants.NOTIFICATION_ID, notificationId);

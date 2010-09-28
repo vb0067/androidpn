@@ -37,12 +37,10 @@ public final class MainReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d(LOGTAG, "MainReceiver.onReceive()...");
-
         String action = intent.getAction();
         Log.d(LOGTAG, "action=" + action);
 
         if (Constants.ACTION_SHOW_NOTIFICATION.equals(action)) {
-
             String notificationId = intent
                     .getStringExtra(Constants.NOTIFICATION_ID);
             String notificationApiKey = intent
@@ -56,12 +54,12 @@ public final class MainReceiver extends BroadcastReceiver {
             String notificationUrl = intent
                     .getStringExtra(Constants.NOTIFICATION_URL);
 
-            Log.w(LOGTAG, "notificationId=" + notificationId);
-            Log.w(LOGTAG, "notificationApiKey=" + notificationApiKey);
-            Log.w(LOGTAG, "notificationTitle=" + notificationTitle);
-            Log.w(LOGTAG, "notificationMessage=" + notificationMessage);
-            Log.w(LOGTAG, "notificationTicker=" + notificationTicker);
-            Log.w(LOGTAG, "notificationUrl=" + notificationUrl);
+            Log.d(LOGTAG, "notificationId=" + notificationId);
+            Log.d(LOGTAG, "notificationApiKey=" + notificationApiKey);
+            Log.d(LOGTAG, "notificationTitle=" + notificationTitle);
+            Log.d(LOGTAG, "notificationMessage=" + notificationMessage);
+            Log.d(LOGTAG, "notificationTicker=" + notificationTicker);
+            Log.d(LOGTAG, "notificationUrl=" + notificationUrl);
 
             Notifier notifier = new Notifier(context);
             notifier.notify(notificationId, notificationApiKey,
@@ -78,7 +76,6 @@ public final class MainReceiver extends BroadcastReceiver {
             Log.d(LOGTAG, "notifier.notify()... done!");
 
         } else if (Constants.ACTION_NOTIFICATION_CLICKED.equals(action)) {
-
             String notificationId = intent
                     .getStringExtra(Constants.NOTIFICATION_ID);
             String notificationApiKey = intent
@@ -92,12 +89,12 @@ public final class MainReceiver extends BroadcastReceiver {
             String notificationUrl = intent
                     .getStringExtra(Constants.NOTIFICATION_URL);
 
-            Log.e(LOGTAG, "notificationId=" + notificationId);
-            Log.e(LOGTAG, "notificationApiKey=" + notificationApiKey);
-            Log.e(LOGTAG, "notificationTitle=" + notificationTitle);
-            Log.e(LOGTAG, "notificationMessage=" + notificationMessage);
-            Log.e(LOGTAG, "notificationTicker=" + notificationTicker);
-            Log.e(LOGTAG, "notificationUrl=" + notificationUrl);
+            Log.d(LOGTAG, "notificationId=" + notificationId);
+            Log.d(LOGTAG, "notificationApiKey=" + notificationApiKey);
+            Log.d(LOGTAG, "notificationTitle=" + notificationTitle);
+            Log.d(LOGTAG, "notificationMessage=" + notificationMessage);
+            Log.d(LOGTAG, "notificationTicker=" + notificationTicker);
+            Log.d(LOGTAG, "notificationUrl=" + notificationUrl);
 
             Intent detailsIntent = new Intent();
             detailsIntent.setClassName(context.getPackageName(),

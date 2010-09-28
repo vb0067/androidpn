@@ -44,7 +44,7 @@ public final class ServiceManager {
 
     private Properties clientProps;
 
-    private String version = "0.3.2";
+    private String version = "0.4.0";
 
     private String apiKey;
 

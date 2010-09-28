@@ -41,6 +41,9 @@ public class PhoneStateReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        Log.d(LOGTAG, "PhoneStateReceiver.onReceive()...");
+        String action = intent.getAction();
+        Log.d(LOGTAG, "action=" + action);        
 
         Object parcelableExtra = intent.getParcelableExtra("networkInfo");
         boolean connected = false;

@@ -39,9 +39,8 @@ public class NotificationPacketListener implements PacketListener {
 
     @Override
     public void processPacket(Packet packet) {
-
-        Log.e(LOGTAG, "NotificationPacketListener.processPacket()...");
-        Log.e(LOGTAG, "packet.toXML()=" + packet.toXML());
+        Log.d(LOGTAG, "NotificationPacketListener.processPacket()...");
+        Log.d(LOGTAG, "packet.toXML()=" + packet.toXML());
 
         if (packet instanceof NotificationIQ) {
             NotificationIQ notification = (NotificationIQ) packet;

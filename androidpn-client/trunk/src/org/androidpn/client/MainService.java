@@ -203,6 +203,7 @@ public class MainService extends Service {
             final MainService mainService = MainService.this;
 
             public void run() {
+                // MainService.getXmppManager(mainService).disconnect();
                 MainService.getXmppManager(mainService).connect();
             }
         });
@@ -288,8 +289,6 @@ public class MainService extends Service {
 
     public class TaskTracker {
 
-        // final String logTag = LogUtil.makeLogTag(getClass());
-
         final MainService mainService;
 
         public int count;
@@ -310,11 +309,6 @@ public class MainService extends Service {
             synchronized (MainService.getTaskTracker(mainService)) {
                 MainService.getTaskTracker(mainService).count--;
                 Log.d(LOGTAG, "Decremented task count to " + count);
-                //                if (MainService.getTaskTracker(mainService).count == 0) {
-                //                    // MainService.start(mainService);
-                //                    Intent intent = MainService.getIntent();
-                //                    mainService.startService(intent);
-                //                }
             }
         }
 
