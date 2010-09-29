@@ -2,15 +2,15 @@ ANDROIDPN-CLIENT CHANGELOG
 ==========================
 http://androidpn.sourceforge.net/
 
-Changes in version 0.4.0 (2010-09-??)
+Changes in version 0.4.0 (2010-09-29)
 -------------------------------------
 * Refactored package and class names
-* Shrinked jar file size
+* Added Register/Unregister PhoneStateReceiver
+* Updated asmack.jar file
 
 Changes in version 0.3.2 (2010-09-17)
 -------------------------------------
 * Updated NotificationDetailsActivity
-* Added Register/Unregister PhoneStateReceiver
 * Added LogUtil
 
 Changes in version 0.3.1 (2010-09-10)
