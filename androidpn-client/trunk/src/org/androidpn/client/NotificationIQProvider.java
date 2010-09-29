@@ -24,9 +24,9 @@ import org.xmlpull.v1.XmlPullParser;
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
-public class NotificationProvider implements IQProvider {
+public class NotificationIQProvider implements IQProvider {
 
-    public NotificationProvider() {
+    public NotificationIQProvider() {
     }
 
     @Override

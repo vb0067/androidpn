@@ -28,16 +28,16 @@ import android.widget.Toast;
  * 
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
-public final class MainReceiver extends BroadcastReceiver {
+public final class NotificationReceiver extends BroadcastReceiver {
 
-    private static final String LOGTAG = LogUtil.makeLogTag(MainReceiver.class);
+    private static final String LOGTAG = LogUtil.makeLogTag(NotificationReceiver.class);
 
-    public MainReceiver() {
+    public NotificationReceiver() {
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d(LOGTAG, "MainReceiver.onReceive()...");
+        Log.d(LOGTAG, "NotificationReceiver.onReceive()...");
         String action = intent.getAction();
         Log.d(LOGTAG, "action=" + action);
 

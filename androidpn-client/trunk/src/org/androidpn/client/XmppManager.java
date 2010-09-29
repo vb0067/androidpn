@@ -52,9 +52,9 @@ public class XmppManager {
 
     private Context context;
 
-    private MainService.TaskSubmitter taskSubmitter;
+    private NotificationService.TaskSubmitter taskSubmitter;
 
-    private MainService.TaskTracker taskTracker;
+    private NotificationService.TaskTracker taskTracker;
 
     private SharedPreferences clientPrefs;
 
@@ -89,8 +89,8 @@ public class XmppManager {
     private Thread reconnection;
 
     public XmppManager(Context context,
-            MainService.TaskSubmitter taskSubmitter,
-            MainService.TaskTracker taskTracker) {
+            NotificationService.TaskSubmitter taskSubmitter,
+            NotificationService.TaskTracker taskTracker) {
         this.context = context;
         this.taskSubmitter = taskSubmitter;
         this.taskTracker = taskTracker;
@@ -374,7 +374,7 @@ public class XmppManager {
                     // packet provider
                     ProviderManager.getInstance().addIQProvider("notification",
                             "androidpn:iq:notification",
-                            new NotificationProvider());
+                            new NotificationIQProvider());
 
                 } catch (XMPPException e) {
                     Log.e(LOGTAG, "XMPP connection failed", e);

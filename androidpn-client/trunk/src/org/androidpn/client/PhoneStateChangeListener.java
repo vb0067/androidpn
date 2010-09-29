@@ -29,18 +29,18 @@ public class PhoneStateChangeListener extends PhoneStateListener {
     private static final String LOGTAG = LogUtil
             .makeLogTag(PhoneStateChangeListener.class);
 
-    private final MainService mainService;
+    private final NotificationService notificationService;
 
-    public PhoneStateChangeListener(MainService mainService) {
-        this.mainService = mainService;
+    public PhoneStateChangeListener(NotificationService notificationService) {
+        this.notificationService = notificationService;
     }
 
     @Override
     public void onDataConnectionStateChanged(int state) {
         super.onDataConnectionStateChanged(state);
-        Log.d(LOGTAG, "Phone data state is " + MainService.getState(state));
+        Log.d(LOGTAG, "Phone data state is " + NotificationService.getState(state));
         if (state == TelephonyManager.DATA_CONNECTED) { // CONNECTED
-            MainService.restart(mainService);
+            NotificationService.restart(notificationService);
         }
     }
 

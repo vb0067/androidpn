@@ -86,13 +86,13 @@ public final class ServiceManager {
     }
 
     public void startService() {
-        // Intent intent = new Intent(MainService.SERVICE_NAME);
+        // Intent intent = new Intent(NotificationService.SERVICE_NAME);
         // context.startService(intent);
 
         Thread serviceThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                Intent intent = MainService.getIntent();
+                Intent intent = NotificationService.getIntent();
                 context.startService(intent);
             }
         });
@@ -100,8 +100,8 @@ public final class ServiceManager {
     }
 
     public void stopService() {
-        // Intent intent = new Intent(MainService.SERVICE_NAME);
-        Intent intent = MainService.getIntent();
+        // Intent intent = new Intent(NotificationService.SERVICE_NAME);
+        Intent intent = NotificationService.getIntent();
         context.stopService(intent);
     }
 

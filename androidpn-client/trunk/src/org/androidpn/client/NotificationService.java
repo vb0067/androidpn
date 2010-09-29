@@ -32,16 +32,17 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 
 /**
- * Service that handles the persistant connection between the client and server.
- * This should be registered as service in AndroidManifest.xml. 
+ * Service that continues to run in background and respond to the push 
+ * notification events from the server. This should be registered as service
+ * in AndroidManifest.xml. 
  * 
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
-public class MainService extends Service {
+public class NotificationService extends Service {
 
-    public static final String SERVICE_NAME = "org.androidpn.client.MainService";
+    public static final String SERVICE_NAME = "org.androidpn.client.NotificationService";
 
-    private static final String LOGTAG = LogUtil.makeLogTag(MainService.class);
+    private static final String LOGTAG = LogUtil.makeLogTag(NotificationService.class);
 
     private TelephonyManager telephonyManager;
 
@@ -61,13 +62,13 @@ public class MainService extends Service {
 
     private XmppManager xmppManager;
 
-    //    private BroadcastReceiver notificationReceiver = new MainReceiver();
+    //    private BroadcastReceiver notificationReceiver = new NotificationReceiver();
 
     //    private SharedPreferences clientPrefs;
 
     //    private String deviceId;
 
-    public MainService() {
+    public NotificationService() {
         executorService = Executors.newSingleThreadExecutor();
         taskSubmitter = new TaskSubmitter(this);
         taskTracker = new TaskTracker(this);
@@ -111,11 +112,11 @@ public class MainService extends Service {
 
         taskSubmitter.submit(new Runnable() {
 
-            private final MainService mainService = MainService.this;
+            private final NotificationService notificationService = NotificationService.this;
 
             @Override
             public void run() {
-                MainService.start(mainService);
+                NotificationService.start(notificationService);
             }
 
         });
@@ -201,11 +202,11 @@ public class MainService extends Service {
 
         taskSubmitter.submit(new Runnable() {
 
-            final MainService mainService = MainService.this;
+            final NotificationService notificationService = NotificationService.this;
 
             public void run() {
-                // MainService.getXmppManager(mainService).disconnect();
-                MainService.getXmppManager(mainService).connect();
+                // NotificationService.getXmppManager(notificationService).disconnect();
+                NotificationService.getXmppManager(notificationService).connect();
             }
         });
 
@@ -217,37 +218,37 @@ public class MainService extends Service {
         return new Intent(SERVICE_NAME);
     }
 
-    public static ExecutorService getExecutorService(MainService mainService) {
-        return mainService.executorService;
+    public static ExecutorService getExecutorService(NotificationService notificationService) {
+        return notificationService.executorService;
     }
 
-    public static TaskTracker getTaskTracker(MainService mainService) {
-        return mainService.taskTracker;
+    public static TaskTracker getTaskTracker(NotificationService notificationService) {
+        return notificationService.taskTracker;
     }
 
-    public static void start(MainService mainService) {
-        mainService.start();
+    public static void start(NotificationService notificationService) {
+        notificationService.start();
     }
 
-    public static void restart(MainService mainService) {
-        mainService.restart();
+    public static void restart(NotificationService notificationService) {
+        notificationService.restart();
     }
 
-    public static TelephonyManager getTelephonyManager(MainService mainService) {
-        return mainService.telephonyManager;
+    public static TelephonyManager getTelephonyManager(NotificationService notificationService) {
+        return notificationService.telephonyManager;
     }
 
-    public static WifiManager getWifiManager(MainService mainService) {
-        return mainService.wifiManager;
+    public static WifiManager getWifiManager(NotificationService notificationService) {
+        return notificationService.wifiManager;
     }
 
     public static ConnectivityManager getConnectivityManager(
-            MainService mainService) {
-        return mainService.connectivityManager;
+            NotificationService notificationService) {
+        return notificationService.connectivityManager;
     }
 
-    public static XmppManager getXmppManager(MainService mainService) {
-        return mainService.xmppManager;
+    public static XmppManager getXmppManager(NotificationService notificationService) {
+        return notificationService.xmppManager;
     }
 
     public static String getState(int state) {
@@ -268,19 +269,19 @@ public class MainService extends Service {
 
     public class TaskSubmitter {
 
-        final MainService mainService;
+        final NotificationService notificationService;
 
-        TaskSubmitter(MainService mainService) {
-            this.mainService = mainService;
+        TaskSubmitter(NotificationService notificationService) {
+            this.notificationService = notificationService;
         }
 
         @SuppressWarnings("unchecked")
         public Future submit(Runnable task) {
             Future result = null;
-            if (!MainService.getExecutorService(mainService).isTerminated()
-                    && !MainService.getExecutorService(mainService)
+            if (!NotificationService.getExecutorService(notificationService).isTerminated()
+                    && !NotificationService.getExecutorService(notificationService)
                             .isShutdown() && task != null) {
-                result = MainService.getExecutorService(mainService).submit(
+                result = NotificationService.getExecutorService(notificationService).submit(
                         task);
             }
             return result;
@@ -290,25 +291,25 @@ public class MainService extends Service {
 
     public class TaskTracker {
 
-        final MainService mainService;
+        final NotificationService notificationService;
 
         public int count;
 
-        public TaskTracker(MainService mainService) {
-            this.mainService = mainService;
+        public TaskTracker(NotificationService notificationService) {
+            this.notificationService = notificationService;
             this.count = 0;
         }
 
         public void increase() {
-            synchronized (MainService.getTaskTracker(mainService)) {
-                MainService.getTaskTracker(mainService).count++;
+            synchronized (NotificationService.getTaskTracker(notificationService)) {
+                NotificationService.getTaskTracker(notificationService).count++;
                 Log.d(LOGTAG, "Incremented task count to " + count);
             }
         }
 
         public void decrease() {
-            synchronized (MainService.getTaskTracker(mainService)) {
-                MainService.getTaskTracker(mainService).count--;
+            synchronized (NotificationService.getTaskTracker(notificationService)) {
+                NotificationService.getTaskTracker(notificationService).count--;
                 Log.d(LOGTAG, "Decremented task count to " + count);
             }
         }

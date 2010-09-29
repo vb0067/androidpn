@@ -33,10 +33,10 @@ public class PhoneStateReceiver extends BroadcastReceiver {
     private static final String LOGTAG = LogUtil
             .makeLogTag(PhoneStateReceiver.class);
 
-    private MainService mainService;
+    private NotificationService notificationService;
 
-    public PhoneStateReceiver(MainService mainService) {
-        this.mainService = mainService;
+    public PhoneStateReceiver(NotificationService notificationService) {
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -55,12 +55,12 @@ public class PhoneStateReceiver extends BroadcastReceiver {
                     connected = true;
                 }
             }
-        } else if (MainService.getConnectivityManager(mainService)
+        } else if (NotificationService.getConnectivityManager(notificationService)
                 .getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnected()) {
             connected = true;
         }
         if (connected) {
-            MainService.restart(mainService);
+            NotificationService.restart(notificationService);
         }
 
     }
