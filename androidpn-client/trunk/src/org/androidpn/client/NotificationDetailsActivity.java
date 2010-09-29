@@ -27,7 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /** 
- * Class desciption here.
+ * An Activity that is to displays the notification details view.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */

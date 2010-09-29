@@ -20,7 +20,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 
 /** 
- * Class desciption here.
+ * A listener class for monitoring changes in telephony states on the device. 
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */

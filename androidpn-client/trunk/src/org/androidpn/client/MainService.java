@@ -32,7 +32,8 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 
 /**
- * Class desciption here.
+ * Service that handles the persistant connection between the client and server.
+ * This should be registered as service in AndroidManifest.xml. 
  * 
  * @author Sehwan Noh (sehnoh@gmail.com)
  */

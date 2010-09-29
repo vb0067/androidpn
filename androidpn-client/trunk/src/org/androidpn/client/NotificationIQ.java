@@ -18,7 +18,7 @@ package org.androidpn.client;
 import org.jivesoftware.smack.packet.IQ;
 
 /** 
- * Class desciption here.
+ * This class represents a notifcatin IQ packet.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */

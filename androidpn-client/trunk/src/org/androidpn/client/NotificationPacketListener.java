@@ -22,7 +22,7 @@ import android.content.Intent;
 import android.util.Log;
 
 /** 
- * Class desciption here.
+ * This class notifies the receiver of incoming notifcation packets asynchronously.  
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */

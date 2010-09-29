@@ -16,7 +16,7 @@
 package org.androidpn.client;
 
 /** 
- * Class desciption here.
+ * Utility class for LogCat.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */

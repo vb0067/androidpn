@@ -29,7 +29,7 @@ import android.net.Uri;
 import android.util.Log;
 
 /** 
- * Class desciption here.
+ * This class is to notify the user of messages with NotificationManager.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */

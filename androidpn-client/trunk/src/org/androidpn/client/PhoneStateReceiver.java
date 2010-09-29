@@ -24,7 +24,7 @@ import android.net.NetworkInfo.State;
 import android.util.Log;
 
 /** 
- * Class desciption here.
+ * This is a broadcast receiver to handle the changes in telephony states on the device.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */

@@ -20,7 +20,7 @@ import org.jivesoftware.smack.ConnectionListener;
 import android.util.Log;
 
 /** 
- * Class desciption here.
+ * A thread class for recennecting the server.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */

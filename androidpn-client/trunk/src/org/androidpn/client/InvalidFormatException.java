@@ -16,16 +16,24 @@
 package org.androidpn.client;
 
 /** 
- * Class desciption here.
+ * Runtime exceptions produced by wrong meta-data settings.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
 public class InvalidFormatException extends RuntimeException {
 
-    private static final long serialVersionUID = 4500254309828208737L;
+    private static final long serialVersionUID = 1L;
+
+    public InvalidFormatException() {
+        super();
+    }
 
     public InvalidFormatException(String message) {
         super(message);
+    }
+
+    public InvalidFormatException(Throwable cause) {
+        super(cause);
     }
 
     public InvalidFormatException(String message, Throwable cause) {

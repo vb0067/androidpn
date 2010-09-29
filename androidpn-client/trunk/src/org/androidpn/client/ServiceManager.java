@@ -29,7 +29,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.util.Log;
 
 /** 
- * Class desciption here.
+ * This class is to manage the notificatin service and to load the configuration.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */

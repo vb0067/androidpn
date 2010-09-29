@@ -23,8 +23,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 /** 
- * Class desciption here.
- *
+ * Broadcast receiver that handles push notification messages from the server.
+ * This should be registered as receiver in AndroidManifest.xml. 
+ * 
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
 public final class MainReceiver extends BroadcastReceiver {

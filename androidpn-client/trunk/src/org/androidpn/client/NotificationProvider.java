@@ -20,7 +20,7 @@ import org.jivesoftware.smack.provider.IQProvider;
 import org.xmlpull.v1.XmlPullParser;
 
 /** 
- * Class desciption here.
+ * This class parses incoming IQ packets to NotificationIQ objects.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */

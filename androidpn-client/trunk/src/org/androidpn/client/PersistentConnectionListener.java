@@ -20,7 +20,7 @@ import org.jivesoftware.smack.ConnectionListener;
 import android.util.Log;
 
 /** 
- * Class desciption here.
+ * A listener class for monitoring connection closing and reconnection events.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */

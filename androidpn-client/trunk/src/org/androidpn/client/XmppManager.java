@@ -42,7 +42,7 @@ import android.os.Handler;
 import android.util.Log;
 
 /**
- * Class desciption here.
+ * This class is to manage the XMPP connection between client and server.
  * 
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
