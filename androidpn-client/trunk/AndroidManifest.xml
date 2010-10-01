@@ -12,13 +12,13 @@
 		<activity android:name="org.androidpn.client.NotificationDetailsActivity"
 			android:label="Notification Details" android:excludeFromRecents="true">
 		</activity>
-		<service android:enabled="true" android:name="org.androidpn.client.MainService"
+		<service android:enabled="true" android:name="org.androidpn.client.NotificationService"
 			android:label="Notification Service">
 			<intent-filter>
-				<action android:name="org.androidpn.client.MainService" />
+				<action android:name="org.androidpn.client.NotificationService" />
 			</intent-filter>
 		</service>
-		<receiver android:name="org.androidpn.client.MainReceiver">
+		<receiver android:name="org.androidpn.client.NotificationReceiver">
 			<intent-filter>
 				<action android:name="org.androidpn.client.SHOW_NOTIFICATION" />
 				<action android:name="org.androidpn.client.NOTIFICATION_CLICKED" />

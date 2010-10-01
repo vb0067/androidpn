@@ -4,8 +4,8 @@ http://androidpn.sourceforge.net/
 
 Changes in version 0.4.0 (2010-09-29)
 -------------------------------------
-* Refactored package and class names
 * Added Register/Unregister PhoneStateReceiver
+* Refactored package and class names
 * Updated asmack.jar file
 
 Changes in version 0.3.2 (2010-09-17)
