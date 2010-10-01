@@ -42,7 +42,8 @@ public class NotificationService extends Service {
 
     public static final String SERVICE_NAME = "org.androidpn.client.NotificationService";
 
-    private static final String LOGTAG = LogUtil.makeLogTag(NotificationService.class);
+    private static final String LOGTAG = LogUtil
+            .makeLogTag(NotificationService.class);
 
     private TelephonyManager telephonyManager;
 
@@ -52,7 +53,7 @@ public class NotificationService extends Service {
 
     private final PhoneStateListener phoneStateListener;
 
-    private BroadcastReceiver phoneStateReceiver;
+    private BroadcastReceiver connectivityReceiver;
 
     private ExecutorService executorService;
 
@@ -73,7 +74,7 @@ public class NotificationService extends Service {
         taskSubmitter = new TaskSubmitter(this);
         taskTracker = new TaskTracker(this);
         phoneStateListener = new PhoneStateChangeListener(this);
-        phoneStateReceiver = new PhoneStateReceiver(this);
+        connectivityReceiver = new ConnectivityReceiver(this);
     }
 
     @Override
@@ -152,20 +153,23 @@ public class NotificationService extends Service {
 
     // ================
 
-    private void registerPhoneStateReceiver() {
-        Log.d(LOGTAG, "registerPhoneStateReceiver()...");
+    private void registerConnectivityReceiver() {
+        Log.d(LOGTAG, "registerConnectivityReceiver()...");
         telephonyManager.listen(phoneStateListener,
                 PhoneStateListener.LISTEN_DATA_CONNECTION_STATE);
         IntentFilter intentfilter = new IntentFilter();
-        intentfilter.addAction("android.net.wifi.STATE_CHANGE");
-        registerReceiver(phoneStateReceiver, intentfilter);
+        // intentfilter
+        //      .addAction(android.net.wifi.WifiManager.NETWORK_STATE_CHANGED_ACTION);
+        intentfilter
+                .addAction(android.net.ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(connectivityReceiver, intentfilter);
     }
 
-    private void unregisterPhoneStateReceiver() {
-        Log.d(LOGTAG, "unregisterPhoneStateReceiver()...");
+    private void unregisterConnectivityReceiver() {
+        Log.d(LOGTAG, "unregisterConnectivityReceiver()...");
         telephonyManager.listen(phoneStateListener,
                 PhoneStateListener.LISTEN_NONE);
-        unregisterReceiver(phoneStateReceiver);
+        unregisterReceiver(connectivityReceiver);
     }
 
     //    private void registerNotificationReceiver() {
@@ -183,7 +187,7 @@ public class NotificationService extends Service {
     private void start() {
         Log.d(LOGTAG, "start()...");
         // registerNotificationReceiver();
-        registerPhoneStateReceiver();
+        registerConnectivityReceiver();
         Intent intent = getIntent();
         startService(intent);
         xmppManager.connect();
@@ -192,7 +196,7 @@ public class NotificationService extends Service {
     private void stop() {
         Log.d(LOGTAG, "stop()...");
         // unregisterNotificationReceiver();
-        unregisterPhoneStateReceiver();
+        unregisterConnectivityReceiver();
         xmppManager.disconnect();
         executorService.shutdown();
     }
@@ -206,7 +210,8 @@ public class NotificationService extends Service {
 
             public void run() {
                 // NotificationService.getXmppManager(notificationService).disconnect();
-                NotificationService.getXmppManager(notificationService).connect();
+                NotificationService.getXmppManager(notificationService)
+                        .connect();
             }
         });
 
@@ -218,11 +223,13 @@ public class NotificationService extends Service {
         return new Intent(SERVICE_NAME);
     }
 
-    public static ExecutorService getExecutorService(NotificationService notificationService) {
+    public static ExecutorService getExecutorService(
+            NotificationService notificationService) {
         return notificationService.executorService;
     }
 
-    public static TaskTracker getTaskTracker(NotificationService notificationService) {
+    public static TaskTracker getTaskTracker(
+            NotificationService notificationService) {
         return notificationService.taskTracker;
     }
 
@@ -234,11 +241,13 @@ public class NotificationService extends Service {
         notificationService.restart();
     }
 
-    public static TelephonyManager getTelephonyManager(NotificationService notificationService) {
+    public static TelephonyManager getTelephonyManager(
+            NotificationService notificationService) {
         return notificationService.telephonyManager;
     }
 
-    public static WifiManager getWifiManager(NotificationService notificationService) {
+    public static WifiManager getWifiManager(
+            NotificationService notificationService) {
         return notificationService.wifiManager;
     }
 
@@ -247,22 +256,9 @@ public class NotificationService extends Service {
         return notificationService.connectivityManager;
     }
 
-    public static XmppManager getXmppManager(NotificationService notificationService) {
+    public static XmppManager getXmppManager(
+            NotificationService notificationService) {
         return notificationService.xmppManager;
-    }
-
-    public static String getState(int state) {
-        switch (state) {
-        case 0: // '\0'
-            return "DATA_DISCONNECTED";
-        case 1: // '\001'
-            return "DATA_CONNECTING";
-        case 2: // '\002'
-            return "DATA_CONNECTED";
-        case 3: // '\003'
-            return "DATA_SUSPENDED";
-        }
-        return "DATA_<UNKNOWN>";
     }
 
     //===============
@@ -278,11 +274,12 @@ public class NotificationService extends Service {
         @SuppressWarnings("unchecked")
         public Future submit(Runnable task) {
             Future result = null;
-            if (!NotificationService.getExecutorService(notificationService).isTerminated()
-                    && !NotificationService.getExecutorService(notificationService)
-                            .isShutdown() && task != null) {
-                result = NotificationService.getExecutorService(notificationService).submit(
-                        task);
+            if (!NotificationService.getExecutorService(notificationService)
+                    .isTerminated()
+                    && !NotificationService.getExecutorService(
+                            notificationService).isShutdown() && task != null) {
+                result = NotificationService.getExecutorService(
+                        notificationService).submit(task);
             }
             return result;
         }
@@ -301,14 +298,16 @@ public class NotificationService extends Service {
         }
 
         public void increase() {
-            synchronized (NotificationService.getTaskTracker(notificationService)) {
+            synchronized (NotificationService
+                    .getTaskTracker(notificationService)) {
                 NotificationService.getTaskTracker(notificationService).count++;
                 Log.d(LOGTAG, "Incremented task count to " + count);
             }
         }
 
         public void decrease() {
-            synchronized (NotificationService.getTaskTracker(notificationService)) {
+            synchronized (NotificationService
+                    .getTaskTracker(notificationService)) {
                 NotificationService.getTaskTracker(notificationService).count--;
                 Log.d(LOGTAG, "Decremented task count to " + count);
             }

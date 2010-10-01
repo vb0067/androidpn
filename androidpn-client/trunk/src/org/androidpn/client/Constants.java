@@ -22,7 +22,7 @@ package org.androidpn.client;
  */
 public class Constants {
 
-    public static final String CLIENT_VERSION = "0.4.0";
+    public static final String CLIENT_VERSION = "0.4.1";
 
     public static final String CLIENT_PREFERENCES = "ClientPreferences";
 

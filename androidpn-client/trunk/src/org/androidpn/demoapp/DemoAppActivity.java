@@ -22,7 +22,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 /**
- * An androidpn client demo application.
+ * This is an androidpn client demo application.
  * 
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
