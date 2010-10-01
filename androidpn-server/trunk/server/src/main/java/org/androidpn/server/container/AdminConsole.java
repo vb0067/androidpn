@@ -32,8 +32,8 @@ import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.webapp.WebAppContext;
 
 /** 
- * This class starts a Jerry instance on the configured port and loads
- * the admin console web application. 
+ * This class starts a instance on the configured port and loads the admin
+ * console web application. 
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
