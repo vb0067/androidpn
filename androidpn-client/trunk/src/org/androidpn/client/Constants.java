@@ -30,6 +30,8 @@ public class Constants {
 
     public static final String ANDROIDPN_API_KEY = "ANDROIDPN_API_KEY";
 
+    public static final String VERSION = "VERSION";
+
     public static final String XMPP_HOST = "XMPP_HOST";
 
     public static final String XMPP_PORT = "XMPP_PORT";

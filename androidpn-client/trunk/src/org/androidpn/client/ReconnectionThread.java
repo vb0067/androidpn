@@ -15,8 +15,6 @@
  */
 package org.androidpn.client;
 
-import org.jivesoftware.smack.ConnectionListener;
-
 import android.util.Log;
 
 /** 
@@ -31,17 +29,32 @@ public class ReconnectionThread extends Thread {
 
     private final XmppManager xmppManager;
 
-    private ConnectionListener connectionListener;
-
     private int waiting;
 
     ReconnectionThread(XmppManager xmppManager) {
         this.xmppManager = xmppManager;
-        this.connectionListener = xmppManager.getConnectionListener();
         this.waiting = 0;
     }
 
-    private int a() {
+    public void run() {
+        try {
+            while (!isInterrupted()) {
+                Log.d(LOGTAG, "Trying to reconnect in " + waiting()
+                        + " seconds");
+                Thread.sleep((long) waiting() * 1000L);
+                xmppManager.connect();
+                waiting++;
+            }
+        } catch (final InterruptedException e) {
+            xmppManager.getHandler().post(new Runnable() {
+                public void run() {
+                    xmppManager.getConnectionListener().reconnectionFailed(e);
+                }
+            });
+        }
+    }
+
+    private int waiting() {
         if (waiting > 20) {
             return 600;
         }
@@ -49,23 +62,5 @@ public class ReconnectionThread extends Thread {
             return 300;
         }
         return waiting <= 7 ? 10 : 60;
-    }
-
-    public void run() {
-        try {
-            while (!isInterrupted()) {
-                Log.d(LOGTAG, "Trying to reconnect in " + waiting + " seconds");
-                Thread.sleep((long) a() * 1000L);
-                XmppManager.reconnect(xmppManager, connectionListener);
-                waiting++;
-            }
-        } catch (final InterruptedException e) {
-
-            XmppManager.getHandler(xmppManager).post(new Runnable() {
-                public void run() {
-                    xmppManager.getConnectionListener().reconnectionFailed(e);
-                }
-            });
-        }
     }
 }

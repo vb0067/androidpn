@@ -43,11 +43,11 @@ public class PersistentConnectionListener implements ConnectionListener {
     @Override
     public void connectionClosedOnError(Exception e) {
         Log.d(LOGTAG, "connectionClosedOnError()...");
-        if (XmppManager.getXMPPConnection(xmppManager) != null
-                && XmppManager.getXMPPConnection(xmppManager).isConnected()) {
-            XmppManager.getXMPPConnection(xmppManager).disconnect();
+        if (xmppManager.getConnection() != null
+                && xmppManager.getConnection().isConnected()) {
+            xmppManager.getConnection().disconnect();
         }
-        xmppManager.reconnect();
+        xmppManager.runReconnectionThread();
     }
 
     @Override

@@ -54,12 +54,11 @@ public class ConnectivityReceiver extends BroadcastReceiver {
             Log.d(LOGTAG, "Network State = " + networkInfo.getState());
             if (networkInfo.isConnected()) {
                 Log.i(LOGTAG, "Network connected");
-                NotificationService.restart(notificationService);
+                notificationService.connect();
             }
         } else {
             Log.e(LOGTAG, "Network unavailable");
-            NotificationService.getXmppManager(notificationService)
-                    .disconnect();
+            notificationService.disconnect();
         }
     }
 

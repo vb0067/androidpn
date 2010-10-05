@@ -15,6 +15,7 @@
  */
 package org.androidpn.client;
 
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -24,8 +25,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.ConnectivityManager;
-import android.net.wifi.WifiManager;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.IBinder;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
@@ -40,20 +41,22 @@ import android.util.Log;
  */
 public class NotificationService extends Service {
 
-    public static final String SERVICE_NAME = "org.androidpn.client.NotificationService";
-
     private static final String LOGTAG = LogUtil
             .makeLogTag(NotificationService.class);
 
+    public static final String SERVICE_NAME = "org.androidpn.client.NotificationService";
+
     private TelephonyManager telephonyManager;
 
-    private WifiManager wifiManager;
+    //    private WifiManager wifiManager;
+    //
+    //    private ConnectivityManager connectivityManager;
 
-    private ConnectivityManager connectivityManager;
-
-    private final PhoneStateListener phoneStateListener;
+    private BroadcastReceiver notificationReceiver;
 
     private BroadcastReceiver connectivityReceiver;
+
+    private PhoneStateListener phoneStateListener;
 
     private ExecutorService executorService;
 
@@ -63,63 +66,58 @@ public class NotificationService extends Service {
 
     private XmppManager xmppManager;
 
-    //    private BroadcastReceiver notificationReceiver = new NotificationReceiver();
+    private SharedPreferences clientPrefs;
 
-    //    private SharedPreferences clientPrefs;
-
-    //    private String deviceId;
+    private String deviceId;
 
     public NotificationService() {
+        notificationReceiver = new NotificationReceiver(this);
+        connectivityReceiver = new ConnectivityReceiver(this);
+        phoneStateListener = new PhoneStateChangeListener(this);
         executorService = Executors.newSingleThreadExecutor();
         taskSubmitter = new TaskSubmitter(this);
         taskTracker = new TaskTracker(this);
-        phoneStateListener = new PhoneStateChangeListener(this);
-        connectivityReceiver = new ConnectivityReceiver(this);
     }
 
     @Override
     public void onCreate() {
         Log.d(LOGTAG, "onCreate()...");
-
-        //        clientPrefs = getSharedPreferences(Constants.CLIENT_PREFERENCES,
-        //                Context.MODE_PRIVATE);
-
         telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-        connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        // wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        // connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        //        deviceId = telephonyManager.getDeviceId();
-        //        Log.d(LOGTAG, "deviceId=" + deviceId);
-        //
-        //        Editor editor = clientPrefs.edit();
-        //        editor.putString(Constants.DEVICE_ID, deviceId);
-        //        editor.commit();
-        //
-        //        if (deviceId == null || deviceId.trim().length() == 0
-        //                || deviceId.matches("0+")) {
-        //            if (clientPrefs.contains("EMULATOR_DEVICE_ID")) {
-        //                deviceId = clientPrefs.getString(
-        //                        Constants.EMULATOR_DEVICE_ID, "");
-        //            } else {
-        //                deviceId = (new StringBuilder("EMU")).append(
-        //                        (new Random(System.currentTimeMillis())).nextLong())
-        //                        .toString();
-        //                editor.putString(Constants.EMULATOR_DEVICE_ID, deviceId);
-        //                editor.commit();
-        //            }
-        //        }
+        clientPrefs = getSharedPreferences(Constants.CLIENT_PREFERENCES,
+                Context.MODE_PRIVATE);
 
-        xmppManager = new XmppManager(this, taskSubmitter, taskTracker);
+        // Get deviceId
+        deviceId = telephonyManager.getDeviceId();
+        // Log.d(LOGTAG, "deviceId=" + deviceId);
+        Editor editor = clientPrefs.edit();
+        editor.putString(Constants.DEVICE_ID, deviceId);
+        editor.commit();
+
+        // If running on an emulator
+        if (deviceId == null || deviceId.trim().length() == 0
+                || deviceId.matches("0+")) {
+            if (clientPrefs.contains("EMULATOR_DEVICE_ID")) {
+                deviceId = clientPrefs.getString(Constants.EMULATOR_DEVICE_ID,
+                        "");
+            } else {
+                deviceId = (new StringBuilder("EMU")).append(
+                        (new Random(System.currentTimeMillis())).nextLong())
+                        .toString();
+                editor.putString(Constants.EMULATOR_DEVICE_ID, deviceId);
+                editor.commit();
+            }
+        }
+        Log.d(LOGTAG, "deviceId=" + deviceId);
+
+        xmppManager = new XmppManager(this);
 
         taskSubmitter.submit(new Runnable() {
-
-            private final NotificationService notificationService = NotificationService.this;
-
-            @Override
             public void run() {
-                NotificationService.start(notificationService);
+                NotificationService.this.start();
             }
-
         });
     }
 
@@ -151,18 +149,72 @@ public class NotificationService extends Service {
         return true;
     }
 
-    // ================
+    public static Intent getIntent() {
+        return new Intent(SERVICE_NAME);
+    }
+
+    public ExecutorService getExecutorService() {
+        return executorService;
+    }
+
+    public TaskSubmitter getTaskSubmitter() {
+        return taskSubmitter;
+    }
+
+    public TaskTracker getTaskTracker() {
+        return taskTracker;
+    }
+
+    public XmppManager getXmppManager() {
+        return xmppManager;
+    }
+
+    public SharedPreferences getSharedPreferences() {
+        return clientPrefs;
+    }
+
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void connect() {
+        Log.d(LOGTAG, "connect()...");
+        taskSubmitter.submit(new Runnable() {
+            public void run() {
+                NotificationService.this.getXmppManager().connect();
+            }
+        });
+    }
+
+    public void disconnect() {
+        Log.d(LOGTAG, "disconnect()...");
+        taskSubmitter.submit(new Runnable() {
+            public void run() {
+                NotificationService.this.getXmppManager().disconnect();
+            }
+        });
+    }
+
+    private void registerNotificationReceiver() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Constants.ACTION_SHOW_NOTIFICATION);
+        filter.addAction(Constants.ACTION_NOTIFICATION_CLICKED);
+        filter.addAction(Constants.ACTION_NOTIFICATION_CLEARED);
+        registerReceiver(notificationReceiver, filter);
+    }
+
+    private void unregisterNotificationReceiver() {
+        unregisterReceiver(notificationReceiver);
+    }
 
     private void registerConnectivityReceiver() {
         Log.d(LOGTAG, "registerConnectivityReceiver()...");
         telephonyManager.listen(phoneStateListener,
                 PhoneStateListener.LISTEN_DATA_CONNECTION_STATE);
-        IntentFilter intentfilter = new IntentFilter();
-        // intentfilter
-        //      .addAction(android.net.wifi.WifiManager.NETWORK_STATE_CHANGED_ACTION);
-        intentfilter
-                .addAction(android.net.ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(connectivityReceiver, intentfilter);
+        IntentFilter filter = new IntentFilter();
+        // filter.addAction(android.net.wifi.WifiManager.NETWORK_STATE_CHANGED_ACTION);
+        filter.addAction(android.net.ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(connectivityReceiver, filter);
     }
 
     private void unregisterConnectivityReceiver() {
@@ -172,120 +224,50 @@ public class NotificationService extends Service {
         unregisterReceiver(connectivityReceiver);
     }
 
-    //    private void registerNotificationReceiver() {
-    //        IntentFilter filter = new IntentFilter();
-    //        filter.addAction(Constants.ACTION_SHOW_NOTIFICATION);
-    //        filter.addAction(Constants.ACTION_NOTIFICATION_CLICKED);
-    //        filter.addAction(Constants.ACTION_NOTIFICATION_CLEARED);
-    //        registerReceiver(this.notificationReceiver, filter);
-    //    }
-    //    
-    //    private void unregisterNotificationReceiver() {
-    //        unregisterReceiver(this.notificationReceiver);
-    //    }
-
     private void start() {
         Log.d(LOGTAG, "start()...");
-        // registerNotificationReceiver();
+        registerNotificationReceiver();
         registerConnectivityReceiver();
-        Intent intent = getIntent();
-        startService(intent);
+        // Intent intent = getIntent();
+        // startService(intent);
         xmppManager.connect();
     }
 
     private void stop() {
         Log.d(LOGTAG, "stop()...");
-        // unregisterNotificationReceiver();
+        unregisterNotificationReceiver();
         unregisterConnectivityReceiver();
         xmppManager.disconnect();
         executorService.shutdown();
     }
 
-    private void restart() {
-        Log.d(LOGTAG, "restart()...");
-
-        taskSubmitter.submit(new Runnable() {
-
-            final NotificationService notificationService = NotificationService.this;
-
-            public void run() {
-                // NotificationService.getXmppManager(notificationService).disconnect();
-                NotificationService.getXmppManager(notificationService)
-                        .connect();
-            }
-        });
-
-    }
-
-    // ================
-
-    public static Intent getIntent() {
-        return new Intent(SERVICE_NAME);
-    }
-
-    public static ExecutorService getExecutorService(
-            NotificationService notificationService) {
-        return notificationService.executorService;
-    }
-
-    public static TaskTracker getTaskTracker(
-            NotificationService notificationService) {
-        return notificationService.taskTracker;
-    }
-
-    public static void start(NotificationService notificationService) {
-        notificationService.start();
-    }
-
-    public static void restart(NotificationService notificationService) {
-        notificationService.restart();
-    }
-
-    public static TelephonyManager getTelephonyManager(
-            NotificationService notificationService) {
-        return notificationService.telephonyManager;
-    }
-
-    public static WifiManager getWifiManager(
-            NotificationService notificationService) {
-        return notificationService.wifiManager;
-    }
-
-    public static ConnectivityManager getConnectivityManager(
-            NotificationService notificationService) {
-        return notificationService.connectivityManager;
-    }
-
-    public static XmppManager getXmppManager(
-            NotificationService notificationService) {
-        return notificationService.xmppManager;
-    }
-
-    //===============
-
+    /**
+     * Class for summiting a new runnable task.
+     */
     public class TaskSubmitter {
 
         final NotificationService notificationService;
 
-        TaskSubmitter(NotificationService notificationService) {
+        public TaskSubmitter(NotificationService notificationService) {
             this.notificationService = notificationService;
         }
 
         @SuppressWarnings("unchecked")
         public Future submit(Runnable task) {
             Future result = null;
-            if (!NotificationService.getExecutorService(notificationService)
-                    .isTerminated()
-                    && !NotificationService.getExecutorService(
-                            notificationService).isShutdown() && task != null) {
-                result = NotificationService.getExecutorService(
-                        notificationService).submit(task);
+            if (!notificationService.getExecutorService().isTerminated()
+                    && !notificationService.getExecutorService().isShutdown()
+                    && task != null) {
+                result = notificationService.getExecutorService().submit(task);
             }
             return result;
         }
 
     }
 
+    /**
+     * Class for monitoring the running task count.
+     */
     public class TaskTracker {
 
         final NotificationService notificationService;
@@ -298,17 +280,15 @@ public class NotificationService extends Service {
         }
 
         public void increase() {
-            synchronized (NotificationService
-                    .getTaskTracker(notificationService)) {
-                NotificationService.getTaskTracker(notificationService).count++;
+            synchronized (notificationService.getTaskTracker()) {
+                notificationService.getTaskTracker().count++;
                 Log.d(LOGTAG, "Incremented task count to " + count);
             }
         }
 
         public void decrease() {
-            synchronized (NotificationService
-                    .getTaskTracker(notificationService)) {
-                NotificationService.getTaskTracker(notificationService).count--;
+            synchronized (notificationService.getTaskTracker()) {
+                notificationService.getTaskTracker().count--;
                 Log.d(LOGTAG, "Decremented task count to " + count);
             }
         }

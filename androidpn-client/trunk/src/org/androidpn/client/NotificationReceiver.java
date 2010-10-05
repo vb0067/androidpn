@@ -30,9 +30,16 @@ import android.widget.Toast;
  */
 public final class NotificationReceiver extends BroadcastReceiver {
 
-    private static final String LOGTAG = LogUtil.makeLogTag(NotificationReceiver.class);
+    private static final String LOGTAG = LogUtil
+            .makeLogTag(NotificationReceiver.class);
 
-    public NotificationReceiver() {
+    private NotificationService notificationService;
+
+    //    public NotificationReceiver() {
+    //    }
+
+    public NotificationReceiver(NotificationService notificationService) {
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -122,6 +129,10 @@ public final class NotificationReceiver extends BroadcastReceiver {
 
         } else if (Constants.ACTION_NOTIFICATION_CLEARED.equals(action)) {
             //
+        } else if ("android.intent.action.PACKAGE_ADDED".equals(action)) {
+            Log.e(LOGTAG, "PACKAGE_ADDED");
+        } else if ("android.intent.action.PACKAGE_REMOVED".equals(action)) {
+            Log.e(LOGTAG, "PACKAGE_REMOVED");
         }
 
     }

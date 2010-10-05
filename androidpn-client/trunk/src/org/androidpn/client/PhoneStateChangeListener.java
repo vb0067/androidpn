@@ -41,8 +41,8 @@ public class PhoneStateChangeListener extends PhoneStateListener {
         Log.d(LOGTAG, "onDataConnectionStateChanged()...");
         Log.d(LOGTAG, "Data Connection State = " + getState(state));
         
-        if (state == TelephonyManager.DATA_CONNECTED) { // CONNECTED
-            NotificationService.restart(notificationService);
+        if (state == TelephonyManager.DATA_CONNECTED) {
+            notificationService.connect();
         }
     }
 

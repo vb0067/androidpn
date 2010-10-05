@@ -50,6 +50,8 @@ public class XmppManager {
 
     private static final String LOGTAG = LogUtil.makeLogTag(XmppManager.class);
 
+    private static final String XMPP_RESOURCE_NAME = "AndroidpnClient";
+
     private Context context;
 
     private NotificationService.TaskSubmitter taskSubmitter;
@@ -57,8 +59,6 @@ public class XmppManager {
     private NotificationService.TaskTracker taskTracker;
 
     private SharedPreferences clientPrefs;
-
-    private Editor editor;
 
     private String xmppHost;
 
@@ -70,52 +70,149 @@ public class XmppManager {
 
     private String password;
 
+    private ConnectionListener connectionListener;
+
+    private PacketListener notificationPacketListener;
+
+    private Handler handler;
+
     private List<Runnable> taskList;
 
     private boolean running = false;
 
-    private boolean started = false;
-
-    private Handler mHandler;
-
-    private Runnable mRunnable;
-
-    private Future<?> mFuture;
-
-    private PacketListener packetListener;
-
-    private ConnectionListener connectionListener;
+    private Future<?> futureTask;
 
     private Thread reconnection;
 
-    public XmppManager(Context context,
-            NotificationService.TaskSubmitter taskSubmitter,
-            NotificationService.TaskTracker taskTracker) {
-        this.context = context;
-        this.taskSubmitter = taskSubmitter;
-        this.taskTracker = taskTracker;
-
-        clientPrefs = context.getSharedPreferences(
-                Constants.CLIENT_PREFERENCES, Context.MODE_PRIVATE);
-        editor = clientPrefs.edit();
+    public XmppManager(NotificationService notificationService) {
+        context = notificationService;
+        taskSubmitter = notificationService.getTaskSubmitter();
+        taskTracker = notificationService.getTaskTracker();
+        clientPrefs = notificationService.getSharedPreferences();
 
         xmppHost = clientPrefs.getString(Constants.XMPP_HOST, "localhost");
         xmppPort = clientPrefs.getInt(Constants.XMPP_PORT, 5222);
         username = clientPrefs.getString(Constants.XMPP_USERNAME, username);
         password = clientPrefs.getString(Constants.XMPP_PASSWORD, password);
 
-        packetListener = new NotificationPacketListener(this);
         connectionListener = new PersistentConnectionListener(this);
+        notificationPacketListener = new NotificationPacketListener(this);
 
-        reconnection = new ReconnectionThread(this);
-
+        handler = new Handler();
         taskList = new ArrayList<Runnable>();
-        mHandler = new Handler();
-
-        mRunnable = new TaskRunner(this);
+        reconnection = new ReconnectionThread(this);
     }
 
-    // ====================
+    public Context getContext() {
+        return context;
+    }
+
+    public void connect() {
+        Log.d(LOGTAG, "connect()...");
+        submitLoginTask();
+    }
+
+    public void disconnect() {
+        Log.d(LOGTAG, "disconnect()...");
+        terminatePersistentConnection();
+    }
+
+    public void terminatePersistentConnection() {
+        Log.d(LOGTAG, "terminatePersistentConnection()...");
+        Runnable runnable = new Runnable() {
+
+            final XmppManager xmppManager = XmppManager.this;
+
+            public void run() {
+                if (xmppManager.isConnected()) {
+                    Log.d(LOGTAG, "terminatePersistentConnection()... run()");
+                    xmppManager.getConnection().removePacketListener(
+                            xmppManager.getNotificationPacketListener());
+                    xmppManager.getConnection().disconnect();
+                }
+                xmppManager.runTask();
+            }
+
+        };
+        addTask(runnable);
+    }
+
+    public XMPPConnection getConnection() {
+        return connection;
+    }
+
+    public void setConnection(XMPPConnection connection) {
+        this.connection = connection;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public ConnectionListener getConnectionListener() {
+        return connectionListener;
+    }
+
+    public PacketListener getNotificationPacketListener() {
+        return notificationPacketListener;
+    }
+
+    public void runReconnectionThread() {
+        synchronized (reconnection) {
+            if (!reconnection.isAlive()) {
+                reconnection.setName("Xmpp Reconnection Thread");
+                reconnection.start();
+            }
+        }
+    }
+
+    public Handler getHandler() {
+        return handler;
+    }
+
+    public void reregisterAccount() {
+        removeAccount();
+        submitRegisterTask();
+    }
+
+    public List<Runnable> getTaskList() {
+        return taskList;
+    }
+
+    public Future<?> getFutureTask() {
+        return futureTask;
+    }
+
+    public void runTask() {
+        Log.d(LOGTAG, "runTask()...");
+        synchronized (taskList) {
+            running = false;
+            futureTask = null;
+            if (!taskList.isEmpty()) {
+                Runnable runnable = (Runnable) taskList.get(0);
+                taskList.remove(0);
+                running = true;
+                futureTask = taskSubmitter.submit(runnable);
+                if (futureTask == null) {
+                    taskTracker.decrease();
+                }
+            }
+        }
+        taskTracker.decrease();
+        Log.d(LOGTAG, "runTask()...done");
+    }
 
     private String newRandomUUID() {
         String uuidRaw = UUID.randomUUID().toString();
@@ -137,6 +234,7 @@ public class XmppManager {
     }
 
     private void removeAccount() {
+        Editor editor = clientPrefs.edit();
         editor.remove(Constants.XMPP_USERNAME);
         editor.remove(Constants.XMPP_PASSWORD);
         editor.commit();
@@ -144,205 +242,41 @@ public class XmppManager {
 
     private void submitConnectTask() {
         Log.d(LOGTAG, "submitConnectTask()...");
-        runTask(new ConnectTask());
+        addTask(new ConnectTask());
     }
 
     private void submitRegisterTask() {
         Log.d(LOGTAG, "submitRegisterTask()...");
         submitConnectTask();
-        runTask(new RegisterTask());
+        addTask(new RegisterTask());
     }
 
-    private void submitLoginTask(ConnectionListener connectionListener) {
+    private void submitLoginTask() {
         Log.d(LOGTAG, "submitLoginTask()...");
         submitRegisterTask();
-        runTask(new LoginTask(connectionListener));
+        addTask(new LoginTask());
     }
 
-    private void runTask() {
-        Log.d(LOGTAG, "runTask()...");
-        synchronized (taskList) {
-            running = false;
-            mHandler.removeCallbacks(mRunnable);
-            mFuture = null;
-            if (!taskList.isEmpty()) {
-                Runnable runnable = (Runnable) taskList.get(0);
-                taskList.remove(0);
-                running = true;
-                mFuture = taskSubmitter.submit(runnable);
-                if (mFuture == null) {
-                    taskTracker.decrease();
-                }
-                mHandler.postDelayed(mRunnable, 6000L);
-            }
-        }
-        taskTracker.decrease();
-        Log.d(LOGTAG, "runTask()...done");
-    }
-
-    private void runTask(Runnable runnable) {
-        Log.d(LOGTAG, "runTask(runnable)...");
+    private void addTask(Runnable runnable) {
+        Log.d(LOGTAG, "addTask(runnable)...");
         taskTracker.increase();
         synchronized (taskList) {
             if (taskList.isEmpty() && !running) {
                 running = true;
-                mFuture = taskSubmitter.submit(runnable);
-                if (mFuture == null) {
+                futureTask = taskSubmitter.submit(runnable);
+                if (futureTask == null) {
                     taskTracker.decrease();
                 }
-                mHandler.postDelayed(mRunnable, 6000L);
             } else {
                 taskList.add(runnable);
             }
         }
-        Log.d(LOGTAG, "runTask(runnable)... done");
+        Log.d(LOGTAG, "addTask(runnable)... done");
     }
 
-    public void connect() {
-        Log.d(LOGTAG, "connect()...");
-        started = true;
-        submitLoginTask(connectionListener);
-    }
-
-    public void disconnect() {
-        Log.d(LOGTAG, "disconnect()...");
-        started = false;
-        terminatePersistentConnection();
-    }
-
-    public void terminatePersistentConnection() {
-        Log.d(LOGTAG, "terminatePersistentConnection()...");
-        Runnable runnable = new Runnable() {
-
-            final XmppManager xmppManager = XmppManager.this;
-
-            public void run() {
-                if (XmppManager.isConnected(xmppManager)
-                        && !XmppManager.isStarted(xmppManager)) {
-                    Log.d(LOGTAG, "terminatePersistentConnection()... run()");
-                    XmppManager.getXMPPConnection(xmppManager)
-                            .removePacketListener(
-                                    XmppManager.getPacketListener(xmppManager));
-                    XmppManager.getXMPPConnection(xmppManager).disconnect();
-                }
-                XmppManager.runTask(xmppManager);
-            }
-
-        };
-        Log.d(LOGTAG, "terminatePersistentConnection()... runTask()");
-        runTask(runnable);
-    }
-
-    // ========================
-
-    public static Context getContext(XmppManager xmppManager) {
-        return xmppManager.context;
-    }
-
-    public static boolean isConnected(XmppManager xmppManager) {
-        return xmppManager.isConnected();
-    }
-
-    public static boolean isAuthenticated(XmppManager xmppManager) {
-        return xmppManager.isAuthenticated();
-    }
-
-    public static XMPPConnection getXMPPConnection(XmppManager xmppManager) {
-        return xmppManager.connection;
-    }
-
-    public static String getUsername(XmppManager xmppManager) {
-        return xmppManager.username;
-    }
-
-    public static String getPassword(XmppManager xmppManager) {
-        return xmppManager.password;
-    }
-
-    public static SharedPreferences getSdkPreferences(XmppManager xmppManager) {
-        return xmppManager.clientPrefs;
-    }
-
-    public static boolean isRegistered(XmppManager xmppManager) {
-        return xmppManager.isRegistered();
-    }
-
-    public static void setXMPPConnection(XmppManager xmppManager,
-            XMPPConnection connection) {
-        xmppManager.connection = connection;
-    }
-
-    public static void setUsername(XmppManager xmppManager, String username) {
-        xmppManager.username = username;
-    }
-
-    public static void setPassword(XmppManager xmppManager, String password) {
-        xmppManager.password = password;
-    }
-
-    public static void reconnect(XmppManager xmppManager,
-            ConnectionListener connectionListener) {
-        xmppManager.submitLoginTask(connectionListener);
-    }
-
-    public static Handler getHandler(XmppManager xmppManager) {
-        return xmppManager.mHandler;
-    }
-
-    public static void runTask(XmppManager xmppManager) {
-        xmppManager.runTask();
-    }
-
-    public static boolean isStarted(XmppManager xmppManager) {
-        return xmppManager.started;
-    }
-
-    public static PacketListener getPacketListener(XmppManager xmppManager) {
-        return xmppManager.packetListener;
-    }
-
-    @SuppressWarnings("unchecked")
-    static List getTaskList(XmppManager xmppManager) {
-        return xmppManager.taskList;
-    }
-
-    @SuppressWarnings("unchecked")
-    static Future getFutureTask(XmppManager xmppManager) {
-        return xmppManager.mFuture;
-    }
-
-    static void removeAccount(XmppManager xmppManager) {
-        xmppManager.removeAccount();
-    }
-
-    static void registerAccount(XmppManager xmppManager) {
-        xmppManager.submitRegisterTask();
-    }
-
-    // ====================
-
-    public ConnectionListener getConnectionListener() {
-        return connectionListener;
-    }
-
-    public void reconnect() {
-        synchronized (reconnection) {
-            if (!reconnection.isAlive()) {
-                reconnection.setName("Xmpp Reconnection Thread");
-                reconnection.start();
-            }
-        }
-    }
-
-    //    public void registerNotificationPacketListener() {
-    //        // pcaket filter
-    //        PacketFilter packetFilter = new PacketTypeFilter(NotificationIQ.class);
-    //        // packet listener
-    //        connection.addPacketListener(packetListener, packetFilter);
-    //    }
-
-    // ====================
-
+    /**
+     * A runnable task to connect the server. 
+     */
     private class ConnectTask implements Runnable {
 
         final XmppManager xmppManager;
@@ -354,8 +288,7 @@ public class XmppManager {
         public void run() {
             Log.i(LOGTAG, "ConnectTask.run()...");
 
-            if (!XmppManager.isConnected(xmppManager)) {
-
+            if (!xmppManager.isConnected()) {
                 // Create the configuration for this new connection
                 ConnectionConfiguration connConfig = new ConnectionConfiguration(
                         xmppHost, xmppPort);
@@ -364,7 +297,7 @@ public class XmppManager {
                 connConfig.setCompressionEnabled(false);
 
                 XMPPConnection connection = new XMPPConnection(connConfig);
-                XmppManager.setXMPPConnection(xmppManager, connection);
+                xmppManager.setConnection(connection);
 
                 try {
                     // Connect to the server
@@ -380,16 +313,18 @@ public class XmppManager {
                     Log.e(LOGTAG, "XMPP connection failed", e);
                 }
 
-                XmppManager.runTask(xmppManager);
+                xmppManager.runTask();
 
             } else {
                 Log.i(LOGTAG, "XMPP connected already");
-                XmppManager.runTask(xmppManager);
+                xmppManager.runTask();
             }
-
         }
     }
 
+    /**
+     * A runnable task to register a new user onto the server. 
+     */
     private class RegisterTask implements Runnable {
 
         final XmppManager xmppManager;
@@ -414,7 +349,6 @@ public class XmppManager {
                 PacketListener packetListener = new PacketListener() {
 
                     public void processPacket(Packet packet) {
-
                         Log.d("RegisterTask.PacketListener",
                                 "processPacket().....");
                         Log.d("RegisterTask.PacketListener", "packet="
@@ -431,21 +365,20 @@ public class XmppManager {
                                                             .getCondition());
                                 }
                             } else if (response.getType() == IQ.Type.RESULT) {
-                                username = newUsername;
-                                password = newPassword;
-                                Log.d(LOGTAG, "username=" + username);
-                                Log.d(LOGTAG, "password=" + password);
+                                xmppManager.setUsername(newUsername);
+                                xmppManager.setPassword(newPassword);
+                                Log.d(LOGTAG, "username=" + newUsername);
+                                Log.d(LOGTAG, "password=" + newPassword);
 
+                                Editor editor = clientPrefs.edit();
                                 editor.putString(Constants.XMPP_USERNAME,
-                                        username);
+                                        newUsername);
                                 editor.putString(Constants.XMPP_PASSWORD,
-                                        password);
+                                        newPassword);
                                 editor.commit();
-
                                 Log
                                         .i(LOGTAG,
                                                 "Account registered successfully");
-
                             }
                         }
                     }
@@ -454,65 +387,64 @@ public class XmppManager {
                 connection.addPacketListener(packetListener, packetFilter);
 
                 registration.setType(IQ.Type.SET);
-                //registration.setTo(xmppHost);
-                //            Map<String, String> attributes = new HashMap<String, String>();
-                //            attributes.put("username", rUsername);
-                //            attributes.put("password", rPassword);
-                //            registration.setAttributes(attributes);
+                // registration.setTo(xmppHost);
+                // Map<String, String> attributes = new HashMap<String, String>();
+                // attributes.put("username", rUsername);
+                // attributes.put("password", rPassword);
+                // registration.setAttributes(attributes);
                 registration.addAttribute("username", newUsername);
                 registration.addAttribute("password", newPassword);
                 connection.sendPacket(registration);
 
             } else {
                 Log.i(LOGTAG, "Account registered already");
-                XmppManager.runTask(xmppManager);
+                xmppManager.runTask();
             }
         }
     }
 
+    /**
+     * A runnable task to log into the server. 
+     */
     private class LoginTask implements Runnable {
 
         final XmppManager xmppManager;
 
-        private ConnectionListener connectionListener;
-
-        private LoginTask(ConnectionListener connectionListener) {
+        private LoginTask() {
             this.xmppManager = XmppManager.this;
-            this.connectionListener = connectionListener;
         }
 
         public void run() {
             Log.i(LOGTAG, "LoginTask.run()...");
 
-            if (!XmppManager.isAuthenticated(xmppManager)) {
+            if (!xmppManager.isAuthenticated()) {
                 Log.d(LOGTAG, "username=" + username);
                 Log.d(LOGTAG, "password=" + password);
 
                 try {
-                    XmppManager.getXMPPConnection(xmppManager).login(
-                            XmppManager.getUsername(xmppManager),
-                            XmppManager.getPassword(xmppManager),
-                            "AndroidpnClient");
-
+                    xmppManager.getConnection().login(
+                            xmppManager.getUsername(),
+                            xmppManager.getPassword(), XMPP_RESOURCE_NAME);
                     Log.d(LOGTAG, "Loggedn in successfully");
 
                     // connection listener
-                    if (connectionListener != null) {
-                        XmppManager.getXMPPConnection(xmppManager)
-                                .addConnectionListener(connectionListener);
+                    if (xmppManager.getConnectionListener() != null) {
+                        xmppManager.getConnection().addConnectionListener(
+                                xmppManager.getConnectionListener());
                     }
 
                     // packet filter
                     PacketFilter packetFilter = new PacketTypeFilter(
                             NotificationIQ.class);
-
                     // packet listener
+                    PacketListener packetListener = xmppManager
+                            .getNotificationPacketListener();
                     connection.addPacketListener(packetListener, packetFilter);
 
-                    XmppManager.runTask(xmppManager);
+                    xmppManager.runTask();
 
                 } catch (XMPPException e) {
-                    Log.e(LOGTAG, "LoginTask.run()... _ xmpp error _ ");
+                    Log.e(LOGTAG, "LoginTask.run()... xmpp error");
                     Log.e(LOGTAG, "Failed to login to xmpp server. Caused by: "
                             + e.getMessage());
                     String INVALID_CREDENTIALS_ERROR_CODE = "401";
@@ -520,46 +452,25 @@ public class XmppManager {
                     if (errorMessage != null
                             && errorMessage
                                     .contains(INVALID_CREDENTIALS_ERROR_CODE)) {
-                        XmppManager.removeAccount(xmppManager);
-                        XmppManager.registerAccount(xmppManager);
+                        // xmppManager.removeAccount();
+                        xmppManager.reregisterAccount();
+                        return;
                     }
-
-                    xmppManager.reconnect();
+                    xmppManager.runReconnectionThread();
 
                 } catch (Exception e) {
-                    Log.e(LOGTAG, "LoginTask.run()... _ other error _ ");
+                    Log.e(LOGTAG, "LoginTask.run()... other error");
                     Log.e(LOGTAG, "Failed to login to xmpp server. Caused by: "
                             + e.getMessage());
-
-                    xmppManager.reconnect();
+                    xmppManager.runReconnectionThread();
                 }
 
             } else {
                 Log.i(LOGTAG, "Logged in already");
-                XmppManager.runTask(xmppManager);
+                xmppManager.runTask();
             }
 
         }
-    }
-
-    private class TaskRunner implements Runnable {
-
-        private final XmppManager xmppManager;
-
-        public TaskRunner(XmppManager xmppManager) {
-            this.xmppManager = xmppManager;
-        }
-
-        @Override
-        public void run() {
-            synchronized (XmppManager.getTaskList(xmppManager)) {
-                if (XmppManager.getFutureTask(xmppManager) != null) {
-                    XmppManager.getFutureTask(xmppManager).cancel(true);
-                }
-                XmppManager.runTask(xmppManager);
-            }
-        }
-
     }
 
 }

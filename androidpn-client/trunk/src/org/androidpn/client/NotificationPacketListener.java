@@ -71,7 +71,7 @@ public class NotificationPacketListener implements PacketListener {
                 //                        notificationApiKey).append("/").append(
                 //                        System.currentTimeMillis()).toString()));
 
-                XmppManager.getContext(xmppManager).sendBroadcast(intent);
+                xmppManager.getContext().sendBroadcast(intent);
             }
         }
 

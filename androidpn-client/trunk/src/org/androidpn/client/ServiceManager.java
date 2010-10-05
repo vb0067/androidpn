@@ -44,7 +44,7 @@ public final class ServiceManager {
 
     private Properties clientProps;
 
-    private String version = "0.4.1";
+    private String version;
 
     private String apiKey;
 
@@ -57,28 +57,27 @@ public final class ServiceManager {
     //    private String callbackActivityClassName;
 
     public ServiceManager(Context context) {
-        this.context = context;
-        this.version = Constants.CLIENT_VERSION;
-        this.clientPrefs = context.getSharedPreferences(
-                Constants.CLIENT_PREFERENCES, Context.MODE_PRIVATE);
+        this.context = context;        
+        version = Constants.CLIENT_VERSION;
+        
+        apiKey = getMetaDataValue(Constants.ANDROIDPN_API_KEY);
+        Log.i(LOGTAG, "apiKey=" + apiKey);
+        //        if (apiKey == null) {
+        //            Log.e(LOGTAG, "Please set the androidpn api key in the manifest file.");
+        //            throw new RuntimeException();
+        //        }
 
-        this.clientProps = loadProperties();
-        this.xmppHost = clientProps.getProperty("xmppHost", "127.0.0.1");
-        this.xmppPort = clientProps.getProperty("xmppPort", "5222");
+        clientProps = loadProperties();
+        xmppHost = clientProps.getProperty("xmppHost", "127.0.0.1");
+        xmppPort = clientProps.getProperty("xmppPort", "5222");
         Log.i(LOGTAG, "xmppHost=" + xmppHost);
         Log.i(LOGTAG, "xmppPort=" + xmppPort);
 
-        //        this.apiKey = getApiKey(context);
-        apiKey = getMetaDataValue(Constants.ANDROIDPN_API_KEY);
-        Log.i(LOGTAG, "apiKey=" + apiKey);
-
-        //        if (apiKey == null) {
-        //            Log.e(LOGTAG, "Please set the androidpn api key in the manifest file.");
-        //            //throw new RuntimeException();
-        //        }
-
+        clientPrefs = context.getSharedPreferences(
+                Constants.CLIENT_PREFERENCES, Context.MODE_PRIVATE);
         Editor editor = clientPrefs.edit();
         editor.putString(Constants.ANDROIDPN_API_KEY, apiKey);
+        editor.putString(Constants.VERSION, version);
         editor.putString(Constants.XMPP_HOST, xmppHost);
         editor.putInt(Constants.XMPP_PORT, Integer.parseInt(xmppPort));
         editor.commit();
@@ -86,9 +85,6 @@ public final class ServiceManager {
     }
 
     public void startService() {
-        // Intent intent = new Intent(NotificationService.SERVICE_NAME);
-        // context.startService(intent);
-
         Thread serviceThread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -100,7 +96,6 @@ public final class ServiceManager {
     }
 
     public void stopService() {
-        // Intent intent = new Intent(NotificationService.SERVICE_NAME);
         Intent intent = NotificationService.getIntent();
         context.stopService(intent);
     }
@@ -155,13 +150,13 @@ public final class ServiceManager {
         return props;
     }
 
-    public String getVersion() {
-        return this.version;
-    }
-
-    public String getApiKey() {
-        return this.apiKey;
-    }
+    //    public String getVersion() {
+    //        return version;
+    //    }
+    //
+    //    public String getApiKey() {
+    //        return apiKey;
+    //    }
 
     public void setNotificationIcon(int iconId) {
         Editor editor = clientPrefs.edit();
