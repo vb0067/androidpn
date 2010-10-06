@@ -58,7 +58,7 @@ public class XmppManager {
 
     private NotificationService.TaskTracker taskTracker;
 
-    private SharedPreferences clientPrefs;
+    private SharedPreferences sharedPrefs;
 
     private String xmppHost;
 
@@ -88,12 +88,12 @@ public class XmppManager {
         context = notificationService;
         taskSubmitter = notificationService.getTaskSubmitter();
         taskTracker = notificationService.getTaskTracker();
-        clientPrefs = notificationService.getSharedPreferences();
+        sharedPrefs = notificationService.getSharedPreferences();
 
-        xmppHost = clientPrefs.getString(Constants.XMPP_HOST, "localhost");
-        xmppPort = clientPrefs.getInt(Constants.XMPP_PORT, 5222);
-        username = clientPrefs.getString(Constants.XMPP_USERNAME, username);
-        password = clientPrefs.getString(Constants.XMPP_PASSWORD, password);
+        xmppHost = sharedPrefs.getString(Constants.XMPP_HOST, "localhost");
+        xmppPort = sharedPrefs.getInt(Constants.XMPP_PORT, 5222);
+        username = sharedPrefs.getString(Constants.XMPP_USERNAME, username);
+        password = sharedPrefs.getString(Constants.XMPP_PASSWORD, password);
 
         connectionListener = new PersistentConnectionListener(this);
         notificationPacketListener = new NotificationPacketListener(this);
@@ -229,12 +229,12 @@ public class XmppManager {
     }
 
     private boolean isRegistered() {
-        return clientPrefs.contains(Constants.XMPP_USERNAME)
-                && clientPrefs.contains(Constants.XMPP_PASSWORD);
+        return sharedPrefs.contains(Constants.XMPP_USERNAME)
+                && sharedPrefs.contains(Constants.XMPP_PASSWORD);
     }
 
     private void removeAccount() {
-        Editor editor = clientPrefs.edit();
+        Editor editor = sharedPrefs.edit();
         editor.remove(Constants.XMPP_USERNAME);
         editor.remove(Constants.XMPP_PASSWORD);
         editor.commit();
@@ -370,7 +370,7 @@ public class XmppManager {
                                 Log.d(LOGTAG, "username=" + newUsername);
                                 Log.d(LOGTAG, "password=" + newPassword);
 
-                                Editor editor = clientPrefs.edit();
+                                Editor editor = sharedPrefs.edit();
                                 editor.putString(Constants.XMPP_USERNAME,
                                         newUsername);
                                 editor.putString(Constants.XMPP_PASSWORD,

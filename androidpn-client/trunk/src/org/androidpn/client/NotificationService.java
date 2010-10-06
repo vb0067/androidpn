@@ -66,7 +66,7 @@ public class NotificationService extends Service {
 
     private XmppManager xmppManager;
 
-    private SharedPreferences clientPrefs;
+    private SharedPreferences sharedPrefs;
 
     private String deviceId;
 
@@ -86,21 +86,21 @@ public class NotificationService extends Service {
         // wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         // connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        clientPrefs = getSharedPreferences(Constants.CLIENT_PREFERENCES,
+        sharedPrefs = getSharedPreferences(Constants.SHARED_PREFERENCE_NAME,
                 Context.MODE_PRIVATE);
 
         // Get deviceId
         deviceId = telephonyManager.getDeviceId();
         // Log.d(LOGTAG, "deviceId=" + deviceId);
-        Editor editor = clientPrefs.edit();
+        Editor editor = sharedPrefs.edit();
         editor.putString(Constants.DEVICE_ID, deviceId);
         editor.commit();
 
         // If running on an emulator
         if (deviceId == null || deviceId.trim().length() == 0
                 || deviceId.matches("0+")) {
-            if (clientPrefs.contains("EMULATOR_DEVICE_ID")) {
-                deviceId = clientPrefs.getString(Constants.EMULATOR_DEVICE_ID,
+            if (sharedPrefs.contains("EMULATOR_DEVICE_ID")) {
+                deviceId = sharedPrefs.getString(Constants.EMULATOR_DEVICE_ID,
                         "");
             } else {
                 deviceId = (new StringBuilder("EMU")).append(
@@ -170,7 +170,7 @@ public class NotificationService extends Service {
     }
 
     public SharedPreferences getSharedPreferences() {
-        return clientPrefs;
+        return sharedPrefs;
     }
 
     public String getDeviceId() {

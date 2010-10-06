@@ -27,7 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /** 
- * An Activity that is to displays the notification details view.
+ * Activity for displaying the notification details view.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
@@ -81,7 +81,6 @@ public class NotificationDetailsActivity extends Activity {
         final Context context = NotificationDetailsActivity.this;
 
         LinearLayout linearLayout = new LinearLayout(this);
-        // linearLayout.setBackgroundResource(0x106000b);
         linearLayout.setBackgroundColor(0xffeeeeee);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setPadding(5, 5, 5, 5);

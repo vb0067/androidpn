@@ -22,13 +22,11 @@ package org.androidpn.client;
  */
 public class Constants {
 
-    public static final String CLIENT_VERSION = "0.4.1";
-
-    public static final String CLIENT_PREFERENCES = "ClientPreferences";
+    public static final String SHARED_PREFERENCE_NAME = "client_preferences";
 
     // PREFERENCE KEYS
 
-    public static final String ANDROIDPN_API_KEY = "ANDROIDPN_API_KEY";
+    public static final String API_KEY = "API_KEY";
 
     public static final String VERSION = "VERSION";
 
@@ -40,7 +38,7 @@ public class Constants {
 
     public static final String XMPP_PASSWORD = "XMPP_PASSWORD";
 
-    public static final String USER_KEY = "USER_KEY";
+    // public static final String USER_KEY = "USER_KEY";
 
     public static final String DEVICE_ID = "DEVICE_ID";
 
@@ -48,7 +46,11 @@ public class Constants {
 
     public static final String NOTIFICATION_ICON = "NOTIFICATION_ICON";
 
-    public static final String NOTIFICATION_SOUND = "NOTIFICATION_SOUND";
+    public static final String SETTINGS_NOTIFICATION_ENABLED = "SETTINGS_NOTIFICATION_ENABLED";
+
+    public static final String SETTINGS_SOUND_ENABLED = "SETTINGS_SOUND_ENABLED";
+
+    public static final String SETTINGS_VIBRATE_ENABLED = "SETTINGS_VIBRATE_ENABLED";
 
     // NOTIFICATION FIELDS
 
@@ -63,6 +65,7 @@ public class Constants {
     public static final String NOTIFICATION_TICKER = "NOTIFICATION_TICKER";
 
     public static final String NOTIFICATION_URL = "NOTIFICATION_URL";
+
 
     // INTENT ACTIONS
 

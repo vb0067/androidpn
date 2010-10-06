@@ -74,15 +74,6 @@ public final class NotificationReceiver extends BroadcastReceiver {
                     notificationTitle, notificationMessage, notificationTicker,
                     notificationUrl);
 
-            intent.removeExtra(Constants.NOTIFICATION_ID);
-            intent.removeExtra(Constants.NOTIFICATION_API_KEY);
-            intent.removeExtra(Constants.NOTIFICATION_TITLE);
-            intent.removeExtra(Constants.NOTIFICATION_MESSAGE);
-            intent.removeExtra(Constants.NOTIFICATION_TICKER);
-            intent.removeExtra(Constants.NOTIFICATION_URL);
-
-            Log.d(LOGTAG, "notifier.notify()... done!");
-
         } else if (Constants.ACTION_NOTIFICATION_CLICKED.equals(action)) {
             String notificationId = intent
                     .getStringExtra(Constants.NOTIFICATION_ID);
@@ -97,16 +88,15 @@ public final class NotificationReceiver extends BroadcastReceiver {
             String notificationUrl = intent
                     .getStringExtra(Constants.NOTIFICATION_URL);
 
-            Log.d(LOGTAG, "notificationId=" + notificationId);
-            Log.d(LOGTAG, "notificationApiKey=" + notificationApiKey);
-            Log.d(LOGTAG, "notificationTitle=" + notificationTitle);
-            Log.d(LOGTAG, "notificationMessage=" + notificationMessage);
-            Log.d(LOGTAG, "notificationTicker=" + notificationTicker);
-            Log.d(LOGTAG, "notificationUrl=" + notificationUrl);
+            Log.e(LOGTAG, "notificationId=" + notificationId);
+            Log.e(LOGTAG, "notificationApiKey=" + notificationApiKey);
+            Log.e(LOGTAG, "notificationTitle=" + notificationTitle);
+            Log.e(LOGTAG, "notificationMessage=" + notificationMessage);
+            Log.e(LOGTAG, "notificationTicker=" + notificationTicker);
+            Log.e(LOGTAG, "notificationUrl=" + notificationUrl);
 
             Intent detailsIntent = new Intent();
-            detailsIntent.setClassName(context.getPackageName(),
-                    NotificationDetailsActivity.class.getName());
+            detailsIntent.setClass(context, NotificationDetailsActivity.class);
             detailsIntent.putExtras(intent.getExtras());
             //            detailsIntent.putExtra(Constants.NOTIFICATION_ID, notificationId);
             //            detailsIntent.putExtra(Constants.NOTIFICATION_API_KEY, notificationApiKey);
@@ -114,7 +104,7 @@ public final class NotificationReceiver extends BroadcastReceiver {
             //            detailsIntent.putExtra(Constants.NOTIFICATION_MESSAGE, notificationMessage);
             //            detailsIntent.putExtra(Constants.NOTIFICATION_TICKER, notificationTicker);
             //            detailsIntent.putExtra(Constants.NOTIFICATION_URL, notificationUrl);
-            detailsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // 0x10000000
+            detailsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
             try {
                 context.startActivity(detailsIntent);
@@ -124,8 +114,6 @@ public final class NotificationReceiver extends BroadcastReceiver {
                         Toast.LENGTH_LONG);
                 toast.show();
             }
-
-            Log.d(LOGTAG, "detailsActivity... started!");
 
         } else if (Constants.ACTION_NOTIFICATION_CLEARED.equals(action)) {
             //

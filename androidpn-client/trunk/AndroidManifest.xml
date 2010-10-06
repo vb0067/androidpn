@@ -12,6 +12,9 @@
 		<activity android:name="org.androidpn.client.NotificationDetailsActivity"
 			android:label="Notification Details" android:excludeFromRecents="true">
 		</activity>
+		<activity android:name="org.androidpn.client.NotificationSettingsActivity"
+			android:label="Notification Settings">
+		</activity>
 		<service android:enabled="true" android:name="org.androidpn.client.NotificationService"
 			android:label="NotificationService">
 			<intent-filter>
