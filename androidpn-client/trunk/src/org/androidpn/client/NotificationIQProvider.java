@@ -22,7 +22,7 @@ import org.xmlpull.v1.XmlPullParser;
 /** 
  * This class parses incoming IQ packets to NotificationIQ objects.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class NotificationIQProvider implements IQProvider {
 

@@ -25,7 +25,7 @@ import android.util.Log;
 /** 
  * A broadcast receiver to handle the changes in network connectiion states.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class ConnectivityReceiver extends BroadcastReceiver {
 

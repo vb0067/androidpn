@@ -18,7 +18,7 @@ package org.androidpn.client;
 /** 
  * Runtime exceptions produced by wrong meta-data settings.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class InvalidFormatException extends RuntimeException {
 

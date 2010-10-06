@@ -22,7 +22,7 @@ import android.util.Log;
 /** 
  * A listener class for monitoring connection closing and reconnection events.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class PersistentConnectionListener implements ConnectionListener {
 

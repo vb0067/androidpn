@@ -20,7 +20,7 @@ import org.jivesoftware.smack.packet.IQ;
 /** 
  * This class represents a notifcatin IQ packet.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class NotificationIQ extends IQ {
 

@@ -20,7 +20,7 @@ import android.util.Log;
 /** 
  * A thread class for recennecting the server.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class ReconnectionThread extends Thread {
 

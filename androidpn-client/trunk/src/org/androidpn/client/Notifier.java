@@ -30,7 +30,7 @@ import android.util.Log;
 /** 
  * This class is to notify the user of messages with NotificationManager.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class Notifier {
 

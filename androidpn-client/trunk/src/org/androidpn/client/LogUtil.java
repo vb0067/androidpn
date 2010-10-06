@@ -18,7 +18,7 @@ package org.androidpn.client;
 /** 
  * Utility class for LogCat.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class LogUtil {
     

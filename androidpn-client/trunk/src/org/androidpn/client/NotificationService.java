@@ -37,7 +37,7 @@ import android.util.Log;
  * notification events from the server. This should be registered as service
  * in AndroidManifest.xml. 
  * 
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class NotificationService extends Service {
 

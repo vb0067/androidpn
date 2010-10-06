@@ -31,7 +31,7 @@ import android.util.Log;
 /** 
  * This class is to manage the notificatin service and to load the configuration.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public final class ServiceManager {
 

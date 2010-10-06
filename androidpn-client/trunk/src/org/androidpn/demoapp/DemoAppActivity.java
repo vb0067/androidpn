@@ -26,7 +26,7 @@ import android.widget.Button;
 /**
  * This is an androidpn client demo application.
  * 
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class DemoAppActivity extends Activity {
 

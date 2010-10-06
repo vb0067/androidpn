@@ -29,7 +29,7 @@ import android.widget.TextView;
 /** 
  * Activity for displaying the notification details view.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class NotificationDetailsActivity extends Activity {
 
