@@ -26,7 +26,7 @@ import java.net.URLClassLoader;
 /** 
  * Class desciption here.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class ServerClassLoader extends URLClassLoader {
 

@@ -20,7 +20,7 @@ package org.androidpn.server.xmpp.net;
 /** 
  * A listner to receive notification of the connection closing.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public interface ConnectionCloseListener {
 

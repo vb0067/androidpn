@@ -34,7 +34,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 /** 
  * This class represents the basic user object.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 @Entity
 @Table(name = "apn_user")

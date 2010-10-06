@@ -20,7 +20,7 @@ package org.androidpn.server.xmpp;
 /** 
  * Runtime exceptions produced by failed packet operations.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class PacketException extends RuntimeException {
     

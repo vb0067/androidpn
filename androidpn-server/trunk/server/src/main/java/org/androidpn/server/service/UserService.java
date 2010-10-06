@@ -24,7 +24,7 @@ import org.androidpn.server.model.User;
 /** 
  * Business service interface for the user management.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public interface UserService {
 

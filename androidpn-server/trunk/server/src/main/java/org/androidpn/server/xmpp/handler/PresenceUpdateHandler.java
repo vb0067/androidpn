@@ -31,7 +31,7 @@ import org.xmpp.packet.Presence;
 /** 
  * This class is to handle the presence protocol.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class PresenceUpdateHandler {
 

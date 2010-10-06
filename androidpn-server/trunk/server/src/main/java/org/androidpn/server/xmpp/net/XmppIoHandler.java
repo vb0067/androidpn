@@ -36,7 +36,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
  * This class is to create new sessions, destroy sessions and deliver
  * received XML stanzas to the StanzaHandler.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class XmppIoHandler implements IoHandler {
 

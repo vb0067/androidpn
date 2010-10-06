@@ -20,7 +20,7 @@ package org.androidpn.server.model;
 /** 
  * Base class for domain model objects.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public abstract class BaseObject {
 

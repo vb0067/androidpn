@@ -22,7 +22,7 @@ import java.util.List;
 /** 
  * Utility class to obtain the values from configruation.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class Config {
 

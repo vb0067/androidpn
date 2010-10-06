@@ -35,7 +35,7 @@ import org.xmpp.packet.Packet;
 /**
  * This class represents a XMPP connection on the server.
  * 
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class Connection {
 

@@ -22,7 +22,7 @@ import org.xmpp.packet.Message;
 /** 
  * This class is to route Message packets to their corresponding handler.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class MessageRouter {
 

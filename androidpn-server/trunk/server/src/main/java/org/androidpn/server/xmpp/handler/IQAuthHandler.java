@@ -37,7 +37,7 @@ import org.xmpp.packet.PacketError;
 /** 
  * This class is to handle the TYPE_IQ jabber:iq:auth protocol.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class IQAuthHandler extends IQHandler {
 

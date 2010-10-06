@@ -29,7 +29,7 @@ import org.xmpp.packet.Packet;
 /** 
  * This is an abstract class for a session between the server and a client.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public abstract class Session {
 

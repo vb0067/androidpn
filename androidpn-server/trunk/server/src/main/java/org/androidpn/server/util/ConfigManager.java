@@ -25,7 +25,7 @@ import org.apache.commons.logging.LogFactory;
 /** 
  * This class is to manage the applicatin configruation.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class ConfigManager {
 

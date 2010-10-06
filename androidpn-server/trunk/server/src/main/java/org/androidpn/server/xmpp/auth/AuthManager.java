@@ -31,7 +31,7 @@ import org.jivesoftware.util.StringUtils;
 /** 
  * This class is to provide the methods associated with user authentication. 
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class AuthManager {
 

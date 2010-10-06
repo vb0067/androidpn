@@ -23,7 +23,7 @@ import org.xmpp.packet.IQ;
 /** 
  * This class is to handle the TYPE_IQ jabber:iq:roster protocol.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class IQRosterHandler extends IQHandler {
     

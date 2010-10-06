@@ -32,7 +32,7 @@ import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
 /** 
  * A controller class to process the user related requests.  
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class UserController extends MultiActionController {
 

@@ -25,7 +25,7 @@ import org.androidpn.server.service.UserNotFoundException;
 /** 
  * User DAO (Data Access Object) interface. 
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public interface UserDao extends GenericDao<User, Long> {
 

@@ -27,7 +27,7 @@ import org.jivesoftware.openfire.nio.XMLLightweightParser;
 /** 
  * Decoder class that parses ByteBuffers and generates XML stanzas.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class XmppDecoder extends CumulativeProtocolDecoder {
 

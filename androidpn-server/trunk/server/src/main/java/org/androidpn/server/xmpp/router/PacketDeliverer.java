@@ -28,7 +28,7 @@ import org.xmpp.packet.Packet;
 /** 
  * This class is to deliver the packets to the connected sessions. 
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class PacketDeliverer {
 

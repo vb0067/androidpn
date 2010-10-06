@@ -26,7 +26,7 @@ import org.apache.mina.core.buffer.IoBuffer;
 /** 
  * Wrapper on a MINA {@link IoBuffer} that extends the Writer class.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class IoBufferWriter extends Writer {
 

@@ -22,7 +22,7 @@ import java.util.Date;
 /** 
  * A command class to represent a session.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class SessionVO {
 

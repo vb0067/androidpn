@@ -30,7 +30,7 @@ import org.xmpp.packet.Presence;
 /** 
  * This class is to route Presence packets to their corresponding handler.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class PresenceRouter {
 

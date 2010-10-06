@@ -20,7 +20,7 @@ package org.androidpn.server.service;
 /** 
  * Thrown if a requested user could not be loaded.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class UserNotFoundException extends Exception {
 

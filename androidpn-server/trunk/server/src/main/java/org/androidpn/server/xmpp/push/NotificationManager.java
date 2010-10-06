@@ -31,7 +31,7 @@ import org.xmpp.packet.IQ;
 /** 
  * This class is to manage sending the notifcations to the users.  
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class NotificationManager {
 

@@ -24,7 +24,7 @@ import org.apache.mina.filter.codec.ProtocolEncoderOutput;
 /** 
  *  Encoder class that does nothing (to the already encoded data). 
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class XmppEncoder implements ProtocolEncoder {
 

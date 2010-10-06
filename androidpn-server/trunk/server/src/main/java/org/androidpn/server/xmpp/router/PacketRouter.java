@@ -25,7 +25,7 @@ import org.xmpp.packet.Presence;
 /** 
  * This class is to handle incoming packets and route them to their corresponding handler.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class PacketRouter {
 

@@ -35,7 +35,7 @@ import org.xmpp.packet.JID;
 /** 
  * This class manages the sessions connected to the server.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class SessionManager {
 

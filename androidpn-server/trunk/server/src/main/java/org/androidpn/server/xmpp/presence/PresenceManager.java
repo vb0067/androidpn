@@ -25,7 +25,7 @@ import org.xmpp.packet.Presence;
 /** 
  * This class is to manage the presences of users. 
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class PresenceManager {
 

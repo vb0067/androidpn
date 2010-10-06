@@ -20,7 +20,7 @@ package org.androidpn.server.xmpp;
 /** 
  * Thrown if a user was not authorized to do a particular operation.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class UnauthorizedException extends Exception {
     

@@ -34,7 +34,7 @@ import org.xmpp.packet.Presence;
 /** 
  * A controller class to process the session related requests.  
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class SessionController extends MultiActionController {
 

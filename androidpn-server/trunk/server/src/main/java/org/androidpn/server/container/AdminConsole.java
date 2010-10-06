@@ -35,7 +35,7 @@ import org.mortbay.jetty.webapp.WebAppContext;
  * This class starts a instance on the configured port and loads the admin
  * console web application. 
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class AdminConsole {
 

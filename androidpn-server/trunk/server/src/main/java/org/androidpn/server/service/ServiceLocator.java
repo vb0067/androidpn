@@ -22,7 +22,7 @@ import org.androidpn.server.xmpp.XmppServer;
 /** 
  * This is a helper class to look up service objects.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class ServiceLocator {
 

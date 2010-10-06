@@ -22,7 +22,7 @@ import org.androidpn.server.util.Config;
 /** 
  * This class represents a token that proves a user's authentication.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class AuthToken {
 

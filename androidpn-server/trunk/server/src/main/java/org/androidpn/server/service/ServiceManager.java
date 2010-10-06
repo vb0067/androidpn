@@ -22,7 +22,7 @@ import org.androidpn.server.xmpp.XmppServer;
 /** 
  * Class desciption here.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class ServiceManager {
 

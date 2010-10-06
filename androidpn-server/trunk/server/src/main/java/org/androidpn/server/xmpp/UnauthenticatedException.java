@@ -20,7 +20,7 @@ package org.androidpn.server.xmpp;
 /** 
  * Thrown if a user was not authenticated to do a particular operation.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class UnauthenticatedException extends Exception {
 

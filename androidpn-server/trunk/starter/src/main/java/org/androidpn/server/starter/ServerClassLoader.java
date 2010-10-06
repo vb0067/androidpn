@@ -26,7 +26,7 @@ import java.net.URLClassLoader;
 /** 
  * This is a simple classloader to include all jars in a lib directory.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class ServerClassLoader extends URLClassLoader {
 

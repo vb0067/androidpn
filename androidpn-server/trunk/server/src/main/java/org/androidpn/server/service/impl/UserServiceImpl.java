@@ -33,7 +33,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 /** 
  * This class is the implementation of UserService.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class UserServiceImpl implements UserService {
 

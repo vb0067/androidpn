@@ -30,7 +30,7 @@ import org.xmpp.packet.Presence;
 /** 
  * This class represents a session between the server and a client.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class ClientSession extends Session {
 

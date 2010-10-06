@@ -29,7 +29,7 @@ import org.xmpp.packet.PacketError;
 /** 
  * This is an abstract class to handle routed IQ packets.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public abstract class IQHandler {
 

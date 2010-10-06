@@ -20,7 +20,7 @@ package org.androidpn.server.service;
 /** 
  * Thrown if an unique constraint violation occured during saving a user. 
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class UserExistsException extends Exception {
 

@@ -29,7 +29,7 @@ import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
 /** 
  * A controller class to process the notification related requests.  
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class NotificationController extends MultiActionController {
 

@@ -42,7 +42,7 @@ import org.xmpp.packet.StreamError;
 /** 
  * This class is to handle incoming XML stanzas.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class StanzaHandler {
 

@@ -28,7 +28,7 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 /** 
  * This class is the Base class for all other DAOs serving common CRUD methods.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class GenericDaoHibernate<T, PK extends Serializable> extends
         HibernateDaoSupport implements GenericDao<T, PK> {

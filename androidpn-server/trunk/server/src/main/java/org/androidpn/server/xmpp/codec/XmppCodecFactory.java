@@ -25,7 +25,7 @@ import org.apache.mina.filter.codec.ProtocolEncoder;
 /** 
  * Factory class that specifies the encode and decoder to use for parsing XMPP stanzas.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public class XmppCodecFactory implements ProtocolCodecFactory {
 

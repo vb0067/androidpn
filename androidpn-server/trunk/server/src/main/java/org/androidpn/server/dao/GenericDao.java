@@ -23,7 +23,7 @@ import java.util.List;
 /** 
  * Generic DAO with common methods to CRUD POJOs.
  *
- * @author Sehwan Noh (sehnoh@gmail.com)
+ * @author Sehwan Noh (devnoh@gmail.com)
  */
 public interface GenericDao<T, PK extends Serializable> {
 
