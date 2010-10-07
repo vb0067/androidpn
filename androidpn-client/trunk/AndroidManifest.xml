@@ -10,7 +10,7 @@
 			</intent-filter>
 		</activity>
 		<activity android:name="org.androidpn.client.NotificationDetailsActivity"
-			android:label="Notification Details" android:excludeFromRecents="true">
+			android:label="Notification Details">
 		</activity>
 		<activity android:name="org.androidpn.client.NotificationSettingsActivity"
 			android:label="Notification Settings">
