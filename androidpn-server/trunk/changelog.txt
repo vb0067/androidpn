@@ -2,9 +2,11 @@ ANDROIDPN-SERVER CHANGELOG
 ==========================
 http://androidpn.sourceforge.net/
 
-Changes in version 0.4.1 (2010-10-??)
+Changes in version 0.4.1 (2010-10-07)
 -------------------------------------
-* 
+* Updated NotificationManager
+* Updated NotificationController
+* Removed the ticker field from the notification page
 
 Changes in version 0.4.0 (2010-09-17)
 -------------------------------------
