@@ -54,14 +54,12 @@ public class NotificationManager {
      * @param apiKey the API key
      * @param title the title
      * @param message the message details
-     * @param ticker the ticker
-     * @param url the url
+     * @param uri the uri
      */
     public void sendBroadcast(String apiKey, String title, String message,
-            String ticker, String url) {
+            String uri) {
         log.debug("sendBroadcast()...");
-        IQ notificationIQ = createNotificationIQ(apiKey, title, message,
-                ticker, url);
+        IQ notificationIQ = createNotificationIQ(apiKey, title, message, uri);
         for (ClientSession session : sessionManager.getSessions()) {
             if (session.getPresence().isAvailable()) {
                 notificationIQ.setTo(session.getAddress());
@@ -76,14 +74,12 @@ public class NotificationManager {
      * @param apiKey the API key
      * @param title the title
      * @param message the message details
-     * @param ticker the ticker
-     * @param url the url
+     * @param uri the uri
      */
     public void sendNotifcationToUser(String apiKey, String username,
-            String title, String message, String ticker, String url) {
+            String title, String message, String uri) {
         log.debug("sendNotifcationToUser()...");
-        IQ notificationIQ = createNotificationIQ(apiKey, title, message,
-                ticker, url);
+        IQ notificationIQ = createNotificationIQ(apiKey, title, message, uri);
         ClientSession session = sessionManager.getSession(username);
         if (session != null) {
             if (session.getPresence().isAvailable()) {
@@ -97,7 +93,7 @@ public class NotificationManager {
      * Creates a new notification IQ and returns it.
      */
     private IQ createNotificationIQ(String apiKey, String title,
-            String message, String ticker, String url) {
+            String message, String uri) {
         Random random = new Random();
         String id = Integer.toHexString(random.nextInt());
         // String id = String.valueOf(System.currentTimeMillis());
@@ -108,8 +104,7 @@ public class NotificationManager {
         notification.addElement("apiKey").setText(apiKey);
         notification.addElement("title").setText(title);
         notification.addElement("message").setText(message);
-        notification.addElement("ticker").setText(ticker);
-        notification.addElement("url").setText(url);
+        notification.addElement("uri").setText(uri);
 
         IQ iq = new IQ();
         iq.setType(IQ.Type.set);

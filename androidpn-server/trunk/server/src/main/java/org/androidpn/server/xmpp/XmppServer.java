@@ -42,11 +42,11 @@ public class XmppServer {
 
     private ApplicationContext context;
 
+    private String version = "0.4.1";
+
     private String serverName;
 
     private String serverHomeDir;
-
-    private String version;
 
     private boolean shuttingDown;
 
@@ -56,6 +56,12 @@ public class XmppServer {
      * @return the server instance.
      */
     public static XmppServer getInstance() {
+        // return instance;
+        if (instance == null) {
+            synchronized (XmppServer.class) {
+                instance = new XmppServer();
+            }
+        }
         return instance;
     }
 
@@ -82,7 +88,6 @@ public class XmppServer {
             locateServer();
             serverName = Config.getString("xmpp.domain", "127.0.0.1")
                     .toLowerCase();
-            version = Config.getString("androidpn.server.version", "");
             context = new ClassPathXmlApplicationContext("spring-config.xml");
             log.info("Spring Configuration loaded.");
 
