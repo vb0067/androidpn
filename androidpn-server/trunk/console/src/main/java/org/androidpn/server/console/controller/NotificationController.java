@@ -53,22 +53,19 @@ public class NotificationController extends MultiActionController {
                 "broadcast", "Y");
         String username = ServletRequestUtils.getStringParameter(request,
                 "username");
+        String title = ServletRequestUtils.getStringParameter(request, "title");
         String message = ServletRequestUtils.getStringParameter(request,
                 "message");
-        String title = ServletRequestUtils.getStringParameter(request, "title");
-        String ticker = ServletRequestUtils.getStringParameter(request,
-                "ticker");
-        String url = ServletRequestUtils.getStringParameter(request, "url");
+        String uri = ServletRequestUtils.getStringParameter(request, "uri");
 
         String apiKey = Config.getString("androidpn.client.apiKey", "");
         logger.debug("apiKey=" + apiKey);
 
         if (broadcast.equalsIgnoreCase("Y")) {
-            notificationManager.sendBroadcast(apiKey, title, message, ticker,
-                    url);
+            notificationManager.sendBroadcast(apiKey, title, message, uri);
         } else {
             notificationManager.sendNotifcationToUser(apiKey, username, title,
-                    message, ticker, url);
+                    message, uri);
         }
 
         ModelAndView mav = new ModelAndView();
