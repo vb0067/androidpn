@@ -15,12 +15,10 @@
  */
 package org.androidpn.client;
 
-import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-import android.widget.Toast;
 
 /** 
  * Broadcast receiver that handles push notification messages from the server.
@@ -33,14 +31,14 @@ public final class NotificationReceiver extends BroadcastReceiver {
     private static final String LOGTAG = LogUtil
             .makeLogTag(NotificationReceiver.class);
 
-    private NotificationService notificationService;
+    //    private NotificationService notificationService;
 
-    //    public NotificationReceiver() {
-    //    }
-
-    public NotificationReceiver(NotificationService notificationService) {
-        this.notificationService = notificationService;
+    public NotificationReceiver() {
     }
+
+    //    public NotificationReceiver(NotificationService notificationService) {
+    //        this.notificationService = notificationService;
+    //    }
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -57,71 +55,61 @@ public final class NotificationReceiver extends BroadcastReceiver {
                     .getStringExtra(Constants.NOTIFICATION_TITLE);
             String notificationMessage = intent
                     .getStringExtra(Constants.NOTIFICATION_MESSAGE);
-            String notificationTicker = intent
-                    .getStringExtra(Constants.NOTIFICATION_TICKER);
-            String notificationUrl = intent
-                    .getStringExtra(Constants.NOTIFICATION_URL);
+            String notificationUri = intent
+                    .getStringExtra(Constants.NOTIFICATION_URI);
 
             Log.d(LOGTAG, "notificationId=" + notificationId);
             Log.d(LOGTAG, "notificationApiKey=" + notificationApiKey);
             Log.d(LOGTAG, "notificationTitle=" + notificationTitle);
             Log.d(LOGTAG, "notificationMessage=" + notificationMessage);
-            Log.d(LOGTAG, "notificationTicker=" + notificationTicker);
-            Log.d(LOGTAG, "notificationUrl=" + notificationUrl);
+            Log.d(LOGTAG, "notificationUri=" + notificationUri);
 
             Notifier notifier = new Notifier(context);
             notifier.notify(notificationId, notificationApiKey,
-                    notificationTitle, notificationMessage, notificationTicker,
-                    notificationUrl);
-
-        } else if (Constants.ACTION_NOTIFICATION_CLICKED.equals(action)) {
-            String notificationId = intent
-                    .getStringExtra(Constants.NOTIFICATION_ID);
-            String notificationApiKey = intent
-                    .getStringExtra(Constants.NOTIFICATION_API_KEY);
-            String notificationTitle = intent
-                    .getStringExtra(Constants.NOTIFICATION_TITLE);
-            String notificationMessage = intent
-                    .getStringExtra(Constants.NOTIFICATION_MESSAGE);
-            String notificationTicker = intent
-                    .getStringExtra(Constants.NOTIFICATION_TICKER);
-            String notificationUrl = intent
-                    .getStringExtra(Constants.NOTIFICATION_URL);
-
-            Log.e(LOGTAG, "notificationId=" + notificationId);
-            Log.e(LOGTAG, "notificationApiKey=" + notificationApiKey);
-            Log.e(LOGTAG, "notificationTitle=" + notificationTitle);
-            Log.e(LOGTAG, "notificationMessage=" + notificationMessage);
-            Log.e(LOGTAG, "notificationTicker=" + notificationTicker);
-            Log.e(LOGTAG, "notificationUrl=" + notificationUrl);
-
-            Intent detailsIntent = new Intent();
-            detailsIntent.setClass(context, NotificationDetailsActivity.class);
-            detailsIntent.putExtras(intent.getExtras());
-            //            detailsIntent.putExtra(Constants.NOTIFICATION_ID, notificationId);
-            //            detailsIntent.putExtra(Constants.NOTIFICATION_API_KEY, notificationApiKey);
-            //            detailsIntent.putExtra(Constants.NOTIFICATION_TITLE, notificationTitle);
-            //            detailsIntent.putExtra(Constants.NOTIFICATION_MESSAGE, notificationMessage);
-            //            detailsIntent.putExtra(Constants.NOTIFICATION_TICKER, notificationTicker);
-            //            detailsIntent.putExtra(Constants.NOTIFICATION_URL, notificationUrl);
-            detailsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-            try {
-                context.startActivity(detailsIntent);
-            } catch (ActivityNotFoundException e) {
-                Toast toast = Toast.makeText(context,
-                        "No app found to handle this request",
-                        Toast.LENGTH_LONG);
-                toast.show();
-            }
-
-        } else if (Constants.ACTION_NOTIFICATION_CLEARED.equals(action)) {
-            //
-        } else if ("android.intent.action.PACKAGE_ADDED".equals(action)) {
-            Log.e(LOGTAG, "PACKAGE_ADDED");
-        } else if ("android.intent.action.PACKAGE_REMOVED".equals(action)) {
-            Log.e(LOGTAG, "PACKAGE_REMOVED");
+                    notificationTitle, notificationMessage, notificationUri);
         }
+
+        //        } else if (Constants.ACTION_NOTIFICATION_CLICKED.equals(action)) {
+        //            String notificationId = intent
+        //                    .getStringExtra(Constants.NOTIFICATION_ID);
+        //            String notificationApiKey = intent
+        //                    .getStringExtra(Constants.NOTIFICATION_API_KEY);
+        //            String notificationTitle = intent
+        //                    .getStringExtra(Constants.NOTIFICATION_TITLE);
+        //            String notificationMessage = intent
+        //                    .getStringExtra(Constants.NOTIFICATION_MESSAGE);
+        //            String notificationUri = intent
+        //                    .getStringExtra(Constants.NOTIFICATION_URI);
+        //
+        //            Log.e(LOGTAG, "notificationId=" + notificationId);
+        //            Log.e(LOGTAG, "notificationApiKey=" + notificationApiKey);
+        //            Log.e(LOGTAG, "notificationTitle=" + notificationTitle);
+        //            Log.e(LOGTAG, "notificationMessage=" + notificationMessage);
+        //            Log.e(LOGTAG, "notificationUri=" + notificationUri);
+        //
+        //            Intent detailsIntent = new Intent();
+        //            detailsIntent.setClass(context, NotificationDetailsActivity.class);
+        //            detailsIntent.putExtras(intent.getExtras());
+        //            //            detailsIntent.putExtra(Constants.NOTIFICATION_ID, notificationId);
+        //            //            detailsIntent.putExtra(Constants.NOTIFICATION_API_KEY, notificationApiKey);
+        //            //            detailsIntent.putExtra(Constants.NOTIFICATION_TITLE, notificationTitle);
+        //            //            detailsIntent.putExtra(Constants.NOTIFICATION_MESSAGE, notificationMessage);
+        //            //            detailsIntent.putExtra(Constants.NOTIFICATION_URI, notificationUri);
+        //            detailsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        //            detailsIntent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        //
+        //            try {
+        //                context.startActivity(detailsIntent);
+        //            } catch (ActivityNotFoundException e) {
+        //                Toast toast = Toast.makeText(context,
+        //                        "No app found to handle this request",
+        //                        Toast.LENGTH_LONG);
+        //                toast.show();
+        //            }
+        //
+        //        } else if (Constants.ACTION_NOTIFICATION_CLEARED.equals(action)) {
+        //            //
+        //        }
 
     }
 

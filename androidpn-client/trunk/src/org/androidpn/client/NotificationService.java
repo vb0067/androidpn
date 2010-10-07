@@ -71,7 +71,7 @@ public class NotificationService extends Service {
     private String deviceId;
 
     public NotificationService() {
-        notificationReceiver = new NotificationReceiver(this);
+        notificationReceiver = new NotificationReceiver();
         connectivityReceiver = new ConnectivityReceiver(this);
         phoneStateListener = new PhoneStateChangeListener(this);
         executorService = Executors.newSingleThreadExecutor();

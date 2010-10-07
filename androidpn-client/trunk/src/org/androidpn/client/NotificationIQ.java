@@ -32,9 +32,7 @@ public class NotificationIQ extends IQ {
 
     private String message;
 
-    private String ticker;
-
-    private String url;
+    private String uri;
 
     public NotificationIQ() {
     }
@@ -83,20 +81,12 @@ public class NotificationIQ extends IQ {
         this.message = message;
     }
 
-    public String getTicker() {
-        return ticker;
+    public String getUri() {
+        return uri;
     }
 
-    public void setTicker(String ticker) {
-        this.ticker = ticker;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
+    public void setUri(String url) {
+        this.uri = url;
     }
 
 }

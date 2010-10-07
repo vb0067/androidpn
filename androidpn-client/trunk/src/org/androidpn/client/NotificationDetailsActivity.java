@@ -52,17 +52,14 @@ public class NotificationDetailsActivity extends Activity {
                 .getStringExtra(Constants.NOTIFICATION_TITLE);
         String notificationMessage = intent
                 .getStringExtra(Constants.NOTIFICATION_MESSAGE);
-        String notificationTicker = intent
-                .getStringExtra(Constants.NOTIFICATION_TICKER);
-        String notificationUrl = intent
-                .getStringExtra(Constants.NOTIFICATION_URL);
+        String notificationUri = intent
+                .getStringExtra(Constants.NOTIFICATION_URI);
 
         Log.d(LOGTAG, "notificationId=" + notificationId);
         Log.d(LOGTAG, "notificationApiKey=" + notificationApiKey);
         Log.d(LOGTAG, "notificationTitle=" + notificationTitle);
         Log.d(LOGTAG, "notificationMessage=" + notificationMessage);
-        Log.d(LOGTAG, "notificationTicker=" + notificationTicker);
-        Log.d(LOGTAG, "notificationUrl=" + notificationUrl);
+        Log.d(LOGTAG, "notificationUri=" + notificationUri);
 
         //        Display display = getWindowManager().getDefaultDisplay();
         //        View rootView;
@@ -74,6 +71,7 @@ public class NotificationDetailsActivity extends Activity {
 
         View rootView = createView(notificationTitle, notificationMessage);
         setContentView(rootView);
+
     }
 
     private View createView(String title, String message) {
@@ -91,7 +89,7 @@ public class NotificationDetailsActivity extends Activity {
 
         TextView textTitle = new TextView(this);
         textTitle.setText(title);
-        textTitle.setTextSize(16);
+        textTitle.setTextSize(18);
         textTitle.setTextColor(0xff000000);
         textTitle.setGravity(Gravity.CENTER);
 
@@ -104,7 +102,7 @@ public class NotificationDetailsActivity extends Activity {
 
         TextView textDetails = new TextView(this);
         textDetails.setText(message);
-        textDetails.setTextSize(12);
+        textDetails.setTextSize(14);
         textDetails.setTextColor(0xff333333);
         textDetails.setGravity(Gravity.CENTER);
 
@@ -161,12 +159,22 @@ public class NotificationDetailsActivity extends Activity {
         return linearLayout;
     }
 
-    protected void onPause() {
-        super.onPause();
-    }
-
-    protected void onResume() {
-        super.onResume();
+    //    protected void onPause() {
+    //        super.onPause();
+    //        finish();
+    //    }
+    //
+    //    protected void onStop() {
+    //        super.onStop();
+    //        finish();
+    //    }
+    //
+    //    protected void onSaveInstanceState(Bundle outState) {
+    //        super.onSaveInstanceState(outState);
+    //    }
+    //
+    protected void onNewIntent(Intent intent) {
+        setIntent(intent);
     }
 
 }

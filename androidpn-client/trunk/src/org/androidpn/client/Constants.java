@@ -52,6 +52,8 @@ public class Constants {
 
     public static final String SETTINGS_VIBRATE_ENABLED = "SETTINGS_VIBRATE_ENABLED";
 
+    public static final String SETTINGS_TOAST_ENABLED = "SETTINGS_TOAST_ENABLED";
+
     // NOTIFICATION FIELDS
 
     public static final String NOTIFICATION_ID = "NOTIFICATION_ID";
@@ -62,10 +64,7 @@ public class Constants {
 
     public static final String NOTIFICATION_MESSAGE = "NOTIFICATION_MESSAGE";
 
-    public static final String NOTIFICATION_TICKER = "NOTIFICATION_TICKER";
-
-    public static final String NOTIFICATION_URL = "NOTIFICATION_URL";
-
+    public static final String NOTIFICATION_URI = "NOTIFICATION_URI";
 
     // INTENT ACTIONS
 
