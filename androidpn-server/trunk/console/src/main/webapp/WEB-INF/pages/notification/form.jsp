@@ -14,7 +14,7 @@
 <%--<div style="background:#eee; margin:20px 0px; padding:20px; width:500px; border:solid 1px #999;">--%>
 <div style="margin:20px 0px;">
 <form action="notification.do?action=send" method="post" style="margin: 0px;">
-<table width="480" cellpadding="4" cellspacing="0" border="0">
+<table width="600" cellpadding="4" cellspacing="0" border="0">
 <tr>
 	<td width="20%">To:</td>
 	<td width="80%">
@@ -28,19 +28,23 @@
 </tr>
 <tr>
 	<td>Title:</td>
-	<td><input type="text" id="title" name="title" value="Demo App" style="width:300px;" /></td>
+	<td><input type="text" id="title" name="title" value="Dokdo Island" style="width:300px;" /></td>
 </tr>
 <tr>
 	<td>Message:</td>
-	<td><textarea id="message" name="message" style="width:300px; height:50px;" >This is a test message.</textarea></td>
+	<td><textarea id="message" name="message" style="width:300px; height:80px;" >Dokdo is a Korean island, the far east of the Korean territory. No doubt! No question! Don't mention it any more!</textarea></td>
 </tr>
+<%--
 <tr>
 	<td>Ticker:</td>
 	<td><input type="text" id="ticker" name="ticker" value="" style="width:300px;" /></td>
 </tr>
+--%>
 <tr>
-	<td>URL:</td>
-	<td><input type="text" id="url" name="url" value="" style="width:300px;" /></td>
+	<td>URI:</td>
+	<td><input type="text" id="uri" name="uri" value="" style="width:300px;" />
+	    <br/><span style="font-size:0.8em">ex) http://www.dokdocorea.com, geo:37.24,131.86, tel:111-222-3333</span>
+	</td>
 </tr>
 <tr>
 	<td>&nbsp;</td>
