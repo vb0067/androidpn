@@ -24,25 +24,25 @@
 </tr>
 <tr id="trUsername" style="display:none;">
 	<td>Username:</td>
-	<td><input type="text" id="username" name="username" value="" style="width:300px;" /></td>
+	<td><input type="text" id="username" name="username" value="" style="width:380px;" /></td>
 </tr>
 <tr>
 	<td>Title:</td>
-	<td><input type="text" id="title" name="title" value="Dokdo Island" style="width:300px;" /></td>
+	<td><input type="text" id="title" name="title" value="Dokdo Island" style="width:380px;" /></td>
 </tr>
 <tr>
 	<td>Message:</td>
-	<td><textarea id="message" name="message" style="width:300px; height:80px;" >Dokdo is a Korean island, the far east of the Korean territory. No doubt! No question! Don't mention it any more!</textarea></td>
+	<td><textarea id="message" name="message" style="width:380px; height:80px;" >Dokdo is a Korean island, the far east of the Korean territory. No doubt! No question! Don't mention it any more!</textarea></td>
 </tr>
 <%--
 <tr>
 	<td>Ticker:</td>
-	<td><input type="text" id="ticker" name="ticker" value="" style="width:300px;" /></td>
+	<td><input type="text" id="ticker" name="ticker" value="" style="width:380px;" /></td>
 </tr>
 --%>
 <tr>
 	<td>URI:</td>
-	<td><input type="text" id="uri" name="uri" value="" style="width:300px;" />
+	<td><input type="text" id="uri" name="uri" value="" style="width:380px;" />
 	    <br/><span style="font-size:0.8em">ex) http://www.dokdocorea.com, geo:37.24,131.86, tel:111-222-3333</span>
 	</td>
 </tr>

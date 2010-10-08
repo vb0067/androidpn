@@ -54,7 +54,7 @@
 					<c:out value="${sess.presence}" />
 				</td>
 				<td><c:out value="${sess.clientIP}" /></td>
-				<td align="center"><c:out value="${sess.createdDate}" /></td>
+				<td align="center"><fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" value="${sess.createdDate}" /></td>
 			</tr>
 		</c:forEach>
 	</tbody>
