@@ -82,11 +82,9 @@ public class Notifier {
             }
             notification.flags |= Notification.FLAG_AUTO_CANCEL;
             notification.when = System.currentTimeMillis();
-            notification.tickerText = message.length() > 40 ? message
-                    .substring(0, 39) : message;
+            notification.tickerText = message;
 
             Intent intent;
-
             if (uri != null && uri.length() > 0) {
                 //                if (uri.startsWith("http:") || uri.startsWith("https:")
                 //                        || uri.startsWith("tel:") || uri.startsWith("geo:")) {
@@ -95,15 +93,27 @@ public class Notifier {
                 //                    // Log.e(LOGTAG, "Unsupported URI: " + uri);
                 //                }
             } else {
-                intent = new Intent(context, NotificationDetailsActivity.class);
-                intent.putExtra(Constants.NOTIFICATION_ID, notificationId);
-                intent.putExtra(Constants.NOTIFICATION_API_KEY, apiKey);
-                intent.putExtra(Constants.NOTIFICATION_TITLE, title);
-                intent.putExtra(Constants.NOTIFICATION_MESSAGE, message);
-                intent.putExtra(Constants.NOTIFICATION_URI, uri);
+                //                intent = new Intent(context, NotificationDetailsActivity.class);
+                //                intent.putExtra(Constants.NOTIFICATION_ID, notificationId);
+                //                intent.putExtra(Constants.NOTIFICATION_API_KEY, apiKey);
+                //                intent.putExtra(Constants.NOTIFICATION_TITLE, title);
+                //                intent.putExtra(Constants.NOTIFICATION_MESSAGE, message);
+                //                intent.putExtra(Constants.NOTIFICATION_URI, uri);
+                //                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                //                intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+                //                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+
+                String callbackActivityPackageName = sharedPrefs.getString(
+                        Constants.CALLBACK_ACTIVITY_PACKAGE_NAME, "");
+                String callbackActivityClassName = sharedPrefs.getString(
+                        Constants.CALLBACK_ACTIVITY_CLASS_NAME, "");
+
+                // intent = new Intent(context, DemoAppActivity.class);                
+                intent = new Intent().setClassName(callbackActivityPackageName,
+                        callbackActivityClassName);
+
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             }
 
             PendingIntent contentIntent = PendingIntent.getActivity(context, 0,

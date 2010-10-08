@@ -47,7 +47,7 @@ public class PersistentConnectionListener implements ConnectionListener {
                 && xmppManager.getConnection().isConnected()) {
             xmppManager.getConnection().disconnect();
         }
-        xmppManager.runReconnectionThread();
+        xmppManager.startReconnectionThread();
     }
 
     @Override

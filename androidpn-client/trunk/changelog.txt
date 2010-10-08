@@ -2,6 +2,13 @@ ANDROIDPN-CLIENT CHANGELOG
 ==========================
 http://androidpn.sourceforge.net/
 
+Changes in version 0.4.3 (2010-10-08)
+-------------------------------------
+* Updated NotificationSettingsActivity
+* Updated Notifier
+* Updated ServiceManager
+* Updated XmppManager
+
 Changes in version 0.4.2 (2010-10-07)
 -------------------------------------
 * Updated NotificationReceiver, Notifier

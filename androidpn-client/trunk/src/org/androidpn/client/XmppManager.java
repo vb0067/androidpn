@@ -169,7 +169,7 @@ public class XmppManager {
         return notificationPacketListener;
     }
 
-    public void runReconnectionThread() {
+    public void startReconnectionThread() {
         synchronized (reconnection) {
             if (!reconnection.isAlive()) {
                 reconnection.setName("Xmpp Reconnection Thread");
@@ -184,7 +184,8 @@ public class XmppManager {
 
     public void reregisterAccount() {
         removeAccount();
-        submitRegisterTask();
+        submitLoginTask();
+        runTask();
     }
 
     public List<Runnable> getTaskList() {
@@ -233,13 +234,6 @@ public class XmppManager {
                 && sharedPrefs.contains(Constants.XMPP_PASSWORD);
     }
 
-    private void removeAccount() {
-        Editor editor = sharedPrefs.edit();
-        editor.remove(Constants.XMPP_USERNAME);
-        editor.remove(Constants.XMPP_PASSWORD);
-        editor.commit();
-    }
-
     private void submitConnectTask() {
         Log.d(LOGTAG, "submitConnectTask()...");
         addTask(new ConnectTask());
@@ -272,6 +266,13 @@ public class XmppManager {
             }
         }
         Log.d(LOGTAG, "addTask(runnable)... done");
+    }
+
+    private void removeAccount() {
+        Editor editor = sharedPrefs.edit();
+        editor.remove(Constants.XMPP_USERNAME);
+        editor.remove(Constants.XMPP_PASSWORD);
+        editor.commit();
     }
 
     /**
@@ -379,6 +380,7 @@ public class XmppManager {
                                 Log
                                         .i(LOGTAG,
                                                 "Account registered successfully");
+                                xmppManager.runTask();
                             }
                         }
                     }
@@ -452,17 +454,16 @@ public class XmppManager {
                     if (errorMessage != null
                             && errorMessage
                                     .contains(INVALID_CREDENTIALS_ERROR_CODE)) {
-                        // xmppManager.removeAccount();
                         xmppManager.reregisterAccount();
                         return;
                     }
-                    xmppManager.runReconnectionThread();
+                    xmppManager.startReconnectionThread();
 
                 } catch (Exception e) {
                     Log.e(LOGTAG, "LoginTask.run()... other error");
                     Log.e(LOGTAG, "Failed to login to xmpp server. Caused by: "
                             + e.getMessage());
-                    xmppManager.runReconnectionThread();
+                    xmppManager.startReconnectionThread();
                 }
 
             } else {
