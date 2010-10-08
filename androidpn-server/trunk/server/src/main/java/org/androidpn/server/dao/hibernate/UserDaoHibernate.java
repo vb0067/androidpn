@@ -22,29 +22,33 @@ import java.util.List;
 import org.androidpn.server.dao.UserDao;
 import org.androidpn.server.model.User;
 import org.androidpn.server.service.UserNotFoundException;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 /** 
  * This class is the implementation of UserDAO using Spring's HibernateTemplate.
  *
  * @author Sehwan Noh (devnoh@gmail.com)
  */
-public class UserDaoHibernate extends GenericDaoHibernate<User, Long> implements
-        UserDao {
+public class UserDaoHibernate extends HibernateDaoSupport implements UserDao {
 
-    public UserDaoHibernate() {
-        super(User.class);
-    }
-
-    @SuppressWarnings("unchecked")
-    public List<User> getUsers() {
-        return getHibernateTemplate().find(
-                "from User u order by u.createdDate desc");
+    public User getUser(Long id) {
+        return (User) getHibernateTemplate().get(User.class, id);
     }
 
     public User saveUser(User user) {
         getHibernateTemplate().saveOrUpdate(user);
         getHibernateTemplate().flush();
         return user;
+    }
+
+    public void removeUser(Long id) {
+        getHibernateTemplate().delete(id);
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<User> getUsers() {
+        return getHibernateTemplate().find(
+                "from User u order by u.createdDate desc");
     }
 
     @SuppressWarnings("unchecked")

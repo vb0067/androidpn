@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public User getUser(String userId) {
-        return userDao.get(new Long(userId));
+        return userDao.getUser(new Long(userId));
     }
 
     public List<User> getUsers() {
@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService {
 
     public void removeUser(Long userId) {
         log.debug("removing user: " + userId);
-        userDao.remove(userId);
+        userDao.removeUser(userId);
     }
 
 }

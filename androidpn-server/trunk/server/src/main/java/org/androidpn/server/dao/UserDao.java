@@ -27,11 +27,15 @@ import org.androidpn.server.service.UserNotFoundException;
  *
  * @author Sehwan Noh (devnoh@gmail.com)
  */
-public interface UserDao extends GenericDao<User, Long> {
-
-    public List<User> getUsers();
+public interface UserDao {
+    
+    public User getUser(Long id);
 
     public User saveUser(User user);
+    
+    public void removeUser(Long id);
+
+    public List<User> getUsers();
 
     public User getUserByUsername(String username) throws UserNotFoundException;
 

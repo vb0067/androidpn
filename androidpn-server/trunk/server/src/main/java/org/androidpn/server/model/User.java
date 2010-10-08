@@ -38,7 +38,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
  */
 @Entity
 @Table(name = "apn_user")
-public class User extends BaseObject implements Serializable {
+public class User implements Serializable {
 
     private static final long serialVersionUID = 4733464888738356502L;
 
