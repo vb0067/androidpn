@@ -42,7 +42,7 @@ public class XmppServer {
 
     private ApplicationContext context;
 
-    private String version = "0.4.1";
+    private String version = "0.4.2";
 
     private String serverName;
 

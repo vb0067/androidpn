@@ -19,8 +19,8 @@ package org.androidpn.server.xmpp.net;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Random;
 
-import org.androidpn.server.util.Config;
 import org.androidpn.server.xmpp.router.PacketRouter;
 import org.androidpn.server.xmpp.session.ClientSession;
 import org.androidpn.server.xmpp.session.Session;
@@ -29,7 +29,6 @@ import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
 import org.dom4j.io.XMPPPacketReader;
 import org.jivesoftware.openfire.net.MXParser;
-import org.jivesoftware.util.StringUtils;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmpp.packet.IQ;
@@ -129,7 +128,7 @@ public class StanzaHandler {
         log.debug("processMessage()...");
         Message packet;
         try {
-            packet = new Message(doc, !validateJIDs());
+            packet = new Message(doc, false);
         } catch (IllegalArgumentException e) {
             log.debug("Rejecting packet. JID malformed", e);
             Message reply = new Message();
@@ -150,7 +149,7 @@ public class StanzaHandler {
         log.debug("processPresence()...");
         Presence packet;
         try {
-            packet = new Presence(doc, !validateJIDs());
+            packet = new Presence(doc, false);
         } catch (IllegalArgumentException e) {
             log.debug("Rejecting packet. JID malformed", e);
             Presence reply = new Presence();
@@ -160,20 +159,6 @@ public class StanzaHandler {
             reply.setError(PacketError.Condition.jid_malformed);
             session.process(reply);
             return;
-        }
-        // Check that the presence type is valid
-        try {
-            packet.getType();
-        } catch (IllegalArgumentException e) {
-            log.warn("Invalid presence type", e);
-            packet.setType(null);
-        }
-        // Check that the presence show is valid
-        try {
-            packet.getShow();
-        } catch (IllegalArgumentException e) {
-            log.warn("Invalid presence show for - " + packet.toXML(), e);
-            packet.setShow(null);
         }
         if (session.getStatus() == Session.STATUS_CLOSED
                 && packet.isAvailable()) {
@@ -201,23 +186,23 @@ public class StanzaHandler {
             }
             reply.setID(doc.attributeValue("id"));
             reply.setTo(session.getAddress());
-            if (doc.attributeValue("to") != null) {
-                reply.getElement().addAttribute("from",
-                        doc.attributeValue("to"));
+            String to = doc.attributeValue("to");
+            if (to != null) {
+                reply.getElement().addAttribute("from", to);
             }
             reply.setError(PacketError.Condition.jid_malformed);
             session.process(reply);
             return;
         }
-        if (packet.getID() == null
-                && Config.getBoolean("xmpp.server.validation.enabled", false)) {
-            // IQ packets MUST have an 'id' attribute
-            StreamError error = new StreamError(
-                    StreamError.Condition.invalid_xml);
-            session.deliverRawText(error.toXML());
-            session.close();
-            return;
-        }
+
+        //        if (packet.getID() == null) {
+        //            // IQ packets MUST have an 'id' attribute
+        //            StreamError error = new StreamError(
+        //                    StreamError.Condition.invalid_xml);
+        //            session.deliverRawText(error.toXML());
+        //            session.close();
+        //            return;
+        //        }
 
         packet.setFrom(session.getAddress());
         router.route(packet);
@@ -229,7 +214,7 @@ public class StanzaHandler {
         if (query != null && "jabber:iq:roster".equals(query.getNamespaceURI())) {
             return new Roster(doc);
         } else {
-            return new IQ(doc, !validateJIDs());
+            return new IQ(doc, false);
         }
     }
 
@@ -238,42 +223,44 @@ public class StanzaHandler {
         for (int eventType = xpp.getEventType(); eventType != XmlPullParser.START_TAG;) {
             eventType = xpp.next();
         }
-
         // Create the correct session based on the sent namespace
         String namespace = xpp.getNamespace(null);
         if ("jabber:client".equals(namespace)) {
             session = ClientSession.createSession(serverName, connection, xpp);
-            // If no session was created
             if (session == null) {
                 StringBuilder sb = new StringBuilder(250);
                 sb.append("<?xml version='1.0' encoding='UTF-8'?>");
-                sb.append("<stream:stream ");
-                sb.append("from=\"").append(serverName).append("\" ");
-                sb.append("id=\"").append(StringUtils.randomString(5)).append(
-                        "\" ");
-                sb.append("xmlns=\"").append(xpp.getNamespace(null)).append(
-                        "\" ");
-                sb.append("xmlns:stream=\"").append(xpp.getNamespace("stream"))
-                        .append("\" ");
-                sb.append("version=\"1.0\">");
+                sb.append("<stream:stream from=\"").append(serverName);
+                sb.append("\" id=\"").append(randomString(5));
+                sb.append("\" xmlns=\"").append(xpp.getNamespace(null));
+                sb.append("\" xmlns:stream=\"").append(
+                        xpp.getNamespace("stream"));
+                sb.append("\" version=\"1.0\">");
 
-                // Include the bad-namespace-prefix in the response
+                // bad-namespace-prefix in the response
                 StreamError error = new StreamError(
                         StreamError.Condition.bad_namespace_prefix);
                 sb.append(error.toXML());
                 connection.deliverRawText(sb.toString());
                 connection.close();
                 log
-                        .warn("Closing session due to bad_namespace_prefix in stream header. Prefix: "
-                                + xpp.getNamespace(null)
-                                + ". Connection: "
-                                + connection);
+                        .warn("Closing session due to bad_namespace_prefix in stream header: "
+                                + namespace);
             }
         }
     }
 
-    private boolean validateJIDs() {
-        return true;
+    private String randomString(int length) {
+        if (length < 1) {
+            return null;
+        }
+        char[] numbersAndLetters = ("0123456789abcdefghijklmnopqrstuvwxyz"
+                + "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ").toCharArray();
+        char[] randBuffer = new char[length];
+        for (int i = 0; i < randBuffer.length; i++) {
+            randBuffer[i] = numbersAndLetters[new Random().nextInt(71)];
+        }
+        return new String(randBuffer);
     }
 
     //  public String getNamespace() {

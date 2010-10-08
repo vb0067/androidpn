@@ -22,11 +22,11 @@ import java.security.NoSuchAlgorithmException;
 
 import org.androidpn.server.service.ServiceLocator;
 import org.androidpn.server.service.UserNotFoundException;
-import org.androidpn.server.xmpp.UnauthorizedException;
+import org.androidpn.server.xmpp.UnauthenticatedException;
 import org.androidpn.server.xmpp.XmppServer;
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jivesoftware.util.StringUtils;
 
 /** 
  * This class is to provide the methods associated with user authentication. 
@@ -56,7 +56,7 @@ public class AuthManager {
      * @return the user's password
      * @throws UserNotFoundException if the your was not found
      */
-    public static String getPassword(String username)
+    private static String getPassword(String username)
             throws UserNotFoundException {
         return ServiceLocator.getUserService().getUserByUsername(username)
                 .getPassword();
@@ -69,12 +69,12 @@ public class AuthManager {
      * @param username the username
      * @param password the password
      * @return an AuthToken
-     * @throws UnauthorizedException if the username and password do not match
+     * @throws UnauthenticatedException if the username and password do not match
      */
     public static AuthToken authenticate(String username, String password)
-            throws UnauthorizedException {
+            throws UnauthenticatedException {
         if (username == null || password == null) {
-            throw new UnauthorizedException();
+            throw new UnauthenticatedException();
         }
         username = username.trim().toLowerCase();
         if (username.contains("@")) {
@@ -83,15 +83,15 @@ public class AuthManager {
             if (domain.equals(XmppServer.getInstance().getServerName())) {
                 username = username.substring(0, index);
             } else {
-                throw new UnauthorizedException();
+                throw new UnauthenticatedException();
             }
         }
         try {
             if (!password.equals(getPassword(username))) {
-                throw new UnauthorizedException();
+                throw new UnauthenticatedException();
             }
         } catch (UserNotFoundException unfe) {
-            throw new UnauthorizedException();
+            throw new UnauthenticatedException();
         }
         return new AuthToken(username);
     }
@@ -104,12 +104,12 @@ public class AuthManager {
      * @param token the token
      * @param digest the digest
      * @return an AuthToken
-     * @throws UnauthorizedException if the username and password do not match 
+     * @throws UnauthenticatedException if the username and password do not match 
      */
     public static AuthToken authenticate(String username, String token,
-            String digest) throws UnauthorizedException {
+            String digest) throws UnauthenticatedException {
         if (username == null || token == null || digest == null) {
-            throw new UnauthorizedException();
+            throw new UnauthenticatedException();
         }
         username = username.trim().toLowerCase();
         if (username.contains("@")) {
@@ -118,19 +118,18 @@ public class AuthManager {
             if (domain.equals(XmppServer.getInstance().getServerName())) {
                 username = username.substring(0, index);
             } else {
-                throw new UnauthorizedException();
+                throw new UnauthenticatedException();
             }
         }
         try {
             String password = getPassword(username);
             String anticipatedDigest = createDigest(token, password);
             if (!digest.equalsIgnoreCase(anticipatedDigest)) {
-                throw new UnauthorizedException();
+                throw new UnauthenticatedException();
             }
         } catch (UserNotFoundException unfe) {
-            throw new UnauthorizedException();
+            throw new UnauthenticatedException();
         }
-
         return new AuthToken(username);
     }
 
@@ -155,7 +154,7 @@ public class AuthManager {
     private static String createDigest(String token, String password) {
         synchronized (DIGEST_LOCK) {
             digest.update(token.getBytes());
-            return StringUtils.encodeHex(digest.digest(password.getBytes()));
+            return Hex.encodeHexString(digest.digest(password.getBytes()));
         }
     }
 
