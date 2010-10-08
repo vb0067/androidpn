@@ -2,6 +2,14 @@ ANDROIDPN-SERVER CHANGELOG
 ==========================
 http://androidpn.sourceforge.net/
 
+Changes in version 0.4.2 (2010-10-08)
+-------------------------------------
+* Removed BaseObject, GenericDao, GenericDaoHibernate
+* Removed unused third party sources
+* Updated User/Session list views
+* Updated IQAuthHandler, IQRegisterHandler 
+* Updated StanzaHandler
+
 Changes in version 0.4.1 (2010-10-07)
 -------------------------------------
 * Updated NotificationManager
