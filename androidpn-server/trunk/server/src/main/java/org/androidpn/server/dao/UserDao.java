@@ -28,12 +28,14 @@ import org.androidpn.server.service.UserNotFoundException;
  * @author Sehwan Noh (devnoh@gmail.com)
  */
 public interface UserDao {
-    
+
     public User getUser(Long id);
 
     public User saveUser(User user);
-    
+
     public void removeUser(Long id);
+
+    public boolean exists(Long id);
 
     public List<User> getUsers();
 

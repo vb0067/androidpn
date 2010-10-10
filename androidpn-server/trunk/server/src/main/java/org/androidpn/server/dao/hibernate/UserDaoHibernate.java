@@ -42,7 +42,12 @@ public class UserDaoHibernate extends HibernateDaoSupport implements UserDao {
     }
 
     public void removeUser(Long id) {
-        getHibernateTemplate().delete(id);
+        getHibernateTemplate().delete(getUser(id));
+    }
+
+    public boolean exists(Long id) {
+        User user = (User) getHibernateTemplate().get(User.class, id);
+        return user != null;
     }
 
     @SuppressWarnings("unchecked")
