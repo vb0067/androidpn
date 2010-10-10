@@ -42,7 +42,7 @@ public class XmppServer {
 
     private ApplicationContext context;
 
-    private String version = "0.4.2";
+    private String version = "0.4.3";
 
     private String serverName;
 
@@ -163,6 +163,7 @@ public class XmppServer {
 
     private void locateServer() throws FileNotFoundException {
         String baseDir = System.getProperty("base.dir", "..");
+        log.debug("base.dir=" + baseDir);
 
         if (serverHomeDir == null) {
             try {
@@ -178,7 +179,7 @@ public class XmppServer {
         }
 
         if (serverHomeDir == null) {
-            System.err.println("Could not locate home");
+            System.err.println("Could not locate home.");
             throw new FileNotFoundException();
         } else {
             Config.setProperty("server.home.dir", serverHomeDir);

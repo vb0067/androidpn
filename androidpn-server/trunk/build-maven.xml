@@ -56,13 +56,14 @@
 	<target name="mvn-install">
 		<artifact:mvn pom="pom.xml" fork="true">
 			<arg value="install" />
-			<arg value="-Dmaven.test.skip=true" />
 			<!--<localRepository path="${basedir}/target/tmp" />-->
 		</artifact:mvn>
 	</target>
 
 	<target name="mvn-assembly">
 		<artifact:mvn pom="pom.xml" fork="true">
+			<arg value="-P hsqldb" />
+			<arg value="-Dmaven.test.skip=true" />
 			<arg value="assembly:assembly" />
 		</artifact:mvn>
 	</target>
