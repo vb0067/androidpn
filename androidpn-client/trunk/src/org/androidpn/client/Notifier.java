@@ -17,15 +17,12 @@ package org.androidpn.client;
 
 import java.util.Random;
 
-import org.androidpn.demoapp.R;
-
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -84,37 +81,35 @@ public class Notifier {
             notification.when = System.currentTimeMillis();
             notification.tickerText = message;
 
-            Intent intent;
-            if (uri != null && uri.length() > 0) {
-                //                if (uri.startsWith("http:") || uri.startsWith("https:")
-                //                        || uri.startsWith("tel:") || uri.startsWith("geo:")) {
-                intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-                //                } else {
-                //                    // Log.e(LOGTAG, "Unsupported URI: " + uri);
-                //                }
-            } else {
-                //                intent = new Intent(context, NotificationDetailsActivity.class);
-                //                intent.putExtra(Constants.NOTIFICATION_ID, notificationId);
-                //                intent.putExtra(Constants.NOTIFICATION_API_KEY, apiKey);
-                //                intent.putExtra(Constants.NOTIFICATION_TITLE, title);
-                //                intent.putExtra(Constants.NOTIFICATION_MESSAGE, message);
-                //                intent.putExtra(Constants.NOTIFICATION_URI, uri);
-                //                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                //                intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-                //                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            //            Intent intent;
+            //            if (uri != null
+            //                    && uri.length() > 0
+            //                    && (uri.startsWith("http:") || uri.startsWith("https:")
+            //                            || uri.startsWith("tel:") || uri.startsWith("geo:"))) {
+            //                intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+            //            } else {
+            //                String callbackActivityPackageName = sharedPrefs.getString(
+            //                        Constants.CALLBACK_ACTIVITY_PACKAGE_NAME, "");
+            //                String callbackActivityClassName = sharedPrefs.getString(
+            //                        Constants.CALLBACK_ACTIVITY_CLASS_NAME, "");
+            //                intent = new Intent().setClassName(callbackActivityPackageName,
+            //                        callbackActivityClassName);
+            //                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            //                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            //            }
 
-                String callbackActivityPackageName = sharedPrefs.getString(
-                        Constants.CALLBACK_ACTIVITY_PACKAGE_NAME, "");
-                String callbackActivityClassName = sharedPrefs.getString(
-                        Constants.CALLBACK_ACTIVITY_CLASS_NAME, "");
-
-                // intent = new Intent(context, DemoAppActivity.class);                
-                intent = new Intent().setClassName(callbackActivityPackageName,
-                        callbackActivityClassName);
-
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            }
+            Intent intent = new Intent(context,
+                    NotificationDetailsActivity.class);
+            intent.putExtra(Constants.NOTIFICATION_ID, notificationId);
+            intent.putExtra(Constants.NOTIFICATION_API_KEY, apiKey);
+            intent.putExtra(Constants.NOTIFICATION_TITLE, title);
+            intent.putExtra(Constants.NOTIFICATION_MESSAGE, message);
+            intent.putExtra(Constants.NOTIFICATION_URI, uri);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
             PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
                     intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -136,19 +131,19 @@ public class Notifier {
             //            PendingIntent clickPendingIntent = PendingIntent.getBroadcast(
             //                    context, 0, clickIntent, 0);
             //
-            //            //                Intent clearIntent = new Intent(
-            //            //                        Constants.ACTION_NOTIFICATION_CLEARED);
-            //            //                clearIntent.putExtra(Constants.NOTIFICATION_ID, notificationId);
-            //            //                clearIntent.putExtra(Constants.NOTIFICATION_API_KEY, apiKey);
-            //            //                //        negativeIntent.setData(Uri.parse((new StringBuilder(
-            //            //                //                "notif://notification.adroidpn.org/")).append(apiKey).append(
-            //            //                //                "/").append(System.currentTimeMillis()).toString()));
-            //            //                PendingIntent clearPendingIntent = PendingIntent.getBroadcast(
-            //            //                        context, 0, clearIntent, 0);
-            //
             //            notification.setLatestEventInfo(context, title, message,
             //                    clickPendingIntent);
-            //            // notification.deleteIntent = clearPendingIntent;
+            //
+            //            Intent clearIntent = new Intent(
+            //                    Constants.ACTION_NOTIFICATION_CLEARED);
+            //            clearIntent.putExtra(Constants.NOTIFICATION_ID, notificationId);
+            //            clearIntent.putExtra(Constants.NOTIFICATION_API_KEY, apiKey);
+            //            //        negativeIntent.setData(Uri.parse((new StringBuilder(
+            //            //                "notif://notification.adroidpn.org/")).append(apiKey).append(
+            //            //                "/").append(System.currentTimeMillis()).toString()));
+            //            PendingIntent clearPendingIntent = PendingIntent.getBroadcast(
+            //                    context, 0, clearIntent, 0);
+            //            notification.deleteIntent = clearPendingIntent;
             //
             //            notificationManager.notify(random.nextInt(), notification);
 
@@ -158,8 +153,7 @@ public class Notifier {
     }
 
     private int getNotificationIcon() {
-        return sharedPrefs.getInt(Constants.NOTIFICATION_ICON,
-                R.drawable.notification);
+        return sharedPrefs.getInt(Constants.NOTIFICATION_ICON, 0);
     }
 
     private boolean isNotificationEnabled() {

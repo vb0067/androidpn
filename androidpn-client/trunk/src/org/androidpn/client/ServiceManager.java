@@ -15,8 +15,6 @@
  */
 package org.androidpn.client;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Properties;
 
 import android.app.Activity;
@@ -24,9 +22,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.util.Log;
 
 /** 
@@ -45,7 +40,7 @@ public final class ServiceManager {
 
     private Properties props;
 
-    private String version = "0.4.3";
+    private String version = "0.4.4";
 
     private String apiKey;
 
@@ -67,16 +62,18 @@ public final class ServiceManager {
             callbackActivityClassName = callbackActivity.getClass().getName();
         }
 
-        apiKey = getMetaDataValue("ANDROIDPN_API_KEY");
-        Log.i(LOGTAG, "apiKey=" + apiKey);
-        //        if (apiKey == null) {
-        //            Log.e(LOGTAG, "Please set the androidpn api key in the manifest file.");
-        //            throw new RuntimeException();
-        //        }
+        //        apiKey = getMetaDataValue("ANDROIDPN_API_KEY");
+        //        Log.i(LOGTAG, "apiKey=" + apiKey);
+        //        //        if (apiKey == null) {
+        //        //            Log.e(LOGTAG, "Please set the androidpn api key in the manifest file.");
+        //        //            throw new RuntimeException();
+        //        //        }
 
         props = loadProperties();
+        apiKey = props.getProperty("apiKey", "");
         xmppHost = props.getProperty("xmppHost", "127.0.0.1");
         xmppPort = props.getProperty("xmppPort", "5222");
+        Log.i(LOGTAG, "apiKey=" + apiKey);
         Log.i(LOGTAG, "xmppHost=" + xmppHost);
         Log.i(LOGTAG, "xmppPort=" + xmppPort);
 
@@ -90,7 +87,7 @@ public final class ServiceManager {
         editor.putString(Constants.CALLBACK_ACTIVITY_PACKAGE_NAME,
                 callbackActivityPackageName);
         editor.putString(Constants.CALLBACK_ACTIVITY_CLASS_NAME,
-                callbackActivityClassName);        
+                callbackActivityClassName);
         editor.commit();
         // Log.i(LOGTAG, "sharedPrefs=" + sharedPrefs.toString());
     }
@@ -115,48 +112,59 @@ public final class ServiceManager {
     //        String value = getMetaDataValue(name);
     //        return (value == null) ? def : value;
     //    }
-
-    private String getMetaDataValue(String name) {
-        Object value = null;
-        PackageManager packageManager = context.getPackageManager();
-        ApplicationInfo applicationInfo;
-        try {
-            applicationInfo = packageManager.getApplicationInfo(context
-                    .getPackageName(), 128);
-            if (applicationInfo != null && applicationInfo.metaData != null) {
-                value = applicationInfo.metaData.get(name);
-            }
-        } catch (NameNotFoundException e) {
-            throw new InvalidFormatException(
-                    "Could not read the name in the manifest file.", e);
-        }
-        if (value == null) {
-            throw new InvalidFormatException("The name '" + name
-                    + "' is not defined in the manifest file's meta data.");
-        }
-        return value.toString();
-    }
+    //
+    //    private String getMetaDataValue(String name) {
+    //        Object value = null;
+    //        PackageManager packageManager = context.getPackageManager();
+    //        ApplicationInfo applicationInfo;
+    //        try {
+    //            applicationInfo = packageManager.getApplicationInfo(context
+    //                    .getPackageName(), 128);
+    //            if (applicationInfo != null && applicationInfo.metaData != null) {
+    //                value = applicationInfo.metaData.get(name);
+    //            }
+    //        } catch (NameNotFoundException e) {
+    //            throw new InvalidFormatException(
+    //                    "Could not read the name in the manifest file.", e);
+    //        }
+    //        if (value == null) {
+    //            throw new InvalidFormatException("The name '" + name
+    //                    + "' is not defined in the manifest file's meta data.");
+    //        }
+    //        return value.toString();
+    //    }
 
     private Properties loadProperties() {
-        InputStream in = null;
-        Properties props = null;
+        //        InputStream in = null;
+        //        Properties props = null;
+        //        try {
+        //            in = getClass().getResourceAsStream(
+        //                    "/org/androidpn/client/client.properties");
+        //            if (in != null) {
+        //                props = new Properties();
+        //                props.load(in);
+        //            } else {
+        //                Log.e(LOGTAG, "Could not find the properties file.");
+        //            }
+        //        } catch (IOException e) {
+        //            Log.e(LOGTAG, "Could not find the properties file.", e);
+        //        } finally {
+        //            if (in != null)
+        //                try {
+        //                    in.close();
+        //                } catch (Throwable ignore) {
+        //                }
+        //        }
+        //        return props;
+
+        Properties props = new Properties();
         try {
-            in = getClass().getResourceAsStream(
-                    "/org/androidpn/client/client.properties");
-            if (in != null) {
-                props = new Properties();
-                props.load(in);
-            } else {
-                Log.e(LOGTAG, "Could not find the properties file.");
-            }
-        } catch (IOException e) {
+            int id = context.getResources().getIdentifier("androidpn", "raw",
+                    context.getPackageName());
+            props.load(context.getResources().openRawResource(id));
+        } catch (Exception e) {
             Log.e(LOGTAG, "Could not find the properties file.", e);
-        } finally {
-            if (in != null)
-                try {
-                    in.close();
-                } catch (Throwable ignore) {
-                }
+            // e.printStackTrace();
         }
         return props;
     }

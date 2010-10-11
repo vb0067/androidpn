@@ -18,6 +18,9 @@ package org.androidpn.client;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -36,12 +39,23 @@ public class NotificationDetailsActivity extends Activity {
     private static final String LOGTAG = LogUtil
             .makeLogTag(NotificationDetailsActivity.class);
 
+    private String callbackActivityPackageName;
+
+    private String callbackActivityClassName;
+
     public NotificationDetailsActivity() {
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SharedPreferences sharedPrefs = this.getSharedPreferences(
+                Constants.SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE);
+        callbackActivityPackageName = sharedPrefs.getString(
+                Constants.CALLBACK_ACTIVITY_PACKAGE_NAME, "");
+        callbackActivityClassName = sharedPrefs.getString(
+                Constants.CALLBACK_ACTIVITY_CLASS_NAME, "");
 
         Intent intent = getIntent();
         String notificationId = intent
@@ -69,14 +83,13 @@ public class NotificationDetailsActivity extends Activity {
         //            rootView = null;
         //        }
 
-        View rootView = createView(notificationTitle, notificationMessage);
+        View rootView = createView(notificationTitle, notificationMessage,
+                notificationUri);
         setContentView(rootView);
-
     }
 
-    private View createView(String title, String message) {
-
-        final Context context = NotificationDetailsActivity.this;
+    private View createView(final String title, final String message,
+            final String uri) {
 
         LinearLayout linearLayout = new LinearLayout(this);
         linearLayout.setBackgroundColor(0xffeeeeee);
@@ -90,6 +103,8 @@ public class NotificationDetailsActivity extends Activity {
         TextView textTitle = new TextView(this);
         textTitle.setText(title);
         textTitle.setTextSize(18);
+        // textTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+        textTitle.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         textTitle.setTextColor(0xff000000);
         textTitle.setGravity(Gravity.CENTER);
 
@@ -103,6 +118,7 @@ public class NotificationDetailsActivity extends Activity {
         TextView textDetails = new TextView(this);
         textDetails.setText(message);
         textDetails.setTextSize(14);
+        // textTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
         textDetails.setTextColor(0xff333333);
         textDetails.setGravity(Gravity.CENTER);
 
@@ -116,43 +132,36 @@ public class NotificationDetailsActivity extends Activity {
         Button okButton = new Button(this);
         okButton.setText("Ok");
         okButton.setWidth(100);
-        //closeButton.setLayoutParams(layoutParams);
-        //linearLayout.addView(closeButton);
+
         okButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
+                Intent intent;
+                if (uri != null
+                        && uri.length() > 0
+                        && (uri.startsWith("http:") || uri.startsWith("https:")
+                                || uri.startsWith("tel:") || uri
+                                .startsWith("geo:"))) {
+                    intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                } else {
+                    intent = new Intent().setClassName(
+                            callbackActivityPackageName,
+                            callbackActivityClassName);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    // intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    // intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+                    // intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                }
+
+                NotificationDetailsActivity.this.startActivity(intent);
                 NotificationDetailsActivity.this.finish();
             }
         });
 
-        //        Button closeButton = new Button(this);
-        //        closeButton.setText("Close");
-        //        closeButton.setWidth(100);
-        //        closeButton.setOnClickListener(new View.OnClickListener() {
-        //            public void onClick(View view) {
-        //                NotificationDetailsActivity.this.finish();
-        //            }
-        //        });
-        //
-        //        Button viewButton = new Button(this);
-        //        viewButton.setText("View");
-        //        viewButton.setWidth(100);
-        //        viewButton.setOnClickListener(new View.OnClickListener() {
-        //            public void onClick(View view) {
-        //                NotificationDetailsActivity.this.finish();
-        //                Intent intent = new Intent();
-        //                //                intent.setClassName(DemoAppActivity.class.getPackage()
-        //                //                        .getName(), DemoAppActivity.class.getName());
-        //                intent.setClassName(callbackActivityPackageName,
-        //                        callbackActivityClassName);
-        //                context.startActivity(intent);
-        //            }
-        //        });
-
-        LinearLayout innerLayout = new LinearLayout(context);
+        LinearLayout innerLayout = new LinearLayout(this);
         innerLayout.setGravity(Gravity.CENTER);
         innerLayout.addView(okButton);
-        //        innerLayout.addView(closeButton);
-        //        innerLayout.addView(viewButton);
 
         linearLayout.addView(innerLayout);
 
@@ -173,8 +182,8 @@ public class NotificationDetailsActivity extends Activity {
     //        super.onSaveInstanceState(outState);
     //    }
     //
-    protected void onNewIntent(Intent intent) {
-        setIntent(intent);
-    }
+    //    protected void onNewIntent(Intent intent) {
+    //        setIntent(intent);
+    //    }
 
 }

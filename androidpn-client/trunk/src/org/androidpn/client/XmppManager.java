@@ -92,8 +92,8 @@ public class XmppManager {
 
         xmppHost = sharedPrefs.getString(Constants.XMPP_HOST, "localhost");
         xmppPort = sharedPrefs.getInt(Constants.XMPP_PORT, 5222);
-        username = sharedPrefs.getString(Constants.XMPP_USERNAME, username);
-        password = sharedPrefs.getString(Constants.XMPP_PASSWORD, password);
+        username = sharedPrefs.getString(Constants.XMPP_USERNAME, "");
+        password = sharedPrefs.getString(Constants.XMPP_PASSWORD, "");
 
         connectionListener = new PersistentConnectionListener(this);
         notificationPacketListener = new NotificationPacketListener(this);
