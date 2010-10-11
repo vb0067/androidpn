@@ -1,4 +1,4 @@
-<project name="build-androidpn" default="build" basedir=".">
+<project name="build-androidpn-server" default="build" basedir=".">
 
 	<property file="./build.properties" />
 
