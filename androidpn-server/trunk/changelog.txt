@@ -4,8 +4,8 @@ http://androidpn.sourceforge.net/
 
 Changes in version 0.4.5 (2010-10-??)
 -------------------------------------
-* Updated build scripts
-* Fixed version number to match with client's
+* Updated the build files
+* Changed version number to match with client
 
 Changes in version 0.4.3 (2010-10-10)
 -------------------------------------
