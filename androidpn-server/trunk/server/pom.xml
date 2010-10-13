@@ -150,7 +150,7 @@
 
 	<build>
 		<defaultGoal>install</defaultGoal>
-		<finalName>androidpn</finalName>
+		<finalName>androidpn-server-${version}</finalName>
 		<pluginManagement>
 			<plugins>
 				<plugin>
