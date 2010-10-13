@@ -31,13 +31,33 @@
 	</target>
 
 	<target name="build" depends="clean, compile">
-		<!--
-		<jar destfile="${target.dir}/${project.name}-${project.version}.jar" basedir="${target.classes.dir}" />
-		-->
 		<jar jarfile="${target.dir}/${project.name}-${project.version}.jar">
 			<fileset dir="${target.classes.dir}" includes="**/*.class" />
 			<zipfileset src="${lib.dir}/asmack.jar" excludes="META-INF/*" />
 		</jar>
+		<!--			
+		<zip destfile="${target.dir}/${project.name}-${project.version}.zip">
+			<fileset dir="${basedir}" excludes="bin/**,doc/**,gen/**,target/**,temp/**,javadoc.xml" />
+		</zip>
+		-->
+		<mkdir dir="${target.dir}/${project.name}-${project.version}" />
+		<copy todir="${target.dir}/${project.name}-${project.version}">
+			<fileset dir="${basedir}">
+				<patternset>
+					<exclude name="bin/**" />
+					<exclude name="doc/**" />
+					<exclude name="gen/**" />
+					<exclude name="target/**" />
+					<exclude name="temp/**" />
+					<exclude name="changelog.txt" />
+					<exclude name="javadoc.xml" />
+				</patternset>
+			</fileset>
+		</copy>
+		<zip destfile="${target.dir}/${project.name}-${project.version}.zip">
+			<fileset dir="${target.dir}" includes="${project.name}-${project.version}/**" />
+		</zip>
+		<delete dir="${target.dir}/${project.name}-${project.version}" />
 	</target>
 
 </project>

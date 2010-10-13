@@ -40,7 +40,7 @@ public final class ServiceManager {
 
     private Properties props;
 
-    private String version = "0.4.4";
+    private String version = "0.4.5";
 
     private String apiKey;
 
@@ -124,11 +124,11 @@ public final class ServiceManager {
     //                value = applicationInfo.metaData.get(name);
     //            }
     //        } catch (NameNotFoundException e) {
-    //            throw new InvalidFormatException(
+    //            throw new RuntimeException(
     //                    "Could not read the name in the manifest file.", e);
     //        }
     //        if (value == null) {
-    //            throw new InvalidFormatException("The name '" + name
+    //            throw new RuntimeException("The name '" + name
     //                    + "' is not defined in the manifest file's meta data.");
     //        }
     //        return value.toString();
