@@ -2,7 +2,7 @@ ANDROIDPN-CLIENT CHANGELOG
 ==========================
 http://androidpn.sourceforge.net/
 
-Changes in version 0.4.5 (2010-10-??)
+Changes in version 0.4.5 (2010-10-14)
 -------------------------------------
 * Removed InvalidFormatException
 * Updated the build files
