@@ -96,7 +96,7 @@ public class NotificationSettingsActivity extends PreferenceActivity {
         CheckBoxPreference vibratePref = new CheckBoxPreference(this);
         vibratePref.setKey(Constants.SETTINGS_VIBRATE_ENABLED);
         vibratePref.setTitle("Vibrate");
-        vibratePref.setSummary("Vibrate the phone for for notifications");
+        vibratePref.setSummary("Vibrate the phone for notifications");
         vibratePref.setDefaultValue(Boolean.TRUE);
         // vibratePref.setDependency(Constants.SETTINGS_NOTIFICATION_ENABLED);
 
