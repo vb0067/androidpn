@@ -16,8 +16,6 @@
 package org.androidpn.server.dao;
 
 import org.androidpn.server.model.User;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.AbstractTransactionalDataSourceSpringContextTests;
 
@@ -28,8 +26,6 @@ import org.springframework.test.AbstractTransactionalDataSourceSpringContextTest
  */
 public class UserDaoTest extends
         AbstractTransactionalDataSourceSpringContextTests {
-
-    private final Log log = LogFactory.getLog(getClass());
 
     private UserDao dao = null;
 
@@ -52,21 +48,6 @@ public class UserDaoTest extends
         assertEquals("admin@domain.com", user.getEmail());
     }
 
-    public void testUpdateUser() throws Exception {
-        User user = dao.getUser(1L);
-        dao.saveUser(user);
-        user = dao.getUser(1L);
-        user.setId(null);
-        endTransaction();
-        try {
-            dao.saveUser(user);
-            fail("saveUser didn't throw DataIntegrityViolationException");
-        } catch (DataIntegrityViolationException e) {
-            assertNotNull(e);
-            log.debug("expected exception: " + e.getMessage());
-        }
-    }
-
     public void testAddAndRemoveUser() throws Exception {
         User user = new User();
         user.setEmail("testuser@domain.com");
@@ -82,6 +63,20 @@ public class UserDaoTest extends
         dao.removeUser(user.getId());
         user = dao.getUser(user.getId());
         assertNull(user);
+    }
+
+    public void testUpdateUser() throws Exception {
+        User user = dao.getUser(1L);
+        dao.saveUser(user);
+        user = dao.getUser(1L);
+        user.setId(null);
+        endTransaction();
+        try {
+            dao.saveUser(user);
+            fail("saveUser didn't throw DataIntegrityViolationException");
+        } catch (DataIntegrityViolationException e) {
+            assertNotNull(e);
+        }
     }
 
     public void testUserExists() throws Exception {
