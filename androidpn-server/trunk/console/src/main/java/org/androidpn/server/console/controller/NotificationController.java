@@ -58,7 +58,7 @@ public class NotificationController extends MultiActionController {
                 "message");
         String uri = ServletRequestUtils.getStringParameter(request, "uri");
 
-        String apiKey = Config.getString("androidpn.client.apiKey", "");
+        String apiKey = Config.getString("apiKey", "");
         logger.debug("apiKey=" + apiKey);
 
         if (broadcast.equalsIgnoreCase("Y")) {
