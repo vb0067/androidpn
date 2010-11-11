@@ -293,7 +293,8 @@ public class XmppManager {
                 // Create the configuration for this new connection
                 ConnectionConfiguration connConfig = new ConnectionConfiguration(
                         xmppHost, xmppPort);
-                connConfig.setSecurityMode(SecurityMode.disabled);
+                // connConfig.setSecurityMode(SecurityMode.disabled);
+                connConfig.setSecurityMode(SecurityMode.required);
                 connConfig.setSASLAuthenticationEnabled(false);
                 connConfig.setCompressionEnabled(false);
 
