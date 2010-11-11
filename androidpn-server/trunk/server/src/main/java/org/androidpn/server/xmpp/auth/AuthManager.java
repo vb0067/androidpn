@@ -56,7 +56,7 @@ public class AuthManager {
      * @return the user's password
      * @throws UserNotFoundException if the your was not found
      */
-    private static String getPassword(String username)
+    public static String getPassword(String username)
             throws UserNotFoundException {
         return ServiceLocator.getUserService().getUserByUsername(username)
                 .getPassword();

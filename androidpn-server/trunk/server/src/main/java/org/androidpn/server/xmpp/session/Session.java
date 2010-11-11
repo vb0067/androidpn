@@ -19,6 +19,8 @@ package org.androidpn.server.xmpp.session;
 
 import java.net.UnknownHostException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.androidpn.server.xmpp.net.Connection;
 import org.apache.commons.logging.Log;
@@ -32,6 +34,10 @@ import org.xmpp.packet.Packet;
  * @author Sehwan Noh (devnoh@gmail.com)
  */
 public abstract class Session {
+
+    public static final int MAJOR_VERSION = 1;
+
+    public static final int MINOR_VERSION = 0;
 
     /** 
      * The session status when closed 
@@ -69,6 +75,8 @@ public abstract class Session {
     private long clientPacketCount = 0;
 
     private long serverPacketCount = 0;
+
+    private final Map<String, Object> sessionData = new HashMap<String, Object>();
 
     /**
      * Constructor. Creates a new JID using server name and stream ID.
@@ -198,6 +206,24 @@ public abstract class Session {
      */
     public long getNumServerPackets() {
         return serverPacketCount;
+    }
+
+    public void setSessionData(String key, Object value) {
+        synchronized (sessionData) {
+            sessionData.put(key, value);
+        }
+    }
+
+    public Object getSessionData(String key) {
+        synchronized (sessionData) {
+            return sessionData.get(key);
+        }
+    }
+
+    public void removeSessionData(String key) {
+        synchronized (sessionData) {
+            sessionData.remove(key);
+        }
     }
 
     /**

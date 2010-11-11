@@ -21,13 +21,22 @@ import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
+import java.security.KeyStore;
+
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
 
 import org.androidpn.server.util.Config;
 import org.androidpn.server.xmpp.session.Session;
+import org.androidpn.server.xmpp.ssl.SSLConfig;
+import org.androidpn.server.xmpp.ssl.SSLKeyManagerFactory;
+import org.androidpn.server.xmpp.ssl.SSLTrustManagerFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.mina.core.buffer.IoBuffer;
 import org.apache.mina.core.session.IoSession;
+import org.apache.mina.filter.ssl.SslFilter;
 import org.dom4j.io.OutputFormat;
 import org.jivesoftware.util.XMLWriter;
 import org.xmpp.packet.Packet;
@@ -52,6 +61,8 @@ public class Connection {
     private int minorVersion = 0;
 
     private String language = null;
+
+    private TLSPolicy tlsPolicy = TLSPolicy.optional;
 
     @SuppressWarnings("unchecked")
     private static ThreadLocal encoder = new ThreadLocalEncoder();
@@ -258,6 +269,29 @@ public class Connection {
         }
     }
 
+    public void startTLS(ClientAuth authentication) throws Exception {
+        log.debug("startTLS()...");
+        KeyStore ksKeys = SSLConfig.getKeyStore();
+        String keypass = SSLConfig.getKeyPassword();
+
+        KeyStore ksTrust = SSLConfig.getc2sTrustStore();
+        String trustpass = SSLConfig.getc2sTrustPassword();
+
+        KeyManager[] km = SSLKeyManagerFactory.getKeyManagers(ksKeys, keypass);
+        TrustManager[] tm = SSLTrustManagerFactory.getTrustManagers(ksTrust,
+                trustpass);
+
+        SSLContext tlsContext = SSLContext.getInstance("TLS");
+        tlsContext.init(km, tm, null);
+
+        SslFilter filter = new SslFilter(tlsContext);
+        ioSession.getFilterChain().addFirst("tls", filter);
+        //ioSession.getFilterChain().addBefore("executor", "tls", filter);
+        ioSession.setAttribute(SslFilter.DISABLE_ENCRYPTION_ONCE, Boolean.TRUE);
+
+        deliverRawText("<proceed xmlns=\"urn:ietf:params:xml:ns:xmpp-tls\"/>");
+    }
+
     /**
      * Returns the IP address.
      * 
@@ -332,6 +366,29 @@ public class Connection {
         protected Object initialValue() {
             return Charset.forName("UTF-8").newEncoder();
         }
+    }
+
+    public TLSPolicy getTlsPolicy() {
+        return tlsPolicy;
+    }
+
+    public void setTlsPolicy(TLSPolicy tlsPolicy) {
+        this.tlsPolicy = tlsPolicy;
+    }
+
+    /**
+     * Enumeration of possible TLS policies required to interact with the server.
+     */
+    public enum TLSPolicy {
+        required, optional, disabled
+    }
+
+    /**
+     * Enumeration that specifies if clients should be authenticated (and how)
+     * while negotiating TLS.
+     */
+    public enum ClientAuth {
+        disabled, wanted, needed
     }
 
 }

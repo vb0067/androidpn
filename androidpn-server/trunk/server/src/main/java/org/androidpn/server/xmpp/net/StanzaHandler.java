@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Random;
 
+import org.androidpn.server.util.Config;
 import org.androidpn.server.xmpp.router.PacketRouter;
 import org.androidpn.server.xmpp.session.ClientSession;
 import org.androidpn.server.xmpp.session.Session;
@@ -55,6 +56,8 @@ public class StanzaHandler {
 
     private boolean sessionCreated = false;
 
+    private boolean startedTLS = false;
+
     private PacketRouter router;
 
     /**
@@ -88,6 +91,9 @@ public class StanzaHandler {
                 MXParser parser = reader.getXPPParser();
                 parser.setInput(new StringReader(stanza));
                 createSession(parser);
+            } else if (startedTLS) {
+                startedTLS = false;
+                tlsNegotiated();
             }
             return;
         }
@@ -108,7 +114,14 @@ public class StanzaHandler {
         }
 
         String tag = doc.getName();
-        if ("message".equals(tag)) {
+        if ("starttls".equals(tag)) {
+            if (negotiateTLS()) { // Negotiate TLS
+                startedTLS = true;
+            } else {
+                connection.close();
+                session = null;
+            }
+        } else if ("message".equals(tag)) {
             processMessage(doc);
         } else if ("presence".equals(tag)) {
             log.debug("presence...");
@@ -248,6 +261,67 @@ public class StanzaHandler {
                                 + namespace);
             }
         }
+    }
+
+    private boolean negotiateTLS() {
+        if (connection.getTlsPolicy() == Connection.TLSPolicy.disabled) {
+            // Set the not_authorized error
+            StreamError error = new StreamError(
+                    StreamError.Condition.not_authorized);
+            connection.deliverRawText(error.toXML());
+            connection.close();
+            log.warn("TLS requested by initiator when TLS was never offered"
+                    + " by server. Closing connection : " + connection);
+            return false;
+        }
+        // Client requested to secure the connection using TLS.
+        try {
+            startTLS();
+        } catch (Exception e) {
+            log.error("Error while negotiating TLS", e);
+            connection
+                    .deliverRawText("<failure xmlns=\"urn:ietf:params:xml:ns:xmpp-tls\">");
+            connection.close();
+            return false;
+        }
+        return true;
+    }
+
+    private void startTLS() throws Exception {
+        Connection.ClientAuth policy;
+        try {
+            policy = Connection.ClientAuth.valueOf(Config.getString(
+                    "xmpp.client.cert.policy", "disabled"));
+        } catch (IllegalArgumentException e) {
+            policy = Connection.ClientAuth.disabled;
+        }
+        connection.startTLS(policy);
+    }
+
+    private void tlsNegotiated() {
+        // Offer stream features including SASL Mechanisms
+        StringBuilder sb = new StringBuilder(620);
+        sb.append("<?xml version='1.0' encoding='UTF-8'?>");
+        sb.append("<stream:stream ");
+        sb.append("xmlns:stream=\"http://etherx.jabber.org/streams\" ");
+        sb.append("xmlns=\"jabber:client\" from=\"");
+        sb.append(serverName);
+        sb.append("\" id=\"");
+        sb.append(session.getStreamID());
+        sb.append("\" xml:lang=\"");
+        sb.append(connection.getLanguage());
+        sb.append("\" version=\"");
+        sb.append(Session.MAJOR_VERSION).append(".").append(
+                Session.MINOR_VERSION);
+        sb.append("\">");
+        sb.append("<stream:features>");
+        // Include specific features such as auth and register for client sessions
+        String specificFeatures = session.getAvailableStreamFeatures();
+        if (specificFeatures != null) {
+            sb.append(specificFeatures);
+        }
+        sb.append("</stream:features>");
+        connection.deliverRawText(sb.toString());
     }
 
     private String randomString(int length) {

@@ -38,10 +38,6 @@ public class ClientSession extends Session {
 
     private static final String ETHERX_NAMESPACE = "http://etherx.jabber.org/streams";
 
-    private static final int MAJOR_VERSION = 1;
-
-    private static final int MINOR_VERSION = 0;
-
     private AuthToken authToken;
 
     private boolean initialized;
@@ -120,6 +116,14 @@ public class ClientSession extends Session {
         // XMPP 1.0 needs stream features
         sb = new StringBuilder();
         sb.append("<stream:features>");
+        if (connection.getTlsPolicy() != Connection.TLSPolicy.disabled) {
+            sb.append("<starttls xmlns=\"urn:ietf:params:xml:ns:xmpp-tls\">");
+            if (connection.getTlsPolicy() == Connection.TLSPolicy.required) {
+                sb.append("<required/>");
+            }
+            sb.append("</starttls>");
+        }
+
         String specificFeatures = session.getAvailableStreamFeatures();
         if (specificFeatures != null) {
             sb.append(specificFeatures);
@@ -150,6 +154,14 @@ public class ClientSession extends Session {
      */
     public AuthToken getAuthToken() {
         return authToken;
+    }
+
+    /**
+     * Initialize the session with an authentication token
+     * @param authToken the authentication token
+     */
+    public void setAuthToken(AuthToken authToken) {
+        this.authToken = authToken;
     }
 
     /**
