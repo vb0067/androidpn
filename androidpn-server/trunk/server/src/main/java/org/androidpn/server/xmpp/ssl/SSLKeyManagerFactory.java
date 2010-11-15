@@ -32,7 +32,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /** 
- * Class desciption here.
+ * This is a SSL Key Manager Factory class.  
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */

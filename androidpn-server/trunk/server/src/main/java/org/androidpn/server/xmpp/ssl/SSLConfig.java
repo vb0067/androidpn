@@ -31,7 +31,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /** 
- * Class desciption here.
+ * Configuration class for SSL settings.
  *
  * @author Sehwan Noh (sehnoh@gmail.com)
  */
