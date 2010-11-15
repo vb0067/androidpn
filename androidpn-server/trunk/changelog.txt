@@ -2,7 +2,7 @@ ANDROIDPN-SERVER CHANGELOG
 ==========================
 http://androidpn.sourceforge.net/
 
-Changes in version 0.5.0 (2010-10-11)
+Changes in version 0.5.0 (2010-11-11)
 -------------------------------------
 * Added SSL/TLS feature
 * Added SSL configuration and keystores
